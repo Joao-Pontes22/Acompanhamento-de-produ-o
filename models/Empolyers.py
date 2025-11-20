@@ -13,6 +13,8 @@ class Employers (base):
     password = Column("password", String)
     sector = Column("sector", String)
 
+    employer_sector = relationship("Sectors", back_populates="employers")
+
     def __init__(self, name, password, sector):
         self.name = name
         self.password = password
