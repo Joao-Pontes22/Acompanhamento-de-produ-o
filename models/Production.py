@@ -16,7 +16,7 @@ class MachiningProduction (base):
     id_employer = Column("id_employer", Integer, ForeignKey("employers.ID"))
     status = Column("status", String)
 
-    machiningemployer = relationship("Employers", backref="machiningproduction")
+    machiningemployer = relationship("Employers", back_populates="machiningproduction")
 
     def __init__(self, date, part_number,
                  production_batch, employer, id_employer, status):
