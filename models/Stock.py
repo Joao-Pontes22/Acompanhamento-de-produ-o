@@ -38,13 +38,14 @@ class MachiningStock (base):
     __tablename__ = "MachiningStock"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
-    part_number = Column("part_number", String)
+    part_number = Column("part_number", String, ForeignKey("Components.ID"))
     batch = Column("batch", String)
     qnty = Column("qnty", Integer)
     entry_date = Column("entry_date", Date)
     supplier = Column("supplier", String)
     race = Column("race", String)
 
+    components = relationship("Components", back_populates="machiningstock")
     def __init__(self, part_number,
                   batch, qnty, entry_date,
                   supplier, race):
