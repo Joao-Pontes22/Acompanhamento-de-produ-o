@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 # Tabela de componentes
 # Components table
 class Components (base):
-    __tablename__="components"
+    __tablename__="Components"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     part_number = Column("part_number", String)
@@ -18,7 +18,7 @@ class Components (base):
                             back_populates="rel_component")
     relationpartsxcomponents = relationship("RelationPartsxComponents",
                                              back_populates="components")
-
+    machiningstock = relationship("MachiningStock", back_populates="components")
     def __init__(self, part_number,
                 description_material):
         
