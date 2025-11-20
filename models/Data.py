@@ -34,6 +34,7 @@ class Parts (base):
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     part_number = Column("part_number", String)
+    description_parts = Column("description_parts", String)
     Clients_ID = Column("Clients_ID", Integer, ForeignKey("Clients.ID"))
 
     clients = relationship("Clients", back_populates="rel_parts")
@@ -43,10 +44,11 @@ class Parts (base):
         back_populates="part"
     )
 
-    def __init__(self, part_number, Clients_ID):
+    def __init__(self, part_number, description_parts, Clients_ID):
         
         self.part_number = part_number
         self.Clients_ID = Clients_ID
+        self.description_parts = description_parts
 
 # -------------------------------------------------------------------#
 # Tabela de relação de peças com componentes
