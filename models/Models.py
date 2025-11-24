@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Date
+from dotenv import load_dotenv
 import os
 
-DATABASE_URL = "postgresql://finances_v7j8_user:5OqAIRw61E0lkEjF4aEitwwBpQyOwDoq@dpg-d49kqcq4d50c739cu690-a.virginia-postgres.render.com/finances_v7j8"
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 base = declarative_base()
 
@@ -41,10 +42,26 @@ class Sectors (base):
     sector = Column("sector", String)
     tag = Column("tag", String)
     employers = relationship("Employers", back_populates="employer_sector")
-
+    stock = relationship("Stock", back_populates="sector")
+    machines = relationship("Machines", back_populates="sector")
     def __init__(self, sector, tag):
       self.sector = sector
       self.tag = tag
+# -------------------------------------------------------------------#
+
+class Machines (base):
+    __tablename__="Machines"
+
+    ID = Column("ID", Integer, primary_key=True, autoincrement=True)
+    machine = Column("machine", String)
+    sector_ID = Column("sector_ID", Integer, ForeignKey("Sectors.ID"))
+
+    sector = relationship("Sectors", back_populates="machines")
+    machining_production = relationship("Machining_Production", back_populates="machine")
+
+    def __init__(self, machine, sector_ID):
+        self.machine = machine
+        self.sector_ID = sector_ID
 # -------------------------------------------------------------------#
 # Tabela de produção da usinagem
 # Machining production table
@@ -53,16 +70,21 @@ class Machining_Production (base):
     __tablename__ = "Machining_Production"
 
     serial_iD = Column("serial_ID", Integer, primary_key=True, autoincrement=True)
+    sector_ID = Column("sector_ID", Integer, ForeignKey("Sectors.ID"))
+    machine_ID = Column("machine_ID", Integer, ForeignKey("Machines.ID"))
     date = Column("date", DateTime )
+    initial_hour = Column("initial_hour", DateTime)
+    final_hour = Column("final_hour", DateTime)
     part_number = Column("part_number", String)
     production_batch = Column("production_batch", String)
+    warehouse_batch = Column("warehouse_batch", String)
     employer = Column("employer", String)
     id_employer = Column("id_employer", Integer, ForeignKey("Employers.ID"))
     status = Column("status", String)
 
     machining_employer = relationship("Employers", back_populates="machining_production")
     assembly_production = relationship("Assembly_Production", back_populates="machining")
-
+    machine = relationship("Machines", back_populates="machining_production")
     def __init__(self, date, part_number,
                  production_batch, employer, id_employer, status):
         self.date = date
@@ -112,57 +134,37 @@ class Scraps (base):
 # -------------------------------------------------------------------#
 # Tabela de estoque do warehouse
 # Warehouse Stock table
-class Warehouse (base):
-    __tablename__="Warehouse"
-
+class Stock (base):
+    __tablename__="Stock"
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
+    sector_ID = Column("sector_ID", Integer, ForeignKey("Sectors.ID"))
     part_number = Column("part_number", String)
-    batch = Column("batch", String)
+    warehouse_batch = Column("warehouse_batch", String)
+    machining_batch = Column("machining_batch", String)
+    machining_date = Column("machining_date", Date)
     qnty = Column("qnty", Integer)
-    entry_date = Column("entry_date", Date)
+    entry_date_warehouse_batch = Column("entry_date_warehouse_batch", Date)
     supplier_ID = Column("supplier_ID", Integer, ForeignKey("Suppliers.ID"))
-    date_last_movimentation = Column("date_last_movimentation", Date)
-    supplier_batch = Column("supplier_batch", String)
-    race = Column("race", String)
+    status = Column("status", String)
+    cost = Column("cost", String)
 
-    def __init__(self, part_number,
-                  batch, qnty, entry_date, 
-                  supplier_ID, date_last_movimentation, 
-                  supplier_batch, race):
+    sector = relationship("Sectors", back_populates="stock")
+    suppliers = relationship("Suppliers", back_populates="stock")
+    def __init__(self, sector_ID, part_number,
+                 warehouse_batch, machining_batch,
+                 machining_date, qnty,
+                 entry_date_warehouse_batch,
+                 supplier_ID, status, cost):
+        self.sector_ID = sector_ID
         self.part_number = part_number
-        self.batch = batch
+        self.warehouse_batch = warehouse_batch
+        self.machining_batch = machining_batch
+        self.machining_date = machining_date
         self.qnty = qnty
-        self.entry_date = entry_date
+        self.entry_date_warehouse_batch = entry_date_warehouse_batch
         self.supplier_ID = supplier_ID
-        self.date_last_movimentation = date_last_movimentation
-        self.supplier_batch = supplier_batch
-        self.race = race
-
-# -------------------------------------------------------------------#
-
-# Tabela de estoque da usinagem
-# Machining stock table
-class MachiningStock (base):
-    __tablename__ = "MachiningStock"
-
-    ID = Column("ID", Integer, primary_key=True, autoincrement=True)
-    part_number = Column("part_number", String)
-    batch = Column("batch", String)
-    qnty = Column("qnty", Integer)
-    entry_date = Column("entry_date", Date)
-    supplier_ID = Column("supplier_ID", Integer, ForeignKey("Suppliers.ID"))
-    race = Column("race", String)
-
-    suppliers = relationship("Suppliers", back_populates="machiningstock")
-    def __init__(self, part_number,
-                  batch, qnty, entry_date,
-                  supplier_ID, race):
-        self.part_number = part_number
-        self.batch = batch
-        self.qnty = qnty
-        self.entry_date = entry_date
-        self.supplier_ID = supplier_ID
-        self.race = race
+        self.status = status
+        self.cost = cost
 
 class movimentations (base):
     __tablename__="Movimentations"
@@ -195,25 +197,19 @@ class Components (base):
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     part_number = Column("part_number", String)
     description_material = Column("description_material", String)
-    supplier_ID =  Column("supplier_ID", ForeignKey("Suppliers.ID"))
-
-
-#-------------------------------------------------------------------#
-#Relacionamentos
-#Relationships
-
+    supplier_ID =  Column("supplier_ID", Integer, ForeignKey("Suppliers.ID"))
+    cost = Column("cost", Float)
     supplier =relationship("Suppliers", 
                             back_populates="rel_component")
     relationpartsxcomponents = relationship("RelationPartsxComponents",
                                              back_populates="components")
-
-#-------------------------------------------------------------------#
-
     def __init__(self, part_number,
-                description_material):
+                description_material,supplier_ID, cost):
         
         self.part_number = part_number
         self.description_material = description_material
+        self.supplier_ID = supplier_ID
+        self.cost = cost
 
 # -------------------------------------------------------------------#
 # Tabela de peças
@@ -225,7 +221,8 @@ class Parts (base):
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     part_number = Column("part_number", String)
     description_parts = Column("description_parts", String)
-    Clients_ID = Column("Clients_ID", Integer, ForeignKey("Clients.ID"))
+    clients_ID = Column("Clients_ID", Integer, ForeignKey("Clients.ID"))
+    cost = Column("cost", Float)
 
     clients = relationship("Clients", back_populates="rel_parts")
 
@@ -234,10 +231,10 @@ class Parts (base):
         back_populates="part"
     )
 
-    def __init__(self, part_number, description_parts, Clients_ID):
+    def __init__(self, part_number, description_parts, clients_ID):
         
         self.part_number = part_number
-        self.Clients_ID = Clients_ID
+        self.clients_ID = clients_ID
         self.description_parts = description_parts
 
 # -------------------------------------------------------------------#
@@ -258,6 +255,19 @@ class RelationPartsxComponents (base):
                         back_populates="components_rel"
                         )
 
+class componentsAndparts:
+    __tablename__="componentsAndparts"
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
+    part_number = Column("part_number", String)
+    description = Column("description", String)
+    category = Column("category", String)
+
+    def __init__(self, part_number, description, category):
+        self.part_number = part_number
+        self.description = description
+        self.category = category    
+
+# -------------------------------------------------------------------#
 # Tabela de fornecedores
 # Suppliers table
 
@@ -271,7 +281,7 @@ class Suppliers (base):
     email = Column("email", String)
 
     rel_component = relationship("Components", back_populates="supplier")
-    machiningstock = relationship("MachiningStock", back_populates="suppliers")
+    stock = relationship("Stock", back_populates="suppliers")
 
     def __init__(self, name, contact, phone, email):
         self.name = name
