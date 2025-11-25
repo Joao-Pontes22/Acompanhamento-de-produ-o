@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 import jwt
 from jose import JWTError
-from models.Models import engine, Employers
+from Models.Models import engine, Employers
 from fastapi import Depends, HTTPException
 from Settings.Settings import oauth2_scheme, SECRET_KEY, ALGORITHM
 
