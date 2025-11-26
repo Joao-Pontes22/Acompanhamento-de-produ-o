@@ -4,6 +4,8 @@ from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Dat
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 base = declarative_base()
@@ -231,7 +233,7 @@ class Parts (base):
         back_populates="part"
     )
 
-    def __init__(self, part_number, description_parts, clients_ID):
+    def __init__(self, part_number, description_parts, clients_ID, cost):
         
         self.part_number = part_number
         self.clients_ID = clients_ID
@@ -307,3 +309,5 @@ class Clients (base):
         self.contact = contact
         self.phone = phone
         self.email = email
+
+create_all = base.metadata.create_all(engine)
