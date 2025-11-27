@@ -1,12 +1,13 @@
 import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from Settings.Settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from Dependecies import Init_Session
 from Models.Models import Employers
 from Schemes.Auth_Schemes import Auth_Scheme
 from datetime import datetime, timedelta, timezone
+from Services.Sector_Service import get_sectors
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  
@@ -26,6 +27,12 @@ async def get_all_employers(session: Session = Depends(Init_Session)):
 async def post_employer(Auth_Data: Auth_Scheme, session: Session =Depends(Init_Session)):
      hashed_password = bcrypt_context.hash(Auth_Data.password)
      employer = Employers(name=Auth_Data.name.upper(), password=hashed_password, sector=Auth_Data.sector_ID)
+     sectors = await get_sectors(session=session)
+     sector_ids = []
+     for sector in sectors:
+        sector_ids.append(sector.ID)
+     if employer.sector_ID not in sector_ids:
+        raise HTTPException(status_code=400, detail="Sector ID does not exist")
      session.add(employer)
      session.commit()
      return employer

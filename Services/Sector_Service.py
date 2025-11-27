@@ -6,14 +6,7 @@ from Dependecies import Init_Session
 #---------------------// SECTOR OPERATIONS //---------------------#
 async def get_sectors(session: Session = Depends(Init_Session)):
     sectors = session.query(Sectors).all()
-    result = []
-    for sector in sectors:
-        result.append({
-            "ID": sector.ID,
-            "sector": sector.sector,
-            "tag": sector.tag
-        })
-    return result
+    return sectors
 async def get_sector_by_id(sector_id: int, session: Session = Depends(Init_Session)):
     sector = session.query(Sectors).filter(Sectors.ID == sector_id).first()
     return sector

@@ -7,8 +7,8 @@ from Dependecies import Init_Session
 Sector_Router = APIRouter(prefix="/sector", tags=["Sector"])
 
 @Sector_Router.post("/post_sector")
-async def post_sector(scheme: Sector_Scheme, session: Session = Depends(Init_Session)):
-    new_sector = post_sector(name_sector=scheme.sector, tag_sector=scheme.tag, session=session)
+async def post_sectors(scheme: Sector_Scheme, session: Session = Depends(Init_Session)):
+    new_sector = await post_sector(name_sector=scheme.sector, tag_sector=scheme.tag, session=session)
     return {"message": "Sector added successfully",
             "Sector": new_sector}
 

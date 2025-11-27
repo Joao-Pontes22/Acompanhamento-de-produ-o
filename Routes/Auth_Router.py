@@ -4,6 +4,7 @@ from Schemes.Responses.Response_Auth import Response_Auth
 from Schemes.Auth_Schemes import Auth_Scheme, Auth_Scheme_Update
 from Services.Auth_Services import post_employer, get_all_employers, get_employer_id
 from Dependecies import Init_Session
+from Services.Sector_Service import get_sectors
 Auth_Router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @Auth_Router.post("/Create_User")
