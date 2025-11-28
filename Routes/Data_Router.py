@@ -1,50 +1,52 @@
 from fastapi import APIRouter, Depends, HTTPException
 from Dependecies import Init_Session
 from sqlalchemy.orm import Session
-from Schemes.Data_Schemes import Components_Scheme, Parts_Scheme
+from Schemes.Data_Schemes import Components_Scheme, Parts_Scheme, Components_Scheme_Update, Clients_Scheme, Clients_Update_Scheme, parts_Update_Scheme
 from Models.Models import Components, Parts
+from Services.Data_Services import add_clients, add_components, add_parts, get_clients, get_components, update_clients, update_components, update_parts, get_parts
+
 
 Data_Router = APIRouter(prefix="/data", tags=["Data Operations"])
 
 @Data_Router.post("/add_component")
 async def add_component(scheme: Components_Scheme,session: Session = Depends(Init_Session)):
-    new_component = Components(
-        part_number=scheme.part_number,
-        description_material=scheme.description_material,
-        supplier_ID=scheme.supplier_ID,
-        cost=scheme.cost
-    )
-    session.add(new_component)
-    session.commit()
-    session.refresh(new_component)
-    return {"message": "Component added successfully", "component": new_component}
-
-@Data_Router.post("/add_parts")
-async def add_parts(schemes: Parts_Scheme, session: Session = Depends(Init_Session)):
-    new_parts = Parts(part_number=schemes.part_number,
-                      description_parts=schemes.description_parts,
-                      clients_ID=schemes.clients_ID,
-                      cost=schemes.cost
-                      )
-    session.add(new_parts)
-    session.commit()
-    return {"message": "Parts added successfully", "parts": new_parts}
+    return await add_components(scheme=scheme, session=session)
 
 @Data_Router.get("/get_components")
-async def get_components(description: str = None , 
+async def get_component(description: str = None , 
                          part_number: str = None, 
                          supplier_ID: int = None, 
                          session: Session = Depends(Init_Session)):
-    components = session.query(Components).all()
-    if description is not None:
-        components = session.query(Components).filter(Components.description_material.ilike(f"%{description}%")).all()
-    if part_number is not None:
-        components = session.query(Components).filter(Components.part_number == part_number).all()
-    if supplier_ID is not None:
-        components = session.query(Components).filter(Components.supplier_ID == supplier_ID).all()
+    return await get_components(description=description, 
+                                part_number=part_number, 
+                                supplier_ID=supplier_ID, 
+                                session=session)
 
-    if  part_number and  supplier_ID and description is None:
-        components = session.query(Components).all()
-    if not components:
-        raise HTTPException(status_code=404, detail="No components found with the given criteria")
-    return components
+@Data_Router.put("/update_component/{id}")
+async def update_component(id: int, scheme: Components_Scheme_Update, session: Session = Depends(Init_Session)):
+    return await update_components(id=id, scheme=scheme, session=session)
+
+
+@Data_Router.post("/add_parts")
+async def add_part(schemes: Parts_Scheme, session: Session = Depends(Init_Session)):
+    return await add_parts(schemes=schemes, session=session)
+    
+@Data_Router.get("/get_parts")
+async def get_part(session: Session = Depends(Init_Session)):
+    return await get_parts(session=session)
+
+@Data_Router.put("/update_part/{id}")
+async def update_part(id: int, scheme: parts_Update_Scheme, session: Session = Depends(Init_Session)):
+     return await update_parts(id=id, scheme=scheme, session=session)
+
+@Data_Router.post("/add_client")
+async def add_client(scheme: Clients_Scheme, session: Session = Depends(Init_Session)):
+    return await add_clients(scheme=scheme, session=session)
+
+@Data_Router.get("/get_clients")
+async def get_client(session: Session = Depends(Init_Session)):
+    return await get_clients(session=session)
+
+@Data_Router.put("/update_client/{id}")
+async def update_client(id: int, scheme: Clients_Update_Scheme, session: Session = Depends(Init_Session)):
+    return await update_clients(id=id, scheme=scheme, session=session)

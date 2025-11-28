@@ -12,11 +12,13 @@ from Routes.Sector_Routes import Sector_Router
 from Routes.Login_Router import Login_Router
 from Routes.Supplier_Router import Supplier_Router
 from Routes.Data_Router import Data_Router
+from Routes.Stock_Router import Stock_Router
 app.include_router(Auth_Router)
 app.include_router(Sector_Router)
 app.include_router(Login_Router)
 app.include_router(Supplier_Router)
 app.include_router(Data_Router)
+app.include_router(Stock_Router)
 
 if __name__ == "__main__":
     import uvicorn

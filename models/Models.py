@@ -238,6 +238,7 @@ class Parts (base):
         self.part_number = part_number
         self.clients_ID = clients_ID
         self.description_parts = description_parts
+        self.cost = cost
 
 # -------------------------------------------------------------------#
 # Tabela de relação de peças com componentes
