@@ -1,6 +1,6 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from Models.Models import Sectors
+from models.Models import Sectors
 from Dependecies import Init_Session
 
 #---------------------// SECTOR OPERATIONS //---------------------#

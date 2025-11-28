@@ -1,6 +1,6 @@
 from fastapi import  Depends
 from sqlalchemy.orm import Session
-from Models.Models import Stock
+from models.Models import Stock
 from Dependecies import Init_Session
 from Schemes.Stock_Schemes import Stock_Scheme_warehouse
 

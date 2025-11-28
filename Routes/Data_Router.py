@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from Schemes.Data_Schemes import Components_Scheme, Parts_Scheme, Components_Scheme_Update, Clients_Scheme, Clients_Update_Scheme, parts_Update_Scheme
-from Models.Models import Components, Parts
+from models.Models import Components, Parts
 from Services.Data_Services import add_clients, add_components, add_parts, get_clients, get_components, update_clients, update_components, update_parts, get_parts
 
 

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
 from Settings.Settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from Dependecies import Init_Session
-from Models.Models import Employers
+from models.Models import Employers
 from Schemes.Auth_Schemes import Auth_Scheme
 from datetime import datetime, timedelta, timezone
 from Services.Sector_Service import get_sectors

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from Dependecies import Init_Session, Verify_Token
 from sqlalchemy.orm import Session
-from Models.Models import Suppliers, Employers
+from models.Models import Suppliers, Employers
 from Schemes.Supplier_Schemes import Suppliers_Scheme
 
 Supplier_Router = APIRouter(prefix="/supplier", tags=["Supplier Operations"], dependencies=[Depends(Verify_Token)])

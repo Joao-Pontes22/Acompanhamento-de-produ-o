@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from Models.Models import Stock
+from models.Models import Stock
 from Dependecies import Init_Session
 from Services.Stock_Services import add_stock
 from Schemes.Stock_Schemes import Stock_Scheme_warehouse

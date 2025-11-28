@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
 from Dependecies import Init_Session
 from Schemes.Data_Schemes import Components_Scheme, Parts_Scheme, Components_Scheme_Update, Clients_Scheme, Clients_Update_Scheme, parts_Update_Scheme
-from Models.Models import Clients, Components, Parts
+from models.Models import Clients, Components, Parts
 
 async def add_components(scheme: Components_Scheme,session: Session = Depends(Init_Session)):
     new_component = Components(
