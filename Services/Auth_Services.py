@@ -1,4 +1,4 @@
-import jwt
+from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
