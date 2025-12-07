@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException
 from Dependecies import Init_Session
 from Schemes.Data_Schemes import Components_Scheme, Parts_Scheme, Components_Scheme_Update, Clients_Scheme, Clients_Update_Scheme, parts_Update_Scheme
-from models.Models import Clients, Components, Parts
+from models.Models import Clients, Components, Parts, componentsAndparts
 
 async def add_components(scheme: Components_Scheme,session: Session = Depends(Init_Session)):
     new_component = Components(
@@ -11,7 +11,13 @@ async def add_components(scheme: Components_Scheme,session: Session = Depends(In
         supplier_ID=scheme.supplier_ID,
         cost=scheme.cost
     )
+    new_component2 = componentsAndparts(part_number=scheme.part_number.upper(),
+                                        description_material=scheme.description_material.upper(),
+                                        category="COMPONENT",
+                                        cost=scheme.cost
+                                        )
     session.add(new_component)
+    session.add(new_component2)
     session.commit()
     session.refresh(new_component)
     return {"message": "Component added successfully", "component": new_component}
@@ -22,7 +28,13 @@ async def add_parts(schemes: Parts_Scheme, session: Session = Depends(Init_Sessi
                       clients_ID=schemes.clients_ID,
                       cost=schemes.cost
                       )
+    new_parts2 = componentsAndparts(part_number=schemes.part_number.upper(),
+                                    description_material=schemes.description_parts.upper(),
+                                    category="PART",
+                                    cost=schemes.cost
+                                    )
     session.add(new_parts)
+    session.add(new_parts2)
     session.commit()
     return {"message": "Parts added successfully", "parts": new_parts}
 

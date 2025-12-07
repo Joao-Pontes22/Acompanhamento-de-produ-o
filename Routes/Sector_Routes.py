@@ -10,7 +10,9 @@ Sector_Router = APIRouter(prefix="/sector", tags=["Sector"])
 async def post_sectors(scheme: Sector_Scheme, session: Session = Depends(Init_Session)):
     new_sector = await post_sector(name_sector=scheme.sector, tag_sector=scheme.tag, session=session)
     return {"message": "Sector added successfully",
-            "Sector": new_sector}
+            "Sector": new_sector.sector,
+            "Tag": new_sector.tag
+            }
 
 @Sector_Router.get("/get_sectors")
 async def get_all_sectors(session: Session = Depends(Init_Session)):

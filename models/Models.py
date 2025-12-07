@@ -140,7 +140,7 @@ class Stock (base):
     __tablename__="Stock"
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     sector_ID = Column("sector_ID", Integer, ForeignKey("Sectors.ID"))
-    part_number = Column("part_number", String)
+    part_number = Column("part_number", String, ForeignKey("componentsAndparts.part_number"))
     warehouse_batch = Column("warehouse_batch", String)
     machining_batch = Column("machining_batch", String)
     machining_date = Column("machining_date", Date)
@@ -152,6 +152,7 @@ class Stock (base):
 
     sector = relationship("Sectors", back_populates="stock")
     suppliers = relationship("Suppliers", back_populates="stock")
+    componentsAndparts = relationship("componentsAndparts", back_populates="stock")
     def __init__(self, sector_ID, part_number,
                  warehouse_batch, machining_batch,
                  machining_date, qnty,
@@ -205,6 +206,7 @@ class Components (base):
                             back_populates="rel_component")
     relationpartsxcomponents = relationship("RelationPartsxComponents",
                                              back_populates="components")
+
     def __init__(self, part_number,
                 description_material,supplier_ID, cost):
         
@@ -249,7 +251,6 @@ class RelationPartsxComponents (base):
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     part_ID = Column("part_ID", Integer, ForeignKey("Parts.ID"))
     components_ID = Column("components_ID", Integer, ForeignKey("Components.ID"))
-    comp_qnty = Column("comp_qnty", Integer)
 
     components = relationship("Components", 
                               back_populates="relationpartsxcomponents"
@@ -257,18 +258,25 @@ class RelationPartsxComponents (base):
     part = relationship("Parts",
                         back_populates="components_rel"
                         )
+    def __init__(self, part_ID, components_ID):
+        self.part_ID = part_ID
+        self.components_ID = components_ID
 
-class componentsAndparts:
+class componentsAndparts (base):
     __tablename__="componentsAndparts"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     part_number = Column("part_number", String)
     description = Column("description", String)
     category = Column("category", String)
-
-    def __init__(self, part_number, description, category):
+    stock = relationship("Stock", back_populates="componentsAndparts")
+    cost = Column("cost", Float)
+    def __init__(self, part_number, description, category, cost):
         self.part_number = part_number
         self.description = description
-        self.category = category    
+        self.category = category 
+
+
+
 
 # -------------------------------------------------------------------#
 # Tabela de fornecedores
