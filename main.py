@@ -7,19 +7,23 @@ async def Root():
     return "Rota principal"
 
 
-from Routes.Auth_Router import Auth_Router
-from Routes.Sector_Routes import Sector_Router
-from Routes.Login_Router import Login_Router
-from Routes.Supplier_Router import Supplier_Router
-from Routes.Data_Router import Data_Router
-from Routes.Stock_Router import Stock_Router
-app.include_router(Auth_Router)
+from app.Routes.Employer_Router import Employer_Router
+from app.Routes.Sector_Routes import Sector_Router
+from app.Routes.Login_Router import Login_Router
+from app.Routes.Supplier_Router import Supplier_Router
+from app.Routes.Clients_Router import Client_Router
+from app.Routes.Stock_Router import Stock_Router
+from app.Routes.Machine_Router import Machine_Router
+from app.Routes.Components_Router import Components_Router
+app.include_router(Employer_Router)
 app.include_router(Sector_Router)
 app.include_router(Login_Router)
 app.include_router(Supplier_Router)
-app.include_router(Data_Router)
+app.include_router(Client_Router)
 app.include_router(Stock_Router)
+app.include_router(Machine_Router)
+app.include_router(Components_Router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

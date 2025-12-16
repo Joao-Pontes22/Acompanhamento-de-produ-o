@@ -1,0 +1,62 @@
+from app.models.Models import Clients, Parts
+from sqlalchemy.orm import Session
+from app.core.Dependecies import Init_Session
+from fastapi import HTTPException, Depends
+from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
+from app.domain.Entitys.Clients_entitys import clients_entitys, update_clients_infos_entitys
+from app.repositories.Clients_repositorie import Clients_repositorie
+
+class Clients_Services:
+    def __init__(self, repo:Clients_repositorie):
+        self.repo  = repo
+
+    
+    def service_create_clients(self, scheme:Clients_Scheme):
+        formated_infos = clients_entitys(name=scheme.name,
+                                         contact=scheme.contact,
+                                         email=scheme.email,
+                                         phone=scheme.phone)
+        client = self.repo.repo_find_clients_by_name(name=formated_infos.name)
+        if client:
+            raise HTTPException(status_code=401, detail="Client already exist")
+        new_client = self.repo.repo_create_client(scheme=formated_infos)
+        return new_client
+    
+    def service_get_all_clients(self):
+        clients = self.repo.repo_find_all_clients()
+        return clients
+    
+    def service_get_by_id(self, ID):
+        client = self.repo.repo_find_clients_by_id(id=ID)
+        return client
+    
+    def update_client_info(self,ID:int, scheme:Clients_Update_Scheme):
+        client = self.repo.repo_find_clients_by_id(id=ID)
+        if not client:
+            raise HTTPException(status_code=404, detail="Client not found")
+        
+        validated = update_clients_infos_entitys(name=scheme.name,
+                                                 contact=scheme.contact,
+                                                 email=scheme.email,
+                                                 phone=scheme.phone)
+        if scheme.name is not None:
+            client.name = validated.name
+
+        if scheme.contact is not None:
+            client.contact = validated.contact
+
+        if scheme.email is not None:
+            client.email = validated.email
+
+        if scheme.phone is not None:
+            client.phone = validated.phone
+
+        updated_client = self.repo.repo_update_client(client=client)
+        return updated_client
+    
+    def service_delete_client(self,ID:int):
+        Client = self.repo.repo_find_clients_by_id(id=ID)
+        if not Client:
+            raise HTTPException(status_code=401, detail="Client not found")
+        delete = self.repo.repo_delete_client(client=Client)
+        return delete
