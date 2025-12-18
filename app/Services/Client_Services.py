@@ -1,4 +1,4 @@
-from app.models.Models import Clients, Parts
+from app.models.Models import Clients
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 from fastapi import HTTPException, Depends

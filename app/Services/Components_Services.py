@@ -3,6 +3,8 @@ from app.repositories.Components_repositorie import Components_Repositorie
 from app.repositories.Suppliers_repositorie import Suppliers_Repositorie
 from app.Schemes.Components_Schemes import Components_Scheme, Components_Scheme_Update
 from app.domain.Entitys.Components_entitys import Components_entity
+from app.domain.Entitys.PartsAndComp_entitys import PartsAndComp_entity
+from app.domain.Value_objects.Part_number import value_Part_number
 class Components_Services:
     def __init__(self, components_repo:Components_Repositorie):
         self.repo = components_repo
@@ -27,7 +29,8 @@ class Components_Services:
         return component
     
     def service_get_component_by_part_number(self, part_number):
-        component = self.repo.repo_get_Component_by_part_number(part_number=part_number)
+        Value_part = value_Part_number(part_number=part_number)
+        component = self.repo.repo_get_Component_by_part_number(part_number=Value_part.part_number)
         if not component:
             raise HTTPException(status_code=400, detail="Componnt not found")
         return component
@@ -50,11 +53,11 @@ class Components_Services:
             component.supplier_ID = validated.supplier_ID
         if scheme.part_number is not None:
             component.part_number = validated.part_number
-        if scheme.description_material is not None:
-            component.description_material = validated.description_material
+        if scheme.description is not None:
+            component.description = validated.description_material
         if scheme.cost is not None:
             if scheme.cost <= 0:
-                raise HTTPException (status_code=400, detail="Cost bust be greater than zero")
+                raise HTTPException (status_code=400, detail="Cost must be greater than zero")
             component.cost = validated.cost
         updated_info = self.repo.repo_update_component_info(component=component)
         return updated_info

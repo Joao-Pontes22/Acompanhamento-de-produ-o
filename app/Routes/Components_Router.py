@@ -18,7 +18,7 @@ async def add_component(scheme: Components_Scheme,session: Session = Depends(Ini
     return {"message": "Component created successful",
             "Component": new_component}
 
-@Components_Router.get("/Get_Components")
+@Components_Router.get("/Get_Components", response_model=list[Components_Scheme])
 async def get_components(session:Session=Depends(Init_Session)):
     repo = Components_Repositorie(session=session)
     service = Components_Services(components_repo=repo)

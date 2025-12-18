@@ -3,6 +3,8 @@ from app.Schemes.Machine_Schemes import Machine_Scheme, Update_Machine_Scheme
 from app.domain.Entitys.Machines_entitys import Machine_Entity
 from app.repositories.Machines_repositorie import Machine_Repositorie
 from app.repositories.Sectors_repositorie import Sectors_repositorie
+from app.domain.Value_objects.Machine import value_Name
+
 class Service_Machines:
     def __init__(self,machine_repo:Machine_Repositorie):
         self.machine_repo = machine_repo
@@ -31,7 +33,8 @@ class Service_Machines:
         return machine
     
     def service_get_machine_by_name(self, name:str):
-        machine = self.machine_repo.repo_get_machine_by_name(name=name)
+        Value_machine = value_Name(name=name)
+        machine = self.machine_repo.repo_get_machine_by_name(name=Value_machine.name)
         if not machine:
             raise HTTPException(status_code=400, detail="Machine not exist")
         return machine

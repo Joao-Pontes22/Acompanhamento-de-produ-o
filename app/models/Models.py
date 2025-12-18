@@ -142,7 +142,7 @@ class Stock (base):
     __tablename__="Stock"
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     sector_ID = Column("sector_ID", Integer, ForeignKey("Sectors.ID"))
-    part_number = Column("part_number", String, ForeignKey("componentsAndparts.part_number"))
+    part_number = Column("part_number", String, ForeignKey("components_and_parts.part_number"))
     warehouse_batch = Column("warehouse_batch", String)
     machining_batch = Column("machining_batch", String)
     machining_date = Column("machining_date", Date)
@@ -154,7 +154,7 @@ class Stock (base):
 
     sector = relationship("Sectors", back_populates="stock")
     suppliers = relationship("Suppliers", back_populates="stock")
-    componentsAndparts = relationship("componentsAndparts", back_populates="stock")
+    item = relationship("ComponentsAndParts", back_populates="stock")
     def __init__(self, sector_ID, part_number,
                  warehouse_batch, machining_batch,
                  machining_date, qnty,
@@ -193,56 +193,6 @@ class movimentations (base):
         self.employer_id = employer_id
         self.origin = origin
         self.destination = destination
-# -------------------------------------------------------------------#
-# Tabela de componentes
-# Components table
-class Components (base):
-    __tablename__="Components"
-
-    ID = Column("ID", Integer, primary_key=True, autoincrement=True)
-    part_number = Column("part_number", String)
-    description_material = Column("description_material", String)
-    supplier_ID =  Column("supplier_ID", Integer, ForeignKey("Suppliers.ID"))
-    cost = Column("cost", Float)
-    supplier =relationship("Suppliers", 
-                            back_populates="rel_component")
-    relationpartsxcomponents = relationship("RelationPartsxComponents",
-                                             back_populates="components")
-
-    def __init__(self, part_number,
-                description_material,supplier_ID, cost):
-        
-        self.part_number = part_number
-        self.description_material = description_material
-        self.supplier_ID = supplier_ID
-        self.cost = cost
-
-# -------------------------------------------------------------------#
-# Tabela de peças
-# Parts table
-
-class Parts (base):
-    __tablename__="Parts"
-
-    ID = Column("ID", Integer, primary_key=True, autoincrement=True)
-    part_number = Column("part_number", String)
-    description_parts = Column("description_parts", String)
-    clients_ID = Column("Clients_ID", Integer, ForeignKey("Clients.ID"))
-    cost = Column("cost", Float)
-
-    clients = relationship("Clients", back_populates="rel_parts")
-
-    components_rel = relationship(
-        "RelationPartsxComponents",
-        back_populates="part"
-    )
-
-    def __init__(self, part_number, description_parts, clients_ID, cost):
-        
-        self.part_number = part_number
-        self.clients_ID = clients_ID
-        self.description_parts = description_parts
-        self.cost = cost
 
 # -------------------------------------------------------------------#
 # Tabela de relação de peças com componentes
@@ -251,31 +201,46 @@ class RelationPartsxComponents (base):
     __tablename__="RelationPartsxComponents"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
-    part_ID = Column("part_ID", Integer, ForeignKey("Parts.ID"))
-    components_ID = Column("components_ID", Integer, ForeignKey("Components.ID"))
+    part_ID = Column("part_ID", Integer, ForeignKey("components_and_parts.id"))
+    components_ID = Column("components_ID", Integer, ForeignKey("components_and_parts.id"))
 
-    components = relationship("Components", 
-                              back_populates="relationpartsxcomponents"
+    components = relationship("ComponentsAndParts", 
+                              foreign_keys=[components_ID],
+                              back_populates="parts_rel"
                               )
-    part = relationship("Parts",
-                        back_populates="components_rel"
+    part = relationship("ComponentsAndParts",
+                        foreign_keys=[part_ID],
+                        back_populates="comp_rel"
                         )
     def __init__(self, part_ID, components_ID):
         self.part_ID = part_ID
         self.components_ID = components_ID
+# -------------------------------------------------------------------#
 
-class componentsAndparts (base):
-    __tablename__="componentsAndparts"
-    id = Column("id", Integer, primary_key=True, autoincrement=True)
-    part_number = Column("part_number", String)
-    description = Column("description", String)
-    category = Column("category", String)
-    stock = relationship("Stock", back_populates="componentsAndparts")
-    cost = Column("cost", Float)
-    def __init__(self, part_number, description, category, cost):
+class ComponentsAndParts(base):
+    __tablename__ = "components_and_parts"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    part_number = Column(String, unique=True, nullable=False)
+    description = Column(String)
+    category = Column(String, nullable=False)  
+    client_ID = Column(Integer, ForeignKey("Clients.ID"), nullable=True)
+    supplier_ID = Column(Integer, ForeignKey("Suppliers.ID"), nullable=True)
+    cost = Column(Float)
+
+    # Relacionamentos
+    clients = relationship("Clients", back_populates="items")
+    supplier = relationship("Suppliers", back_populates="items")
+    stock = relationship("Stock", back_populates="item")
+    parts_rel = relationship("RelationPartsxComponents",foreign_keys=[RelationPartsxComponents.part_ID], back_populates="part")
+    comp_rel= relationship("RelationPartsxComponents",foreign_keys=[RelationPartsxComponents.components_ID],back_populates="components")
+    def __init__(self, part_number, description, category, client_ID, supplier_ID,cost):
         self.part_number = part_number
         self.description = description
-        self.category = category 
+        self.category  = category
+        self.client_ID=  client_ID
+        self.supplier_ID = supplier_ID
+        self.cost= cost
 
 
 
@@ -293,7 +258,7 @@ class Suppliers (base):
     phone = Column("phone", String)
     email = Column("email", String)
 
-    rel_component = relationship("Components", back_populates="supplier")
+    items = relationship("ComponentsAndParts", back_populates="supplier")
     stock = relationship("Stock", back_populates="suppliers")
 
     def __init__(self, name, contact, phone, email):
@@ -314,11 +279,10 @@ class Clients (base):
     phone = Column("phone", String)
     email = Column("email", String)
 
-    rel_parts = relationship("Parts",  back_populates="clients")
+    items = relationship("ComponentsAndParts",  back_populates="clients")
     def __init__(self, name, contact, phone, email):
         self.name = name
         self.contact = contact
         self.phone = phone
         self.email = email
 
-create_all = base.metadata.create_all(engine)
