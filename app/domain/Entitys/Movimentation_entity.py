@@ -1,0 +1,43 @@
+
+class Movimentation_entity:
+    def __init__(self, part_number: str, origin: str,
+                 reason: str, movimentation_type: str,
+                 employer_id: int,
+                 qnty: int, date,
+                 destination: str,
+                batch: str = None,
+                 machining_batch: str = None,
+                 assembly_batch: str = None):
+        self.part_number = part_number
+        self.origin = origin
+        self.reason = reason
+        self.movimentation_type = movimentation_type
+        self.employer_id = employer_id
+        self.batch = batch
+        self.machining_batch = machining_batch
+        self.assembly_batch = assembly_batch
+        self.qnty = qnty
+        self.date = date
+        self.destination = destination
+
+
+class MovimentationEntityFiltered:
+    def __init__(self, part_number: str = None, origin: str = None,
+                 batch: str = None,
+                 start_date = None,
+                 end_date = None,
+                 employer_id: int = None,
+                 movimentation_type: str = None,
+                 destination: str = None,
+                 machining_batch: str = None,
+                 assembly_batch: str = None):
+        self.part_number = part_number.upper() if part_number else None
+        self.origin = origin
+        self.batch = batch
+        self.start_date = start_date
+        self.end_date = end_date
+        self.employer_id = employer_id
+        self.movimentation_type = movimentation_type.upper() if movimentation_type else None
+        self.destination = destination
+        self.machining_batch = machining_batch.upper() if machining_batch else None
+        self.assembly_batch = assembly_batch.upper() if assembly_batch else None

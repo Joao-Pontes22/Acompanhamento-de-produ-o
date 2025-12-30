@@ -1,6 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
-import jwt
+from jose import jwt
 from jose import JWTError
 from app.models.Models import engine, Employers
 from fastapi import Depends, HTTPException
@@ -12,6 +12,9 @@ def Init_Session():
      Session = sessionmaker(bind=engine)
      session = Session()
      yield session
+    except Exception:
+       session.rollback()
+       raise
     finally:
      session.close()
      print("Session closed.")

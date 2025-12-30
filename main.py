@@ -16,6 +16,14 @@ from app.Routes.Stock_Router import Stock_Router
 from app.Routes.Machine_Router import Machine_Router
 from app.Routes.Components_Router import Components_Router
 from app.Routes.Parts_Router import Part_Router
+from app.Routes.Stock_Router import Stock_Router
+from app.Routes.Movimentation_Router import Movimentaion_Router
+from app.Routes.RelationMachinedXRaw_Router import RawToMachined_Router
+from app.Routes.RelationPartsxComponents import PartsxComponents_Router
+
+
+app.include_router(RawToMachined_Router)
+app.include_router(Movimentaion_Router)
 app.include_router(Employer_Router)
 app.include_router(Sector_Router)
 app.include_router(Login_Router)
@@ -25,6 +33,8 @@ app.include_router(Stock_Router)
 app.include_router(Machine_Router)
 app.include_router(Components_Router)
 app.include_router(Part_Router)
+app.include_router(Stock_Router)
+app.include_router(PartsxComponents_Router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

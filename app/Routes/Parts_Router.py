@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from app.Schemes.Parts_Schemes import Parts_Scheme, parts_Update_Scheme
+from  app.Schemes.Responses.Responde_Parts import Responde_Parts
 from app.repositories.Parts_repositorie import Parts_Repositorie
 from app.repositories.Clients_repositorie import Clients_repositorie
 from app.Services.Parts_Services import Parts_Services
@@ -18,7 +19,7 @@ async def add_part(schemes: Parts_Scheme, session: Session = Depends(Init_Sessio
     return {"message": "Part created successfuly",
             "PART":new_part}
     
-@Part_Router.get("/get_parts", response_model=list[Parts_Scheme])
+@Part_Router.get("/get_parts", response_model=list[Responde_Parts])
 async def get_part(session: Session = Depends(Init_Session)):
     repo = Parts_Repositorie(session=session)
     service = Parts_Services(parts_repo=repo)

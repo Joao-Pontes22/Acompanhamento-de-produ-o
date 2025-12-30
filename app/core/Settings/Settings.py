@@ -1,4 +1,4 @@
-import jwt
+from jose import jwt
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from dotenv import load_dotenv

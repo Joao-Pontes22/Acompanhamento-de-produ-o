@@ -68,3 +68,8 @@ class Components_Services:
             raise HTTPException(status_code=400, detail="Component not found")
         deleted = self.repo.repo_delete_component(component=component)
         return deleted
+    
+
+    def service_get_component_filteres(self, part_number:str = None, description:str = None, supplier_ID:int = None):
+        components = self.repo.repo_get_component_filteres(part_number=part_number, description=description, supplier_ID=supplier_ID)
+        return components

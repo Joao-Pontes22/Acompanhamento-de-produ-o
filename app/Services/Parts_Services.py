@@ -28,7 +28,9 @@ class Parts_Services:
     
     def service_get_all_Parts(self):
         component = self.repo.repo_get_all_Parts()
-        return component
+        if not component:
+            raise HTTPException(status_code=400, detail="Componnt not found")
+        return component 
     
     def service_get_part_by_part_number(self, part_number):
         value_part = value_Part_number(part_number=part_number)

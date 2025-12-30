@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from app.Schemes.Components_Schemes import Components_Scheme, Components_Scheme_Update
 from app.repositories.Components_repositorie import Components_Repositorie
 from app.Services.Components_Services import Components_Services
+from app.Schemes.Responses.Response_Components import Responde_Components
 from app.repositories.Suppliers_repositorie import Suppliers_Repositorie
-
 
 Components_Router = APIRouter(prefix="/Components", tags=["Components Operations"])
 
@@ -18,7 +18,7 @@ async def add_component(scheme: Components_Scheme,session: Session = Depends(Ini
     return {"message": "Component created successful",
             "Component": new_component}
 
-@Components_Router.get("/Get_Components", response_model=list[Components_Scheme])
+@Components_Router.get("/Get_Components", response_model=list[Responde_Components])
 async def get_components(session:Session=Depends(Init_Session)):
     repo = Components_Repositorie(session=session)
     service = Components_Services(components_repo=repo)
@@ -54,3 +54,11 @@ async def delete_component(id:int, session:Session = Depends(Init_Session)):
     deleted_component = service.service_delete_component(id=id)
     return {"message": "Component deleted successfuly",
             "Component": deleted_component}
+
+
+@Components_Router.get("/get_components_filtered", response_model=list[Responde_Components])
+async def get_components_filtered(part_number:str = None, description:str = None, supplier_ID:int = None, session:Session=Depends(Init_Session)):
+    repo = Components_Repositorie(session=session)
+    service = Components_Services(components_repo=repo)
+    components = service.service_get_component_filteres(part_number=part_number, description=description, supplier_ID=supplier_ID)
+    return components

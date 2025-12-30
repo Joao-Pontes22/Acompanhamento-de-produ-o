@@ -1,0 +1,35 @@
+[2025-12-21T04:22:18.214706] Applying SQL: C:\Users\Joao\Downloads\Acompanhamento-de-produ-o\scripts\generate_variants.sql -> C:\Users\Joao\Downloads\Acompanhamento-de-produ-o\db.db
+ERROR: no such table: origs
+[2025-12-21T04:24:16.549618] Applying variants to: C:\Users\Joao\Downloads\Acompanhamento-de-produ-o\db.db
+Found 26 components
+ERROR: FOREIGN KEY constraint failed
+[2025-12-21T04:25:48.210518] Applying variants to: C:\Users\Joao\Downloads\Acompanhamento-de-produ-o\db.db
+Found 26 components
+Inserted new original for id=1 -> CAR-001-BR-01
+Inserted new original for id=2 -> CAR-002-BR-01
+Inserted new original for id=3 -> TAM-001-BR-01
+Inserted new original for id=4 -> TAM-002-BR-01
+Inserted new original for id=5 -> TAM-003-BR-01
+Inserted new original for id=6 -> EIX-001-BR-01
+Inserted new original for id=7 -> VAL-001-BR-01
+Inserted new original for id=8 -> PIS-001-BR-01
+Inserted new original for id=9 -> PIS-002-BR-01
+Inserted new original for id=10 -> BRA-001-US-001
+Inserted new original for id=11 -> BRA-002-US-001
+Inserted new original for id=12 -> SF-001-BR-01
+Inserted new original for id=13 -> PART-MB-001-BR-01
+Updated 1 rows in Stock from PART-MB-001 to PART-MB-001-BR-01
+Inserted new original for id=14 -> PART-MB-002-BR-01
+Inserted new original for id=15 -> PART-VOL-001-BR-01
+Inserted new original for id=16 -> PART-VOL-002-BR-01
+Inserted new original for id=17 -> PART-SCA-001-BR-01
+Inserted new original for id=18 -> PART-MAN-001-BR-01
+Inserted new original for id=19 -> PART-IVE-001-BR-01
+Inserted new original for id=20 -> PART-PAC-001-BR-01
+Inserted new original for id=21 -> PART-HYU-001-BR-01
+Inserted new original for id=22 -> PART-JAC-001-BR-01
+Inserted new original for id=23 -> PART-SHA-001-BR-01
+Inserted new original for id=24 -> PART-SIN-001-BR-01
+Inserted new original for id=25 -> TESTANDO-BR-01
+Inserted new original for id=26 -> TESTE-BR-01
+COMMIT. Updated originals: 26, Created variants: 760
