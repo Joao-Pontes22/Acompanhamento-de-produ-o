@@ -9,3 +9,15 @@ class HttpException(Exception):
 class NotFoundException(Exception):
     def __init__(self, entity: str):
         super().__init__(f"{entity} not found")
+
+
+class AlreadyExist(Exception):
+    def __init__(self, entity: str):
+        super().__init__(f"{entity} already exist")
+
+class InvalidNameException(Exception):
+    pass
+
+class IncorrectPasswordException(Exception):
+    def __init__(self):
+        super().__init__("Password incorrect")

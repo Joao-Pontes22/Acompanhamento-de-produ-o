@@ -27,12 +27,12 @@ class Machine_Repositorie:
         machines = self.session.query(Machines).filter(Machines.ID == id).first()
         return machines
     
-    def repo_update_machine_info(self, machine:Machine_Repositorie):
+    def repo_update_machine_info(self, machine):
         self.session.commit()
         self.session.refresh(machine)
         return machine
     
-    def repo_delete_machine(self, machine:Machine_Repositorie):
+    def repo_delete_machine(self, machine):
         self.session.delete(machine)
         self.session.commit()
         return machine

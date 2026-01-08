@@ -17,6 +17,7 @@ class Employers (base):
     __tablename__="Employers"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
+    emp_id = Column("emp_id", String, unique=True)
     name = Column("name", String)
     password = Column("password", String)
     sector_ID = Column("sector_ID",Integer, ForeignKey("Sectors.ID"))
@@ -29,10 +30,11 @@ class Employers (base):
     assembly_production = relationship("Assembly_Production", back_populates="assembly_employer")
 # -------------------------------------------------------------------#
     
-    def __init__(self, name, password, sector):
+    def __init__(self, name, password, sector_ID, emp_id):
         self.name = name
         self.password = password
-        self.sector_ID = sector
+        self.sector_ID = sector_ID
+        self.emp_id = emp_id
 # -------------------------------------------------------------------#
 # Tabela de setores
 # Sectors table

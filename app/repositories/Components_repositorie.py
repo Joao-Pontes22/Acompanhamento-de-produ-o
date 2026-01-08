@@ -36,19 +36,21 @@ class Components_Repositorie:
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.description.like("%usinado%"), ComponentsAndParts.part_number == part_number).first()
     
     
-    def repo_update_component_info(self, component:Components_Repositorie):
+    def repo_update_component_info(self, component):
         self.session.commit()
         self.session.refresh(component)
         return component
     
-    def repo_delete_component(self, component:Components_Repositorie):
+    def repo_delete_component(self, component):
         self.session.delete(component)
         self.session.commit()
         return(component)
     
 
-    def repo_get_component_filteres(self, part_number:str = None, description:str = None, supplier_ID:int = None):
+    def repo_get_component_filteres(self, id:int, part_number:str = None, description:str = None, supplier_ID:int = None):
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT")
+        if id:
+            query = query.filter(ComponentsAndParts.id ==id)
         if part_number:
             query = query.filter(ComponentsAndParts.part_number.like(f"%{part_number}%"))
         if description:

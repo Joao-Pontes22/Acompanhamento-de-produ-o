@@ -13,18 +13,16 @@ class employersRepo:
         self.id = id
         return self.session.query(Employers).filter(Employers.ID == id).first()
     
-    def repo_find_by_name(self,name):
-        self.name = name
-        employer = self.session.query(Employers).filter(Employers.name == name).first()
+    def repo_find_by_emp_id(self, emp_id):
+        self.emp_id = emp_id
+        employer = self.session.query(Employers).filter(Employers.emp_id == emp_id).first()
         return employer
     
-    def repo_create_employer(self, name, sector_id, password ):
-        self.name = name
-        self.sector_id = sector_id
-        self.password = password
-        new_employer = Employers(name=self.name,
-                                 password=self.password,
-                                 sector=self.sector_id)
+    def repo_create_employer(self, name, sector_id, password, emp_id):
+        new_employer = Employers(name=name,
+                                 password=password,
+                                 sector_ID=sector_id,
+                                 emp_id=emp_id)
         self.session.add(new_employer)
         self.session.commit()
         return new_employer

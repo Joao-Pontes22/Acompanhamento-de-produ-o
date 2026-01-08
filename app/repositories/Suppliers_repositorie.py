@@ -31,12 +31,12 @@ class Suppliers_Repositorie:
         return supplier
     
 
-    def repo_delete_supplier(self, supplier:Suppliers_Repositorie):
+    def repo_delete_supplier(self, supplier):
         self.session.delete(supplier)
         self.session.commit()
         return supplier
     
-    def repo_update_suppliers_info(self, supplier:Suppliers_Repositorie):
+    def repo_update_suppliers_info(self, supplier):
         self.session.commit()
         self.session.refresh(supplier)
         return supplier

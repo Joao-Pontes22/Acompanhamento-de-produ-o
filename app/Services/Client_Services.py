@@ -5,7 +5,7 @@ from fastapi import HTTPException, Depends
 from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
 from app.domain.Entitys.Clients_entitys import clients_entitys, update_clients_infos_entitys
 from app.repositories.Clients_repositorie import Clients_repositorie
-
+from app.domain.Exceptions import AlreadyExist, NotFoundException
 class Clients_Services:
     def __init__(self, repo:Clients_repositorie):
         self.repo  = repo
@@ -18,22 +18,26 @@ class Clients_Services:
                                          phone=scheme.phone)
         client = self.repo.repo_find_clients_by_name(name=formated_infos.name)
         if client:
-            raise HTTPException(status_code=401, detail="Client already exist")
+            raise AlreadyExist(entity=formated_infos.name)
         new_client = self.repo.repo_create_client(scheme=formated_infos)
         return new_client
     
     def service_get_all_clients(self):
         clients = self.repo.repo_find_all_clients()
+        if not clients:
+            raise NotFoundException(entity="Clients")
         return clients
     
     def service_get_by_id(self, ID):
         client = self.repo.repo_find_clients_by_id(id=ID)
+        if not client:
+            raise NotFoundException(entity="Client")
         return client
     
     def update_client_info(self,ID:int, scheme:Clients_Update_Scheme):
         client = self.repo.repo_find_clients_by_id(id=ID)
         if not client:
-            raise HTTPException(status_code=404, detail="Client not found")
+            raise NotFoundException("Client")
         
         validated = update_clients_infos_entitys(name=scheme.name,
                                                  contact=scheme.contact,
@@ -57,6 +61,6 @@ class Clients_Services:
     def service_delete_client(self,ID:int):
         Client = self.repo.repo_find_clients_by_id(id=ID)
         if not Client:
-            raise HTTPException(status_code=401, detail="Client not found")
+            raise NotFoundException(entity="Client")
         delete = self.repo.repo_delete_client(client=Client)
-        return delete
+        return {"message": "Client deleted successfully"}

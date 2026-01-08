@@ -5,17 +5,19 @@ from app.core.Settings.Settings import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, S
 from jose import jwt
 from fastapi.security import OAuth2PasswordRequestForm
 from app.repositories.Employers_repositories import employersRepo
+from app.domain.Exceptions import NotFoundException, AlreadyExist, IncorrectPasswordException
+
 class login_service:
     def __init__(self, repo:employersRepo):
         self.repo = repo
 
     def service_login_in(self, scheme:Login_Scheme):
-        employer = self.repo.repo_find_by_id(id=scheme.id)
+        employer = self.repo.repo_find_by_emp_id(emp_id=scheme.emp_id)
         if not employer:
-            raise HTTPException(status_code=404, detail="Employer not foud")
+            raise NotFoundException("Employer")
         if not bcrypt_context.verify(scheme.password, employer.password):
-            raise HTTPException(status_code=400, detail="Password incorrect")
-        class_acces_token  = create_token(employerID=scheme.id)
+            raise IncorrectPasswordException()
+        class_acces_token  = create_token(employerID=employer.ID)
         acces_token = class_acces_token.create_access_token()
         refresh_token= class_acces_token.create_refresh_token()
         return {"access_token": acces_token,
@@ -23,11 +25,11 @@ class login_service:
                 "token_type": "bearer"}
     
     def service_login_form_in(self, scheme:OAuth2PasswordRequestForm):
-        employer = self.repo.repo_find_by_name(name=scheme.username)
+        employer = self.repo.repo_find_by_emp_id(emp_id=scheme.username)
         if not employer:
-            raise HTTPException(status_code=404, detail="Employer not foud")
+            raise NotFoundException("Employer")
         if not bcrypt_context.verify(scheme.password, employer.password):
-            raise HTTPException(status_code=400, detail="Password incorrect")
+            raise IncorrectPasswordException()
         class_acces_token  = create_token(employerID=employer.ID)
         access_token = class_acces_token.create_access_token()
         return {"access_token": access_token,

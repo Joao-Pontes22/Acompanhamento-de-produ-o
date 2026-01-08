@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 
@@ -7,15 +7,11 @@ class Suppliers_Scheme(BaseModel):
     contact : str
     email : str
     phone : str
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Suppliers_Scheme_Update(BaseModel):
     name : str = None
     contact : str = None
     email : str = None
     phone : str = None
-    
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

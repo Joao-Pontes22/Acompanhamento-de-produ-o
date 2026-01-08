@@ -5,7 +5,7 @@ from jose import JWTError
 from app.models.Models import engine, Employers
 from fastapi import Depends, HTTPException
 from app.core.Settings.Settings import oauth2_scheme, SECRET_KEY, ALGORITHM
-
+from app.domain.Exceptions import NotFoundException
 def Init_Session():
     Session = None
     try:
@@ -27,6 +27,6 @@ def Verify_Token (token = Depends(oauth2_scheme), session:Session = Depends(Init
         raise HTTPException (status_code=401, detail="Invalid token")
     employer = session.query(Employers).filter(Employers.ID == employer_id).first()
     if not employer:
-        raise HTTPException(status_code=400, detail="Employer not found")
+        raise HTTPException(status_code=404, detail="Employer not found")
     return(employer_id)
   

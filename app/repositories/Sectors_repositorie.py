@@ -28,12 +28,12 @@ class Sectors_repositorie:
         sector =  self.session.query(Sectors).filter(Sectors.ID == id).first()
         return sector
     
-    def repo_update_sector_info(self, sector:Sectors_repositorie):
+    def repo_update_sector_info(self, sector):
         self.session.commit()
         self.session.refresh(sector)
         return sector
 
-    def repo_delete_sector(self, sector:Sectors_repositorie):
+    def repo_delete_sector(self, sector):
         self.session.delete(sector)
         self.session.commit()
         return sector

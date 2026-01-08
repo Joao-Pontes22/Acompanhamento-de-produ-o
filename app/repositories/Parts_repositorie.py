@@ -11,7 +11,7 @@ class Parts_Repositorie:
                                           description=scheme.description_parts,
                                           category="PART",
                                           cost=scheme.cost,
-                                          client_ID=scheme.clients_ID,
+                                          client_ID=scheme.client_ID,
                                           supplier_ID=None)
         self.session.add(part)
         self.session.commit()
@@ -26,12 +26,12 @@ class Parts_Repositorie:
     def repo_get_Parts_by_part_number(self, part_number:str):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.part_number == part_number).first()
 
-    def repo_update_Part_info(self, part:Parts_Repositorie):
+    def repo_update_Part_info(self, part):
         self.session.commit()
         self.session.refresh(part)
         return part
     
-    def repo_delete_part(self, part:Parts_Repositorie):
+    def repo_delete_part(self, part):
         self.session.delete(part)
         self.session.commit()
         return(part)

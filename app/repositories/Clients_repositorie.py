@@ -27,7 +27,7 @@ class Clients_repositorie:
         self.session.commit()
         return new_client
     
-    def repo_update_client(self, client:Clients_repositorie):
+    def repo_update_client(self, client):
         self.session.commit()
         self.session.refresh(client)
         return client

@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Login_Scheme(BaseModel):
-    id: int
+    emp_id: str
     password: str
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

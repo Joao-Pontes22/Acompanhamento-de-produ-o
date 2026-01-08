@@ -70,7 +70,7 @@ class MovimentationRepository:
             self.session.delete(movimentation)
             self.session.commit()
 
-    def update(self, movimentation: MovimentationRepository):
+    def update(self, movimentation):
         self.session.commit()
         self.session.refresh(movimentation)
         return movimentation

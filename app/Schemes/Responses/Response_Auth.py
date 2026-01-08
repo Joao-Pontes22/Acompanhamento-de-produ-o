@@ -1,10 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Response_Auth(BaseModel):
     ID: int
     name: str
-    sector_name: str
-    sector_tag : str
-    
-    class Config:
-        ORM_mode = True
+    sector_ID: int
+    emp_id: str
+    model_config = ConfigDict(from_attributes=True)

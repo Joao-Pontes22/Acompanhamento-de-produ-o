@@ -9,8 +9,8 @@ class RelationMachinedxRaw_repositorie:
 
     def create_relation(self, scheme: RelationMachinedXRaw_Scheme):
         new_relation = RelationMachinedxRaw(
-            raw_part_number=scheme.raw_component_id,
-            machined_part_number=scheme.machined_component_id,
+            raw_ID=scheme.raw_component_id,
+            machined_ID=scheme.machined_component_id,
             qnty=scheme.qnty
         )
         self.session.add(new_relation)

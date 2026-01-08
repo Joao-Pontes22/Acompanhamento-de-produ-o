@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Warehouse_Scehem(BaseModel):
@@ -10,4 +10,4 @@ class Warehouse_Scehem(BaseModel):
     supplier_ID : int
     status : str
     cost : str
-
+    model_config = ConfigDict(from_attributes=True)
