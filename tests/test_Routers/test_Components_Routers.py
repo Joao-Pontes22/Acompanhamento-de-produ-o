@@ -15,7 +15,7 @@ def test_add_components_success(component: TestClient, mock_session):
     payload = {
         "part_number": "car-001-BR",
         "description" : "Carcaça de direção",
-        "supplier_ID" : 1,
+        "supplier" : "Fornecedor Fixo",
         "cost" : 200
     }
 
@@ -32,7 +32,7 @@ def test_get_all_components_success(component: TestClient, mock_session):
         "id": 1,
         "part_number": "CAR-001-BR",
         "description" : "CARCAÇA DE DIREÇÃO",
-        "supplier_ID" : 1,
+        "supplier" : "Fornecedor Fixo",
         "category": "COMPONENT",
         "cost" : 200
     }]
@@ -53,7 +53,7 @@ def test_get_filtered_by_id_components_success(component: TestClient, mock_sessi
         "id": 1,
         "part_number": "CAR-001-BR",
         "description" : "CARCAÇA DE DIREÇÃO",
-        "supplier_ID" : 1,
+        "supplier" : "Fornecedor Fixo",
         "category": "COMPONENT",
         "cost" : 200
     }, 
@@ -61,7 +61,7 @@ def test_get_filtered_by_id_components_success(component: TestClient, mock_sessi
         "id": 2,
         "part_number": "CAR-002-BR",
         "description" : "CARCAÇA DE DIREÇÃO",
-        "supplier_ID" : 2,
+        "supplier" : "Fornecedor Fixo",
         "category": "COMPONENT",
         "cost" : 200
     }]
@@ -115,7 +115,7 @@ def test_get_filtered_by_supplier_id_components_success(component: TestClient, m
         "id": 1,
         "part_number": "CAR-001-BR",
         "description" : "CARCAÇA DE DIREÇÃO",
-        "supplier_ID" : 1,
+        "supplier" : "Fornecedor Fixo",
         "category": "COMPONENT",
         "cost" : 200
     }, 
@@ -123,7 +123,7 @@ def test_get_filtered_by_supplier_id_components_success(component: TestClient, m
         "id": 2,
         "part_number": "CAR-002-BR",
         "description" : "CARCAÇA DE DIREÇÃO",
-        "supplier_ID" : 2,
+        "supplier" : "Fornecedor Fixo 2",
         "category": "COMPONENT",
         "cost" : 200
     }]

@@ -2,23 +2,20 @@ from app.Schemes.Stock_Schemes import Stock_Scheme_Part, Update_Part_Stock_Schem
 from app.Schemes.Stock_Schemes import Stock_Scheme_machined_Coponent, Stock_Scheme_Raw_Coponent
 from  fastapi import HTTPException
 class Stock_Entity_Parts:
-    def __init__(self, scheme: Stock_Scheme_Part, cost:float, client_id:int):
-        self.sector_id = scheme.sector_ID
+    def __init__(self, scheme: Stock_Scheme_Part, cost:float, client:str):
+        self.sector = scheme.sector.upper()
         self.part_number = scheme.part_number.upper()
         self.qnty = scheme.qnty
-        self.status = scheme.status.upper()
-        self.assembly_batch = scheme.assembly_batch
+        self.assembly_batch = scheme.assembly_batch.upper()
         self.assembly_date = scheme.assembly_date
         self.cost = scheme.qnty * cost
-        self.client_id = client_id
+        self.client = client
         self._validate_business_rules()
 
     def _validate_business_rules(self):
         if self.qnty <= 0:
             raise ValueError("Stock quantity must be greater than zero")
 
-        if self.status not in {"ACTIVE", "INACTIVE", "BLOCKED"}:
-            raise HTTPException(status_code=400, detail="Invalid stock status")
 
 class Stock_Entity_machined_Component:
     def __init__(self, scheme:Stock_Scheme_machined_Coponent, cost:float, supplier_id:int):

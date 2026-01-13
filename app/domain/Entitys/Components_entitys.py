@@ -10,5 +10,7 @@ class Components_entity:
             if scheme.cost <=0:
                 raise ValueError("Cost must be greater than zero")
             self.cost = scheme.cost
-        if scheme.supplier_ID is not None:
-            self.supplier_ID = scheme.supplier_ID
+        if scheme.supplier is not None:
+            self.supplier = scheme.supplier.upper()
+        if scheme.component_type is not None:
+            self.component_type = scheme.component_type.upper()

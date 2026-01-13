@@ -6,6 +6,8 @@ from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
 from app.domain.Entitys.Clients_entitys import clients_entitys, update_clients_infos_entitys
 from app.repositories.Clients_repositorie import Clients_repositorie
 from app.domain.Exceptions import AlreadyExist, NotFoundException
+from app.domain.Value_objects.Clients import value_Client
+
 class Clients_Services:
     def __init__(self, repo:Clients_repositorie):
         self.repo  = repo
@@ -28,14 +30,16 @@ class Clients_Services:
             raise NotFoundException(entity="Clients")
         return clients
     
-    def service_get_by_id(self, ID):
-        client = self.repo.repo_find_clients_by_id(id=ID)
+    def service_get_by_name(self, name:str):
+        client_entity = value_Client(client=name)
+        client = self.repo.repo_find_clients_by_name(name=client_entity.name)
         if not client:
             raise NotFoundException(entity="Client")
         return client
     
-    def update_client_info(self,ID:int, scheme:Clients_Update_Scheme):
-        client = self.repo.repo_find_clients_by_id(id=ID)
+    def update_client_info(self,name:str, scheme:Clients_Update_Scheme):
+        client_entity = value_Client(client=name)
+        client = self.repo.repo_find_clients_by_name(name=client_entity.name)
         if not client:
             raise NotFoundException("Client")
         
@@ -58,8 +62,9 @@ class Clients_Services:
         updated_client = self.repo.repo_update_client(client=client)
         return updated_client
     
-    def service_delete_client(self,ID:int):
-        Client = self.repo.repo_find_clients_by_id(id=ID)
+    def service_delete_client(self,name:str):
+        client_entity = value_Client(client=name)
+        Client = self.repo.repo_find_clients_by_name(name=client_entity.name)
         if not Client:
             raise NotFoundException(entity="Client")
         delete = self.repo.repo_delete_client(client=Client)

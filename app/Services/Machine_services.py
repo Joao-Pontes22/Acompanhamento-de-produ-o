@@ -11,10 +11,11 @@ class Service_Machines:
     
 
     def service_create_machine(self, scheme:Machine_Scheme, sectors_repo: Sectors_repositorie):
-        sector = sectors_repo.repo_get_sector_by_id(id=scheme.sector_ID)
+        
         validated = Machine_Entity(machine=scheme.machine,
-                                   sector_ID=scheme.sector_ID,
+                                   sector=scheme.sector,
                                    description_Machine=scheme.description_machine)
+        sector = sectors_repo.repo_get_sector_by_name(name=validated.Sector)
         if not sector:
             raise NotFoundException(entity="Sector")
         # Check if machine already exists
@@ -31,45 +32,43 @@ class Service_Machines:
             raise NotFoundException(entity="Machines")
         return machines
     
-    def service_get_machine_by_id(self, id:int):
-        machine = self.machine_repo.repo_get_machine_by_id(id=id)
+    def service_get_machine_filtred(self, id:int = None, machine:str = None):
+        machine_value = value_Name(name=machine) if machine else None
+        machine = self.machine_repo.get_machine_filtred(id=id, machine=machine_value.name if machine_value else None)
         if not machine:
             raise NotFoundException(entity="Machine")
         return machine
     
-    def service_get_machine_by_name(self, name:str):
-        Value_machine = value_Name(name=name)
-        machine = self.machine_repo.repo_get_machine_by_name(name=Value_machine.name)
-        if not machine:
-            raise NotFoundException(entity="Machine")
-        return machine
 
-    def service_delete_machine(self, id:int):
-        machine = self.machine_repo.repo_get_machine_by_id(id=id)
+    def service_delete_machine(self, machine:str):
+        machine_value = value_Name(name=machine)
+        machine = self.machine_repo.get_machine_filtred_first(machine=machine_value.name)
         if not machine:
             raise NotFoundException(entity="Machine")
         delete = self.machine_repo.repo_delete_machine(machine=machine)
         return delete
     
-    def service_update_machine_info(self,id:int, scheme:Update_Machine_Scheme, sectors_repo:Sectors_repositorie):
-        sector = sectors_repo.repo_get_sector_by_id(id=scheme.sector_ID)
-        machine = self.machine_repo.repo_get_machine_by_id(id=id)
-        validated = Machine_Entity(machine=scheme.machine,
-                                   sector_ID=scheme.sector_ID,
-                                   description_Machine=scheme.description_machine)
+    def service_update_machine_info(self,machine:str, scheme:Update_Machine_Scheme, sectors_repo:Sectors_repositorie):
+        machine_entity = Machine_Entity(
+            machine=scheme.machine,
+            sector=scheme.sector,
+            description_Machine=scheme.description_machine
+        )
+        if scheme.sector is not None:
+            sector = sectors_repo.repo_get_sector_by_name(name=machine_entity.Sector)
+            if not sector:
+                raise NotFoundException(entity="Sector")
+        machine = self.machine_repo.get_machine_filtred_first(machine=machine)
         if not machine:
             raise NotFoundException(entity="Machine")
-        if not sector:
-            raise NotFoundException(entity="Sector")
-        
         if scheme.machine is not None:
-            machine.machine = validated.Machine
+            machine.machine = machine_entity.Machine
         
         if scheme.description_machine is not None:
-            machine.description_machine = validated.Description_Machine
-        
-        if scheme.sector_ID is not None:
-            machine.sector_ID = validated.Sector_ID
+            machine.description_machine = machine_entity.Description_Machine
+
+        if scheme.sector is not None:
+            machine.sector_name = machine_entity.Sector
         
         updated = self.machine_repo.repo_update_machine_info(machine=machine)
         return updated

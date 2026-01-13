@@ -3,10 +3,9 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class Stock_Scheme_Part(BaseModel):
-    sector_ID: int
+    sector: str
     part_number: str
     qnty: int
-    status: str
     assembly_batch:str
     assembly_date:date
     reason:str
@@ -14,11 +13,10 @@ class Stock_Scheme_Part(BaseModel):
 
 
 class Stock_Scheme_Raw_Coponent(BaseModel):
-    sector_ID: int
+    sector: str
     part_number: str
     qnty: int
     batch : str
-    status: str
     entry_date : date
     reason:str
     model_config = ConfigDict(from_attributes=True)
@@ -29,7 +27,6 @@ class Stock_Scheme_machined_Coponent(BaseModel):
     machining_batch : str
     machining_date : date
     qnty : int
-    status : str
     reason:str
     model_config = ConfigDict(from_attributes=True)
 
@@ -37,7 +34,6 @@ class Stock_Scheme_models(BaseModel):
     sector_ID: int
     part_number: str
     qnty: int
-    status: str
     cost: float
 
     batch: str | None = None

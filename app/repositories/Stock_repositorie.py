@@ -29,7 +29,7 @@ class Stock_repositorie:
     
 
     def create_Part_stock(self,scheme: Stock_Entity_Parts):
-        new_stock = Stock(sector_ID=scheme.sector_id,
+        new_stock = Stock(sector_name=scheme.sector,
                           part_number=scheme.part_number,
                           batch=None,
                           machining_batch=None,
@@ -39,9 +39,9 @@ class Stock_repositorie:
                           qnty=scheme.qnty,
                           entry_date=None, 
                           supplier_ID=None, 
-                          status=scheme.status, 
+                          status="ACTIVE", 
                           cost=scheme.cost,
-                          client_ID=scheme.client_id
+                          client_name=scheme.client
                           )
         self.session.add(new_stock)
         self.session.commit()
@@ -89,7 +89,7 @@ class Stock_repositorie:
         stock = self.session.query(Stock).all()
         return stock
     
-    def get_specify_stock(self, sector_id: int = None,
+    def get_specify_stock(self, sector: str = None,
                           part_number: str = None,
                           status: str = None,
                           batch: str = None,
@@ -97,8 +97,8 @@ class Stock_repositorie:
                             assembly_batch: str = None
                           ):
         query = self.session.query(Stock)
-        if sector_id is not None:
-            query = query.filter(Stock.sector_ID == sector_id)
+        if sector is not None:
+            query = query.filter(Stock.sector_name == sector)
         
         if part_number is not None:
             query = query.filter(Stock.part_number == part_number)

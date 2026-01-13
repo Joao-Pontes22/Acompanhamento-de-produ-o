@@ -10,12 +10,12 @@ from app.repositories.Sectors_repositorie import Sectors_repositorie
 Employer_Router = APIRouter(prefix="/Employers", tags=["Employers Operation"])
 
 @Employer_Router.post("/Create_Employer")
-async def Create_Employer(Auth_Data: Employers_Scheme,session:Session = Depends(Init_Session)):
+async def Create_Employer(scheme: Employers_Scheme,session:Session = Depends(Init_Session)):
     repo = employersRepo(session=session)
     sectors_repo = Sectors_repositorie(session=session)
     service = Emp_services(repo=repo)
     try:
-        employer = service.post_employer(Auth_Data=Auth_Data, sectors_repo=sectors_repo)
+        employer = service.post_employer(scheme=scheme, sectors_repo=sectors_repo)
         return {"message": "Employer created successful"}
     except AlreadyExist as e:
         raise HTTPException(status_code=409, detail=str(e))
@@ -45,22 +45,13 @@ async def get_emploer_by_emp_id(emp_id:str, session:Session = Depends(Init_Sessi
 
 
 
-@Employer_Router.delete("/Delete_employer/{id}")
-async def delete_employer (id:int, session:Session=Depends(Init_Session)):
+@Employer_Router.delete("/Delete_employer/{emp_id}")
+async def delete_employer (emp_id:str, session:Session=Depends(Init_Session)):
     repo = employersRepo(session=session)
     service = Emp_services(repo=repo)
     try:
-        delete = service.delete_employer(ID=id)
+        delete = service.delete_employer(emp_id=emp_id)
         return {"message": "Employer deleted successfuly"}
     except NotFoundException as e:
         raise HTTPException(status_code=400, detail=str(e))
     
-@Employer_Router.get("/Get_employer_by_id/{id}", response_model=Response_Auth)
-async def get_by_id(id:int, session:Session=Depends(Init_Session)):
-    repo = employersRepo(session=session)
-    service = Emp_services(repo=repo)
-    try:
-        employer = service.service_get_employer_by_id(employer_id=id)
-        return employer
-    except NotFoundException as e:
-        raise HTTPException(status_code=400, detail=str(e))

@@ -33,34 +33,34 @@ async def get_all_clients(session:Session=Depends(Init_Session)):
         raise HTTPException(status_code=404, detail=str(e))
     return clients
 
-@Client_Router.get("/Get_by_ID/{id}")
-async def get_by_id(id:int, session:Session=Depends(Init_Session)):
+@Client_Router.get("/Get_by_name/{client}", response_model=Response_clients_scheme)
+async def get_by_name(client:str, session:Session=Depends(Init_Session)):
     repo = Clients_repositorie(session=session)
     service= Clients_Services(repo=repo)
     try:
-        client = service.service_get_by_id(ID=id)
+        client = service.service_get_by_name(name=client)
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     return client
 
-@Client_Router.patch("/update_client_by_id/{id}", response_model=Response_clients_scheme)
-async def update_by_id(id:int, scheme:Clients_Update_Scheme, session:Session = Depends(Init_Session)):
+@Client_Router.patch("/update_client_by_name/{client}", response_model=Response_clients_scheme)
+async def update_by_name(client:str, scheme:Clients_Update_Scheme, session:Session = Depends(Init_Session)):
     repo = Clients_repositorie(session=session)
     service = Clients_Services(repo=repo)
     try:
-        new_client = service.update_client_info(ID=id, scheme=scheme)
+        new_client = service.update_client_info(name=client, scheme=scheme)
     except InvalidNameException as e:
         raise HTTPException(status_code=400, detail=str(e))
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     return new_client
 
-@Client_Router.delete("/Delete_client/{id}")
-async def delete_client(id:int, session:Session=Depends(Init_Session)):
+@Client_Router.delete("/Delete_client/{client}")
+async def delete_client(client:str, session:Session=Depends(Init_Session)):
     repo = Clients_repositorie(session=session)
     service = Clients_Services(repo=repo)
     try:
-        client = service.service_delete_client(ID=id)
+        client = service.service_delete_client(name=client)
         return {"message": "Client deleted successfuly",
                 "Client":client}
     except NotFoundException as e:

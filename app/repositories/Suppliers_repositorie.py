@@ -27,7 +27,7 @@ class Suppliers_Repositorie:
         return supplier
     
     def repo_get_supplier_by_name(self, name:str):
-        supplier = self.session.query(Suppliers).filter(Suppliers.ID == name).first()
+        supplier = self.session.query(Suppliers).filter(Suppliers.name == name).first()
         return supplier
     
 

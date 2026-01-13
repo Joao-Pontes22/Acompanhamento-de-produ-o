@@ -37,34 +37,34 @@ async def get_components(session:Session=Depends(Init_Session)):
         raise HTTPException(status_code=400, detail=str(e))
 
 @Components_Router.get("/get_components_filtered", response_model=list[Responde_Components])
-async def get_components_filtered(id:int = None,part_number:str = None, description:str = None, supplier_ID:int = None, session:Session=Depends(Init_Session)):
+async def get_components_filtered(id:int = None,part_number:str = None, description:str = None, supplier:str = None, component_type:str = None, session:Session=Depends(Init_Session)):
     repo = Components_Repositorie(session=session)
     service = Components_Services(components_repo=repo)
     try:
-        components = service.service_get_component_filteres(id=id,part_number=part_number, description=description, supplier_ID=supplier_ID)
+        components = service.service_get_component_filteres(id=id,part_number=part_number, description=description, supplier=supplier, component_type=component_type)
         return components
     except NotFoundException as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@Components_Router.patch("/update_component_info/{id}", response_model=Responde_Components)
-async def update_component(id:int, scheme:Components_Scheme_Update, session:Session=Depends(Init_Session)):
+@Components_Router.patch("/update_component_info/{part_number}", response_model=Responde_Components)
+async def update_component(part_number:str, scheme:Components_Scheme_Update, session:Session=Depends(Init_Session)):
     repo = Components_Repositorie(session=session)
     supllier_repo = Suppliers_Repositorie(session=session)
     service = Components_Services(components_repo=repo)
     try:
-        updated_component = service.service_update_component_info(id=id, scheme=scheme, supplier_repo=supllier_repo)
+        updated_component = service.service_update_component_info(part_number=part_number.upper(), scheme=scheme, supplier_repo=supllier_repo)
         return updated_component
     except NotFoundException as e:
         raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:
         raise HTTPException(status_code=409, detail=str(e))
 
-@Components_Router.delete("/Delete_component/{id}")
-async def delete_component(id:int, session:Session = Depends(Init_Session)):
+@Components_Router.delete("/Delete_component/{part_number}")
+async def delete_component(part_number:str, session:Session = Depends(Init_Session)):
     repo = Components_Repositorie(session=session)
     service = Components_Services(components_repo=repo)
     try:
-        deleted_component = service.service_delete_component(id=id)
+        deleted_component = service.service_delete_component(part_number=part_number.upper())
         return {"message": "Component deleted successfuly"}
     except NotFoundException as e:
         raise HTTPException(status_code=400, detail=str(e))

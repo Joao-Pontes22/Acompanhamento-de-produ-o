@@ -1,13 +1,13 @@
 from app.models.Models import Sectors
 from app.Schemes.Sector_Schemes import Sector_Scheme, Sector_Scheme_Update
-
+from app.domain.Entitys.Sectors_entitys import Sector_entitys
 
 class Sectors_repositorie:
     def __init__(self, session):
         self.session = session
     
 
-    def repo_create_sector(self, Scheme: Sector_Scheme):
+    def repo_create_sector(self, Scheme: Sector_entitys):
         new_sector = Sectors(sector=Scheme.sector,
                              tag=Scheme.tag
                              )
@@ -22,6 +22,10 @@ class Sectors_repositorie:
     
     def repo_get_sector_by_name(self, name:str):
         sector =  self.session.query(Sectors).filter(Sectors.sector == name).first()
+        return sector
+    
+    def repo_get_sector_by_tag(self, tag:str):
+        sector =  self.session.query(Sectors).filter(Sectors.tag == tag).first()
         return sector
     
     def repo_get_sector_by_id(self, id:int):

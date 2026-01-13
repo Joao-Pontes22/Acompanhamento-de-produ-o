@@ -1,128 +1,62 @@
 from app.Schemes.Stock_Schemes import Stock_Scheme_Part,Stock_Transfer_Scheme, Stock_Scheme_Raw_Coponent,Stock_Scheme_models, Stock_Scheme_machined_Coponent, Update_Raw_Stock_Scheme, Update_Part_Stock_Scheme, Update_Machined_Stock_Scheme
 from app.domain.Entitys.Stock_entitys import Stock_Entity_Parts, Stock_Entity_Raw_Component, Stock_Entity_machined_Component, Updated_Part_Stock_Entity, Update_Machined_Stock_Scheme, Update_Raw_Stock_Scheme
 from app.domain.Exceptions import NotFoundException
-from app.repositories.RelationPartsxComponents_repositorie import RelationPartsxComponents_repositorie
 from app.repositories.Movimentation_repositorie import MovimentationRepository
 from app.repositories.Sectors_repositorie import  Sectors_repositorie
-from app.repositories.Components_repositorie import Components_Repositorie
-from app.repositories.Parts_repositorie import Parts_Repositorie
+from app.repositories.PartAndComp_repositorie import PartsAndComp_Repositorie
 from app.repositories.Stock_repositorie import Stock_repositorie
 from app.domain.Entitys.Movimentation_entity import Movimentation_entity
-from app.repositories.RelationMachinedxRaw_repositorie import RelationMachinedxRaw_repositorie
+from app.repositories.Relation_repositorie import Relation_repositorie
 from app.domain.Entitys.Transfer_entitys import Transfer_entitys
 from datetime import datetime
-
+from app.domain.Value_objects.Part_number import value_Part_number
 class Stock_Services:
     def __init__(self, repo:Stock_repositorie, sectors_repo: Sectors_repositorie = None,
                  movimentation_repo: MovimentationRepository = None, 
-                 parts_repo: Parts_Repositorie = None,
-                 relation_Partsxcomp_repo: RelationPartsxComponents_repositorie = None,
-                 relation_MachinedxRaw_repo: RelationMachinedxRaw_repositorie = None,
-                 components_repo: Components_Repositorie= None):
+                 partsAndComp_repo: PartsAndComp_Repositorie = None,
+                 relation_repo: Relation_repositorie = None,):
         self.repo = repo
         self.sectors_repo = sectors_repo
-        self.parts_repo = parts_repo
-        self.relation_Partsxcomp_repo = relation_Partsxcomp_repo
+        self.partsAndComp_repo = partsAndComp_repo
+        self.relation_repo = relation_repo
         self.movimentation_repo = movimentation_repo
-        self.components_repo = components_repo
-        self.relation_MachinedxRaw_repo = relation_MachinedxRaw_repo
 
-    def Service_Create_Part_Stock(self, scheme:Stock_Scheme_Part,
+    def Service_Create_Stock(self, scheme:Stock_Scheme_Part,
                             employer_id:int 
                             ):
-        part = self.parts_repo.repo_get_Parts_by_part_number(part_number=scheme.part_number)
-        sector = self.sectors_repo.repo_get_sector_by_id(id=scheme.sector_ID)
-        if not part:
-            raise NotFoundException("Part")
+        value_partnumber = value_Part_number(part_number=scheme.part_number)
+        PartOrComp = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=value_partnumber.part_number)
+        cost = scheme.qnty * PartOrComp.cost
+        entity = Stock_Entity_Parts(scheme=scheme, cost=cost, client=PartOrComp.client_name)
+        sector = self.sectors_repo.repo_get_sector_by_name(name=entity.sector)
+        if not PartOrComp:
+            raise NotFoundException("Product")
         if not sector:
             raise NotFoundException("Sector")
-        relation = self.relation_Partsxcomp_repo.get_relations_by_part_id(part_ID=part.id)
+        relation = self.relation_repo.get_relations_filtred(create_item_part_number=PartOrComp.part_number)
         if not relation:
             raise NotFoundException("Relation")
         with self.repo.transaction_begin():
-            consume = self.consume_machined_stock(relation=relation,
+            consume = self.consume_stock(relation=relation,
                                                     scheme=scheme,
                                                     employer_id=employer_id)
-            cost = scheme.qnty * part.cost
-            entity = Stock_Entity_Parts(scheme=scheme, cost=cost, client_id=part.client_ID)
+            
+            
             movi_entity = Movimentation_entity(part_number=scheme.part_number,
-                                            origin=scheme.sector_ID,
+                                            origin=scheme.sector,
                                             reason=scheme.reason,
                                             movimentation_type="CREATE",
                                             employer_id=employer_id,
                                             batch=None,
                                             qnty=scheme.qnty,
                                             date=datetime.today(),
-                                            destination=scheme.sector_ID,
+                                            destination=scheme.sector,
                                             machining_batch=None,
                                             assembly_batch=scheme.assembly_batch)
             new_stock = self.repo.create_Part_stock(scheme=entity)
             movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity)
         return new_stock
     
-    def Service_Create_Machined_Component_Stock(self, scheme:Stock_Scheme_machined_Coponent,
-                                employer_id: int
-                                ):
-        component = self.components_repo.repo_get_machined_components(part_number=scheme.part_number)
-        sector = self.sectors_repo.repo_get_sector_by_id(id=scheme.sector_ID)
-        if not component:
-            raise NotFoundException("Machined Component")
-        if not sector:
-            raise NotFoundException("Sector")
-        relation = self.relation_MachinedxRaw_repo.get_relation_by_machined_id(machined_ID=component.id)
-        if not relation:
-            raise NotFoundException("Relation")
-        raw_component = self.components_repo.repo_get_Component_by_id(id=relation.raw_ID)
-        if not raw_component:
-            raise NotFoundException("Raw Component")
-        stock_list = self.repo.get_specify_stock(part_number=raw_component.part_number, sector_id=scheme.sector_ID)
-        with self.repo.transaction_begin():
-            self.consume_raw_stock(raw_component=raw_component,
-                                scheme=scheme,
-                                employer_id=employer_id,
-                                stock_list=stock_list)
-            cost = scheme.qnty * component.cost
-            entity = Stock_Entity_machined_Component(scheme=scheme, cost=cost, supplier_id=component.supplier_ID)
-            movi_entity = Movimentation_entity(part_number=scheme.part_number,
-                                            origin=scheme.sector_ID,
-                                            reason=scheme.reason,
-                                            movimentation_type="CREATE",
-                                            employer_id=employer_id,
-                                            batch=None,
-                                            qnty=scheme.qnty,
-                                            date=datetime.today(),
-                                            destination=scheme.sector_ID,
-                                            machining_batch=scheme.machining_batch,
-                                            assembly_batch=None)
-            new_stock = self.repo.create_Machined_Component_stock(scheme=entity)
-            movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity)
-        return new_stock
-    
-    def Service_Create_Raw_Component_Stock(self, scheme:Stock_Scheme_Raw_Coponent,
-                            employer_id: int 
-                            ):
-        component = self.components_repo.repo_get_raw_components(part_number=scheme.part_number)
-        sector = self.sectors_repo.repo_get_sector_by_id(id=scheme.sector_ID)
-        if not component:
-            raise NotFoundException("Raw Component")
-        if not sector:
-            raise NotFoundException("Sector")
-        cost = scheme.qnty * component.cost
-        entity = Stock_Entity_Raw_Component(scheme=scheme, cost=cost, supplier_id=component.supplier_ID)
-        movi_entity = Movimentation_entity(part_number=scheme.part_number,
-                                           origin=scheme.sector_ID,
-                                           reason=scheme.reason,
-                                           movimentation_type="CREATE",
-                                           employer_id=employer_id,
-                                           batch=scheme.batch,
-                                           qnty=scheme.qnty,
-                                           date=datetime.today(),
-                                           destination=scheme.sector_ID,
-                                           machining_batch=None,
-                                           assembly_batch=None)
-        new_stock = self.repo.create_Raw_Component_stock(scheme=entity)
-        movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity)
-        return new_stock
     
 
     def service_get_all_stock(self):
@@ -188,12 +122,12 @@ class Stock_Services:
 
         return {"message": "Stock transferred successfully"}
     
-    def consume_machined_stock(self, relation,
+    def consume_stock(self, relation,
                             scheme:Stock_Scheme_Part,
                             employer_id:int):
-        for components in relation:
-            component = self.components_repo.repo_get_Component_by_id(id=components.components_ID)
-            stock = self.repo.get_specify_stock(part_number=component.part_number, sector_id=scheme.sector_ID)
+        for items in relation:
+            component = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=items.consume_item_Part_number)
+            stock = self.repo.get_specify_stock(part_number=component.part_number, sector=scheme.sector)
             total_qnty = sum([s.qnty for s in stock])
             if total_qnty < scheme.qnty:
                 raise NotFoundException(f"Insufficient stock for component {component.part_number}")
@@ -206,7 +140,7 @@ class Stock_Services:
                 remaining_qnty -= consume
                 self.repo.update_Stock(stock=s)
                 movi_entity_consumption = Movimentation_entity(part_number=component.part_number,
-                                                            origin=scheme.sector_ID,
+                                                            origin=scheme.sector,
                                                             reason=f"Consumption for part {scheme.part_number}, batch {s.batch}",
                                                             movimentation_type="CONSUME",
                                                             employer_id=employer_id,
@@ -218,38 +152,6 @@ class Stock_Services:
                                                             assembly_batch=scheme.assembly_batch)
                 self.movimentation_repo.create(movimentation_data=movi_entity_consumption)
                 self.repo.delete_stock(stock=s) if s.qnty == 0 else None
-
-
-    def consume_raw_stock(self, raw_component,
-                          scheme:Stock_Scheme_machined_Coponent,
-                          employer_id:int,
-                          stock_list):
-        total_qnty = sum([stock.qnty for stock in stock_list])
-        if total_qnty < scheme.qnty:
-            raise NotFoundException("Insufficient raw component stock")
-        remaining_qnty = scheme.qnty
-        for stock in stock_list:
-            if remaining_qnty <= 0:
-                break
-            consume = min(stock.qnty, remaining_qnty)
-            stock.qnty -= consume
-            remaining_qnty -= consume
-            self.repo.update_Stock(stock=stock)
-            movi_entity_consumption = Movimentation_entity(part_number=raw_component.part_number,
-                                                        origin=scheme.sector_ID,
-                                                        reason=f"Consumption for machining {scheme.part_number}, batch {scheme.machining_batch}",
-                                                        movimentation_type="CONSUME",
-                                                        employer_id=employer_id,
-                                                        batch=stock.batch,
-                                                        qnty=consume,
-                                                        date=datetime.today(),
-                                                        destination=None,
-                                                        machining_batch=scheme.machining_batch,
-                                                        assembly_batch=None)
-            self.movimentation_repo.create(movimentation_data=movi_entity_consumption)
-            self.repo.delete_stock(stock=stock) if stock.qnty == 0 else None
-
-    
 
     def transfer_stock(self, stocks,
                             scheme:Stock_Transfer_Scheme,

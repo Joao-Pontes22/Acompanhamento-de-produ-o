@@ -7,4 +7,6 @@ class Responde_Components(BaseModel):
     part_number: str
     description: str
     cost: float
+    supplier_name: str
+    component_type: str
     model_config = ConfigDict(from_attributes=True)

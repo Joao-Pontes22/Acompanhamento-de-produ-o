@@ -1,14 +1,14 @@
+from typing import List
 from app.models.Models import Machines
-from app.Schemes.Machine_Schemes import Machine_Scheme
+from app.domain.Entitys.Machines_entitys import Machine_Entity
 from sqlalchemy.orm import Session
 class Machine_Repositorie:
     def __init__(self, session:Session):
         self.session = session
 
-    
-    def repo_create_machine(self, scheme:Machine_Scheme):
+    def repo_create_machine(self, scheme:Machine_Entity):
         new_machine = Machines(machine=scheme.Machine,
-                               sector_ID=scheme.Sector_ID,
+                               sector_name=scheme.Sector,
                                description_machine=scheme.Description_Machine)
 
         self.session.add(new_machine)
@@ -19,13 +19,22 @@ class Machine_Repositorie:
         machines = self.session.query(Machines).all()
         return machines
     
-    def repo_get_machine_by_name(self, name:str):
-        machines = self.session.query(Machines).filter(Machines.machine == name).first()
-        return machines
     
-    def repo_get_machine_by_id(self, id:int):
-        machines = self.session.query(Machines).filter(Machines.ID == id).first()
-        return machines
+    def get_machine_filtred(self, id: int = None, machine: str = None) -> List[Machines]:
+        query = self.session.query(Machines)
+        if id:
+            query = query.filter(Machines.ID ==id)
+        if machine:
+            query = query.filter(Machines.machine.like(f"%{machine}%"))
+        return query.all()
+    
+    def get_machine_filtred_first(self, id: int = None, machine: str = None) -> List[Machines]:
+        query = self.session.query(Machines)
+        if id:
+            query = query.filter(Machines.ID ==id)
+        if machine:
+            query = query.filter(Machines.machine.like(f"%{machine}%"))
+        return query.first()
     
     def repo_update_machine_info(self, machine):
         self.session.commit()

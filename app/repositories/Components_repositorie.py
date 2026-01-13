@@ -9,11 +9,11 @@ class Components_Repositorie:
     def repo_create_Components(self, scheme:Components_entity):
         component = ComponentsAndParts(part_number=scheme.part_number,
                                    description=scheme.description_material,
-                                   supplier_ID=scheme.supplier_ID,
+                                   supplier_name=scheme.supplier,
                                    cost=scheme.cost,
                                    category="COMPONENT",
-                                   client_ID=None)
-       
+                                   client_name=None,
+                                   component_type=scheme.component_type)
         self.session.add(component)
         self.session.commit()
         return component
@@ -47,7 +47,7 @@ class Components_Repositorie:
         return(component)
     
 
-    def repo_get_component_filteres(self, id:int, part_number:str = None, description:str = None, supplier_ID:int = None):
+    def repo_get_component_filteres(self, id:int, part_number:str = None, description:str = None, supplier:str = None, component_type:str = None):
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT")
         if id:
             query = query.filter(ComponentsAndParts.id ==id)
@@ -55,6 +55,8 @@ class Components_Repositorie:
             query = query.filter(ComponentsAndParts.part_number.like(f"%{part_number}%"))
         if description:
             query = query.filter(ComponentsAndParts.description.like(f"%{description}%"))
-        if supplier_ID:
-            query = query.filter(ComponentsAndParts.supplier_ID == supplier_ID)
+        if supplier:
+            query = query.filter(ComponentsAndParts.supplier_name == supplier)
+        if component_type:
+            query = query.filter(ComponentsAndParts.component_type == component_type)
         return query.all()

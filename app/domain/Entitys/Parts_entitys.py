@@ -10,5 +10,5 @@ class Parts_entity:
             if scheme.cost <=0:
              raise ValueError("Cost must be greater than zero")
             self.cost = scheme.cost
-        if scheme.client_ID is not None:
-            self.client_ID = scheme.client_ID
+        if scheme.client is not None:
+            self.client = scheme.client.upper()

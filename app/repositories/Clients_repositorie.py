@@ -22,7 +22,8 @@ class Clients_repositorie:
         new_client = Clients(name=scheme.name,
                              contact=scheme.contact,
                              phone=scheme.phone,
-                             email=scheme.email)
+                             email=scheme.email
+                            )
         self.session.add(new_client)
         self.session.commit()
         return new_client
