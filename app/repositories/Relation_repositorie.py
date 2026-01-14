@@ -1,5 +1,5 @@
 from typing import List
-from app.models.Models import Relation
+from app.models.Relation import Relation
 class Relation_repositorie:
     def __init__(self, session):
         self.session = session

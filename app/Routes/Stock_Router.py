@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.models.Models import Stock
 from app.core.Dependecies import Init_Session
 from app.Schemes.Stock_Schemes import Stock_Scheme_Part, Stock_Scheme_Raw_Coponent, Stock_Scheme_machined_Coponent, Stock_Transfer_Scheme
 from app.repositories.Relation_repositorie import Relation_repositorie

@@ -1,5 +1,5 @@
 from app.domain.Entitys.Stock_entitys import Stock_Entity_Parts, Stock_Entity_Raw_Component, Stock_Entity_machined_Component
-from app.models.Models import Stock
+from app.models.Stock import Stock
 from app.Schemes.Stock_Schemes import Stock_Scheme_models
 class Stock_repositorie:
     def __init__(self, session):
@@ -28,17 +28,17 @@ class Stock_repositorie:
         return new_stock
     
 
-    def create_Part_stock(self,scheme: Stock_Entity_Parts):
+    def create_stock(self,scheme: Stock_Entity_Parts):
         new_stock = Stock(sector_name=scheme.sector,
                           part_number=scheme.part_number,
-                          batch=None,
-                          machining_batch=None,
-                          machining_date=None,
+                          batch=scheme.batch,
+                          machining_batch=scheme.machining_batch,
+                          machining_date=scheme.machining_date,
                           assembly_batch=scheme.assembly_batch,
                           assembly_date=scheme.assembly_date,
                           qnty=scheme.qnty,
-                          entry_date=None, 
-                          supplier_ID=None, 
+                          entry_date=scheme.entry_date, 
+                          supplier_name=scheme.supplier_name, 
                           status="ACTIVE", 
                           cost=scheme.cost,
                           client_name=scheme.client
@@ -47,44 +47,7 @@ class Stock_repositorie:
         self.session.commit()
         return new_stock
 
-    def create_Machined_Component_stock(self,scheme: Stock_Entity_machined_Component):
-        new_sotck = Stock(sector_ID=scheme.sector_ID,
-                          part_number=scheme.part_number,
-                          batch=None,
-                          machining_batch=scheme.machining_batch,
-                          machining_date=scheme.machining_date,
-                          assembly_batch=None,
-                          assembly_date=None,
-                          qnty=scheme.qnty,
-                          entry_date=None, 
-                          supplier_ID=scheme.supplier_id, 
-                          status=scheme.status, 
-                          cost=scheme.cost,
-                          client_ID=None
-                          )
-        self.session.add(new_sotck)
-        self.session.commit()
-        return new_sotck
-
-    def create_Raw_Component_stock(self,scheme: Stock_Entity_Raw_Component):
-        new_sotck = Stock(sector_ID=scheme.sector_ID,
-                          part_number=scheme.part_number,
-                          batch=scheme.batch,
-                          machining_batch=None,
-                          machining_date=None,
-                          assembly_batch=None,
-                          assembly_date=None,
-                          qnty=scheme.qnty,
-                          entry_date=scheme.entry_date, 
-                          supplier_ID=scheme.supplier_id, 
-                          status=scheme.status, 
-                          cost=scheme.cost,
-                          client_ID=None
-                          )
-        self.session.add(new_sotck)
-        self.session.commit()
-        return new_sotck
-    
+   
     def get_all_stock(self):
         stock = self.session.query(Stock).all()
         return stock

@@ -1,4 +1,4 @@
-from app.models.Models import Machining_Production
+from app.models.Machining_production import Machining_Production
 from app.Schemes.Machining_Production_Schemes import Machining_Production_Scheme
 
 

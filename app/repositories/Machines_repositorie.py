@@ -1,5 +1,5 @@
 from typing import List
-from app.models.Models import Machines
+from app.models.Machines import Machines
 from app.domain.Entitys.Machines_entitys import Machine_Entity
 from sqlalchemy.orm import Session
 class Machine_Repositorie:

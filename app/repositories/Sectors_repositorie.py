@@ -1,4 +1,4 @@
-from app.models.Models import Sectors
+from app.models.Sectors import Sectors
 from app.Schemes.Sector_Schemes import Sector_Scheme, Sector_Scheme_Update
 from app.domain.Entitys.Sectors_entitys import Sector_entitys
 

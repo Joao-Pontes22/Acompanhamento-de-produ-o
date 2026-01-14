@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.models.Models import Machines
 from app.core.Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from app.Schemes.Machine_Schemes import Machine_Scheme, Update_Machine_Scheme

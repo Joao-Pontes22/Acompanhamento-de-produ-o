@@ -1,45 +1,33 @@
-from app.Schemes.Stock_Schemes import Stock_Scheme_Part, Update_Part_Stock_Scheme, Update_Machined_Stock_Scheme, Update_Raw_Stock_Scheme
-from app.Schemes.Stock_Schemes import Stock_Scheme_machined_Coponent, Stock_Scheme_Raw_Coponent
-from  fastapi import HTTPException
-class Stock_Entity_Parts:
-    def __init__(self, scheme: Stock_Scheme_Part, cost:float, client:str):
+from app.Schemes.Stock_Schemes import Stock_Scheme, Update_Part_Stock_Scheme, Update_Machined_Stock_Scheme, Update_Raw_Stock_Scheme
+
+class Stock_Entity:
+    def __init__(self, scheme: Stock_Scheme, 
+                 cost:float, client:str, 
+                 batch:str = None, 
+                 machining_batch:str = None, 
+                 assembly_batch:str = None,
+                 assembly_date:str = None,
+                 machining_date:str = None,
+                 entry_date:str = None,
+                 supplier:str = None):
+        
         self.sector = scheme.sector.upper()
         self.part_number = scheme.part_number.upper()
         self.qnty = scheme.qnty
-        self.assembly_batch = scheme.assembly_batch.upper()
-        self.assembly_date = scheme.assembly_date
+        self.assembly_batch = assembly_batch.upper() if assembly_batch else None
+        self.assembly_date = assembly_date if assembly_date else None
+        self.machining_batch = machining_batch.upper() if machining_batch else None
+        self.machining_date = machining_date if machining_date else None
+        self.batch = batch.upper() if batch else None
         self.cost = scheme.qnty * cost
-        self.client = client
+        self.client_name = client.upper()
+        self.entry_date = entry_date
+        self.supplier_name = supplier.upper() if supplier else None
         self._validate_business_rules()
 
     def _validate_business_rules(self):
         if self.qnty <= 0:
             raise ValueError("Stock quantity must be greater than zero")
-
-
-class Stock_Entity_machined_Component:
-    def __init__(self, scheme:Stock_Scheme_machined_Coponent, cost:float, supplier_id:int):
-        self.sector_ID = scheme.sector_ID
-        self.part_number = scheme.part_number
-        self.qnty = scheme.qnty
-        self.status = scheme.status.upper()
-        self.machining_batch = scheme.machining_batch
-        self.machining_date = scheme.machining_date
-        self.cost = scheme.qnty * cost
-        self.supplier_id =  supplier_id
-        pass
-
-class Stock_Entity_Raw_Component:
-    def __init__(self, scheme:Stock_Scheme_Raw_Coponent, cost:float, supplier_id:int):
-        self.sector_ID = scheme.sector_ID
-        self.part_number = scheme.part_number
-        self.qnty = scheme.qnty
-        self.status = scheme.status.upper()
-        self.entry_date = scheme.entry_date
-        self.batch = scheme.batch
-        self.cost = scheme.qnty * cost
-        self.supplier_id =  supplier_id
-        pass
 
 
 class Updated_Part_Stock_Entity:

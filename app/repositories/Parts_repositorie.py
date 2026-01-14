@@ -1,5 +1,5 @@
 from sqlalchemy .orm import Session
-from app.models.Models import ComponentsAndParts
+from app.models.ComponentsAndParts import ComponentsAndParts
 from app.domain.Entitys.Parts_entitys import Parts_entity
 class Parts_Repositorie:
     def __init__(self, session:Session):

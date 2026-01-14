@@ -1,4 +1,4 @@
-from app.models.Models import Clients
+from app.models.Clients import Clients
 from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
 
 class Clients_repositorie:

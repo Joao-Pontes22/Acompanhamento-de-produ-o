@@ -1,5 +1,5 @@
-from app.Schemes.Stock_Schemes import Stock_Scheme_Part,Stock_Transfer_Scheme, Stock_Scheme_Raw_Coponent,Stock_Scheme_models, Stock_Scheme_machined_Coponent, Update_Raw_Stock_Scheme, Update_Part_Stock_Scheme, Update_Machined_Stock_Scheme
-from app.domain.Entitys.Stock_entitys import Stock_Entity_Parts, Stock_Entity_Raw_Component, Stock_Entity_machined_Component, Updated_Part_Stock_Entity, Update_Machined_Stock_Scheme, Update_Raw_Stock_Scheme
+from app.Schemes.Stock_Schemes import Stock_Scheme,Stock_Transfer_Scheme, Stock_Scheme_Raw_Coponent,Stock_Scheme_models, Stock_Scheme_machined_Coponent, Update_Raw_Stock_Scheme, Update_Part_Stock_Scheme, Update_Machined_Stock_Scheme
+from app.domain.Entitys.Stock_entitys import Stock_Entity, Stock_Entity_Raw_Component, Stock_Entity_machined_Component, Updated_Part_Stock_Entity, Update_Machined_Stock_Scheme, Update_Raw_Stock_Scheme
 from app.domain.Exceptions import NotFoundException
 from app.repositories.Movimentation_repositorie import MovimentationRepository
 from app.repositories.Sectors_repositorie import  Sectors_repositorie
@@ -21,21 +21,31 @@ class Stock_Services:
         self.relation_repo = relation_repo
         self.movimentation_repo = movimentation_repo
 
-    def Service_Create_Stock(self, scheme:Stock_Scheme_Part,
+    def Service_Create_Stock(self, scheme:Stock_Scheme,
                             employer_id:int 
                             ):
         value_partnumber = value_Part_number(part_number=scheme.part_number)
+        value_sector = value_sector(sector=scheme.sector)
         PartOrComp = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=value_partnumber.part_number)
+        batch = self.create_batch(item=PartOrComp)
         cost = scheme.qnty * PartOrComp.cost
-        entity = Stock_Entity_Parts(scheme=scheme, cost=cost, client=PartOrComp.client_name)
-        sector = self.sectors_repo.repo_get_sector_by_name(name=entity.sector)
+        sector = self.sectors_repo.repo_get_sector_by_name(name=value_sector.sector)
         if not PartOrComp:
-            raise NotFoundException("Product")
+            raise NotFoundException("Item")
         if not sector:
             raise NotFoundException("Sector")
         relation = self.relation_repo.get_relations_filtred(create_item_part_number=PartOrComp.part_number)
         if not relation:
             raise NotFoundException("Relation")
+        if PartOrComp.category != "PART":
+            entity = Stock_Entity(scheme=scheme, cost=cost, client=PartOrComp.client_name, 
+                                batch=None,
+                                machining_batch=None,
+                                assembly_batch=str(batch),
+                                assembly_date=datetime.today().strftime("%Y-%m-%d"),
+                                machining_date=None,
+                                entry_date=None,
+                                supplier=None)
         with self.repo.transaction_begin():
             consume = self.consume_stock(relation=relation,
                                                     scheme=scheme,
@@ -123,7 +133,7 @@ class Stock_Services:
         return {"message": "Stock transferred successfully"}
     
     def consume_stock(self, relation,
-                            scheme:Stock_Scheme_Part,
+                            scheme:Stock_Scheme,
                             employer_id:int):
         for items in relation:
             component = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=items.consume_item_Part_number)
@@ -215,4 +225,18 @@ class Stock_Services:
         
         return new_stock
     
+    def create_batch(self, item):
+        if item.category == "PART":
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            if last_batch:
+                return int(last_batch.assembly_batch) + 1
+        elif item.category == "COMPONENT" and item.component_type == "MACHINED":
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            if last_batch:
+                return int(last_batch.machining_batch) + 1  
+        elif item.category == "COMPONENT" and item.component_type == "RAW":
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            if last_batch:
+                return int(last_batch.batch) + 1 
+        
 

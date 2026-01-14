@@ -1,4 +1,5 @@
-from app.models.Models import movimentations
+from sqlalchemy import desc
+from app.models.Movimentations import movimentations
 from app.Schemes.Movimentation_Schemes import MovimentationScheme
 from sqlalchemy.orm import session
 
@@ -34,7 +35,8 @@ class MovimentationRepository:
                                    part_number: str = None, 
                                    batch: str = None, 
                                    start_date = None, 
-                                   end_date = None, 
+                                   end_date = None,
+                                   date: str = None, 
                                    employer_id: int = None,
                                      movimentation_type: str = None, 
                                      origin: str = None,
@@ -62,7 +64,48 @@ class MovimentationRepository:
             query = query.filter(movimentations.machining_batch == machining_batch)
         if assembly_batch is not None:
             query = query.filter(movimentations.assembly_batch == assembly_batch)
+        if date is not None:
+            query = query.order_by(desc(movimentations.date))
         return query.all()
+    
+    def get_movimentation_filtered_first(self, 
+                                   movimentation_id: int, 
+                                   part_number: str = None, 
+                                   batch: str = None, 
+                                   start_date = None, 
+                                   end_date = None,
+                                   date: str = None, 
+                                   employer_id: int = None,
+                                     movimentation_type: str = None, 
+                                     origin: str = None,
+                                     destination: str = None,
+                                     machining_batch: str = None,
+                                     assembly_batch: str = None):
+        query = self.session.query(movimentations)
+        if part_number is not None:
+            query = query.filter(movimentations.part_number == part_number)
+        if batch is not None:
+            query = query.filter(movimentations.batch == batch)
+        if start_date is not None:
+            query = query.filter(movimentations.date >= start_date)
+        if end_date is not None:
+            query = query.filter(movimentations.date <= end_date)
+        if employer_id is not None:
+            query = query.filter(movimentations.employer_id == employer_id)
+        if movimentation_type is not None:
+            query = query.filter(movimentations.movimentation_type == movimentation_type)
+        if origin is not None:
+            query = query.filter(movimentations.origin == origin)
+        if destination is not None:
+            query = query.filter(movimentations.destination == destination)
+        if machining_batch is not None:
+            query = query.filter(movimentations.machining_batch == machining_batch)
+        if assembly_batch is not None:
+            query = query.filter(movimentations.assembly_batch == assembly_batch)
+        if date is not None:
+            query = query.order_by(desc(movimentations.date))
+        return query.first()
+    
 
     def delete(self, movimentation_id: int):
         movimentation = self.session.query(movimentations).filter(movimentations.ID == movimentation_id).first()

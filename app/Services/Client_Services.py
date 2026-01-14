@@ -1,7 +1,3 @@
-from app.models.Models import Clients
-from sqlalchemy.orm import Session
-from app.core.Dependecies import Init_Session
-from fastapi import HTTPException, Depends
 from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
 from app.domain.Entitys.Clients_entitys import clients_entitys, update_clients_infos_entitys
 from app.repositories.Clients_repositorie import Clients_repositorie

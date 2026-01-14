@@ -2,40 +2,21 @@ from datetime import date
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
-class Stock_Scheme_Part(BaseModel):
+class Stock_Scheme(BaseModel):
     sector: str
     part_number: str
     qnty: int
-    assembly_batch:str
-    assembly_date:date
     reason:str
     model_config = ConfigDict(from_attributes=True)
 
 
-class Stock_Scheme_Raw_Coponent(BaseModel):
-    sector: str
-    part_number: str
-    qnty: int
-    batch : str
-    entry_date : date
-    reason:str
-    model_config = ConfigDict(from_attributes=True)
 
-class Stock_Scheme_machined_Coponent(BaseModel):
-    sector_ID : int
-    part_number : str
-    machining_batch : str
-    machining_date : date
-    qnty : int
-    reason:str
-    model_config = ConfigDict(from_attributes=True)
 
 class Stock_Scheme_models(BaseModel):
-    sector_ID: int
+    sector_name: int
     part_number: str
     qnty: int
     cost: float
-
     batch: str | None = None
     machining_batch: str | None = None
     machining_date: date | None = None

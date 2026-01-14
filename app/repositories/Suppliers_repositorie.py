@@ -1,5 +1,5 @@
 from app.Schemes.Supplier_Schemes import  Suppliers_Scheme
-from app.models.Models import Suppliers
+from app.models.Suppliers import Suppliers
 
 class Suppliers_Repositorie:
     def __init__(self, session):

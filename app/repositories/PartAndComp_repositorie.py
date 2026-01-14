@@ -1,4 +1,4 @@
-from app.models.Models import ComponentsAndParts
+from app.models.ComponentsAndParts import ComponentsAndParts
 from pytest import Session
 
 

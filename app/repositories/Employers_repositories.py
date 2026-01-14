@@ -1,4 +1,4 @@
-from app.models.Models import Employers
+from app.models.Employers import Employers
 
 
 class employersRepo:
