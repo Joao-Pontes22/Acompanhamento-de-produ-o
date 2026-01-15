@@ -69,7 +69,7 @@ class MovimentationRepository:
         return query.all()
     
     def get_movimentation_filtered_first(self, 
-                                   movimentation_id: int, 
+                                   movimentation_id: int = None, 
                                    part_number: str = None, 
                                    batch: str = None, 
                                    start_date = None, 

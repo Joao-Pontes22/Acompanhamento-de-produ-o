@@ -60,3 +60,15 @@ async def get_filtered_movimentations(movimentation_id: int = None,
         return movimentations
     except NotFoundException as e:
         raise HTTPException(detail=str(e), status_code=404)
+    
+
+@Movimentaion_Router.delete("/Delete_movimentation/{movimentation_id}")
+async def delete_movimentation(movimentation_id: int, session:Session = Depends(Init_Session)):
+    repo = MovimentationRepository(session=session)
+    service = MovimentationService(repo=repo)
+    try:
+        deleted_movi = service.service_delete_movimentation(movimentation_id=movimentation_id)
+        return {"message": "Movimentation deleted successfully",
+                "Deleted_Movimentation": deleted_movi }
+    except NotFoundException as e:
+        raise HTTPException(detail=str(e), status_code=404)

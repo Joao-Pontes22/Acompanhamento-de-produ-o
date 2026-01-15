@@ -21,3 +21,7 @@ class InvalidNameException(Exception):
 class IncorrectPasswordException(Exception):
     def __init__(self):
         super().__init__("Password incorrect")
+
+class StockInssuficientException(Exception):
+    def __init__(self, part_number: str, required: int, available: int):
+        super().__init__(f"Insufficient stock for part number {part_number}: required {required}, available {available}")

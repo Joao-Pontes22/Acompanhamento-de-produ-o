@@ -30,36 +30,12 @@ class Stock_Scheme_models(BaseModel):
 
 
 
-class Update_Part_Stock_Scheme(BaseModel):
-    sector_ID: int | None = None
-    part_number: str | None = None
-    qnty: int | None = None
-    status: str | None = None
-    assembly_batch:str | None = None
-    assembly_date:date | None = None
-    reason:str | None = None
+class Update_Stock_Scheme(BaseModel):
+    sector: str = None
+    part_number: str = None
+    qnty: int = None
+    reason:str = None
     model_config = ConfigDict(from_attributes=True)
-
-class Update_Raw_Stock_Scheme(BaseModel):
-    sector_ID: int | None = None
-    part_number: str | None = None
-    qnty: int | None = None
-    batch : str | None = None
-    status: str | None = None
-    entry_date : date | None = None
-    reason:str | None = None
-    model_config = ConfigDict(from_attributes=True)
-
-class Update_Machined_Stock_Scheme(BaseModel):
-    sector_ID : int | None = None
-    part_number : str | None = None
-    machining_batch : str | None = None
-    machining_date : date | None = None
-    qnty : int | None = None
-    status : str | None = None
-    reason:str | None = None
-    model_config = ConfigDict(from_attributes=True)
-
 
 
 class Stock_Transfer_Scheme(BaseModel):

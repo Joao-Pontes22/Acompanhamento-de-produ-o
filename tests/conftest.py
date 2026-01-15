@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from fastapi.testclient import TestClient
 import pytest
-from app.main import app
+from main import app
 from app.core.Dependecies import Init_Session
 from typing import Generator
 from unittest.mock import MagicMock

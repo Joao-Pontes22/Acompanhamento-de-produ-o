@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
-from app.Schemes.Stock_Schemes import Stock_Scheme_Part, Stock_Scheme_Raw_Coponent, Stock_Scheme_machined_Coponent, Stock_Transfer_Scheme
+from app.Schemes.Stock_Schemes import Stock_Scheme, Stock_Transfer_Scheme, Update_Stock_Scheme
 from app.repositories.Relation_repositorie import Relation_repositorie
 from app.repositories.Stock_repositorie import Stock_repositorie
 from app.repositories.Components_repositorie import Components_Repositorie
@@ -12,12 +12,12 @@ from app.domain.Exceptions import NotFoundException
 from app.core.Dependecies import Verify_Token
 from app.repositories.Movimentation_repositorie import MovimentationRepository
 from app.repositories.PartAndComp_repositorie import PartsAndComp_Repositorie
-
+from app.Schemes.Responses.Response_Stock import Response_Stock_Scheme
 Stock_Router = APIRouter(prefix="/stock", tags=["Stock Operation"])
 
 
 @Stock_Router.post("/Create_Stock")
-async def create_stock_part(scheme:Stock_Scheme_Part,session:Session = Depends(Init_Session), employer_id: int = Depends(Verify_Token)):
+async def create_stock_part(scheme:Stock_Scheme,session:Session = Depends(Init_Session), employer_id: int = Depends(Verify_Token)):
     stock_repo = Stock_repositorie(session=session)
     sectors_repo = Sectors_repositorie(session=session)
     partsandcomp_repo = PartsAndComp_Repositorie(session=session)
@@ -29,9 +29,10 @@ async def create_stock_part(scheme:Stock_Scheme_Part,session:Session = Depends(I
         return {"message": "Stock created successfully",
                 "Stock": new_stock }
     except NotFoundException as e:
+        session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
 
-@Stock_Router.get("/Get_all_stock")
+@Stock_Router.get("/Get_all_stock", response_model=list[Response_Stock_Scheme])
 async def get_all_stock(session:Session = Depends(Init_Session)):
     stock_repo = Stock_repositorie(session=session)
     service = Stock_Services(repo=stock_repo)
@@ -39,12 +40,13 @@ async def get_all_stock(session:Session = Depends(Init_Session)):
         stock = service.service_get_all_stock()
         return stock
     except NotFoundException as e:
+        session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
 
 @Stock_Router.get("/Get_filtered_stock")
 async def get_filtered_stock(part_number:str = None,
                              status:str = None,
-                             sector_id: int = None,
+                             sector_name: str = None,
                              batch: str = None,
                              machining_batch: str = None,
                              assembly_batch: str = None,
@@ -52,9 +54,10 @@ async def get_filtered_stock(part_number:str = None,
     stock_repo = Stock_repositorie(session=session)
     service = Stock_Services(repo=stock_repo)
     try:
-        stock = service.service_get_filtered_stock(part_number=part_number, status=status, sector_id=sector_id)
+        stock = service.service_get_filtered_stock(part_number=part_number, status=status, sector_name=sector_name)
         return stock
     except NotFoundException as e:
+        session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
     
 
@@ -67,6 +70,7 @@ async def delete_stock(stock_id:int, session:Session = Depends(Init_Session)):
         return {"message": "Stock deleted successfully",
                 "Deleted": delete }
     except NotFoundException as e:
+        session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
     
 
@@ -83,5 +87,20 @@ async def transfer_stock(scheme:Stock_Transfer_Scheme, session:Session = Depends
         return {"message": "Stock transferred successfully",
                 "Stock": transfered_stock }
     except NotFoundException as e:
-        stock_repo.transaction_rollback()
+        session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
+    
+@Stock_Router.patch("/Update_stock/{stock_id}")
+async def update_stock(stock_id:int, scheme:Update_Stock_Scheme, session:Session = Depends(Init_Session)):
+    stock_repo = Stock_repositorie(session=session)
+    service = Stock_Services(repo=stock_repo)
+    try:
+        updated_stock = service.Service_update_stock(stock_id=stock_id, scheme=scheme)
+        return {"message": "Stock updated successfully",
+                "Stock": updated_stock }
+    except NotFoundException as e:
+        session.rollback()
+        raise HTTPException(detail=str(e), status_code=404)
+    except Exception as e:
+        session.rollback()
+        raise HTTPException(detail=str(e), status_code=500)

@@ -72,3 +72,11 @@ class MovimentationService:
                                                                 machining_batch=entity.machining_batch,
                                                                 assembly_batch=entity.assembly_batch)
         return movimentations
+    
+
+    def service_delete_movimentation(self, movimentation_id: int):
+        movimentation = self.repo.get_by_id(movimentation_id=movimentation_id)
+        if not movimentation:
+            raise NotFoundException("Movimentation")
+        deleted_movi = self.repo.delete(movimentation_id=movimentation_id)
+        return deleted_movi

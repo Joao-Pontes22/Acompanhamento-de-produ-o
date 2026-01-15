@@ -1,4 +1,4 @@
-from app.domain.Entitys.Stock_entitys import Stock_Entity_Parts, Stock_Entity_Raw_Component, Stock_Entity_machined_Component
+from app.domain.Entitys.Stock_entitys import Stock_Entity
 from app.models.Stock import Stock
 from app.Schemes.Stock_Schemes import Stock_Scheme_models
 class Stock_repositorie:
@@ -9,7 +9,7 @@ class Stock_repositorie:
     
 
     def create_stock(self,scheme: Stock_Scheme_models):
-        new_stock = Stock(sector_ID=scheme.sector_ID,
+        new_stock = Stock(sector_name=scheme.sector_name,
                           part_number=scheme.part_number,
                           batch=scheme.batch,
                           machining_batch=scheme.machining_batch,
@@ -28,7 +28,7 @@ class Stock_repositorie:
         return new_stock
     
 
-    def create_stock(self,scheme: Stock_Entity_Parts):
+    def create_stock(self,scheme: Stock_Entity):
         new_stock = Stock(sector_name=scheme.sector,
                           part_number=scheme.part_number,
                           batch=scheme.batch,
@@ -41,7 +41,7 @@ class Stock_repositorie:
                           supplier_name=scheme.supplier_name, 
                           status="ACTIVE", 
                           cost=scheme.cost,
-                          client_name=scheme.client
+                          client_name=scheme.client_name
                           )
         self.session.add(new_stock)
         self.session.commit()
@@ -52,7 +52,7 @@ class Stock_repositorie:
         stock = self.session.query(Stock).all()
         return stock
     
-    def get_specify_stock(self, sector: str = None,
+    def get_specify_stock(self, sector_name: str = None,
                           part_number: str = None,
                           status: str = None,
                           batch: str = None,
@@ -60,8 +60,8 @@ class Stock_repositorie:
                             assembly_batch: str = None
                           ):
         query = self.session.query(Stock)
-        if sector is not None:
-            query = query.filter(Stock.sector_name == sector)
+        if sector_name is not None:
+            query = query.filter(Stock.sector_name == sector_name)
         
         if part_number is not None:
             query = query.filter(Stock.part_number == part_number)

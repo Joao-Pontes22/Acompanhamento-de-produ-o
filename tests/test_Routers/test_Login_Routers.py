@@ -1,4 +1,4 @@
-from app.main import app
+from main import app
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from app.core.Settings.Settings import ALGORITHM, bcrypt_context, SECRET_KEY

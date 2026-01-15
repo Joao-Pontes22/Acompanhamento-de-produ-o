@@ -1,4 +1,4 @@
-from app.main import app
+from main import app
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 
