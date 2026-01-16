@@ -2,7 +2,7 @@
 class Movimentation_entity:
     def __init__(self, part_number: str, origin: str,
                  reason: str, movimentation_type: str,
-                 employer_id: int,
+                 employer: str,
                  qnty: int, date,
                  destination: str,
                 batch: str = None,
@@ -12,7 +12,7 @@ class Movimentation_entity:
         self.origin = origin
         self.reason = reason
         self.movimentation_type = movimentation_type
-        self.employer_id = employer_id
+        self.employer = employer
         self.batch = batch
         self.machining_batch = machining_batch
         self.assembly_batch = assembly_batch

@@ -29,7 +29,7 @@ class Stock_repositorie:
     
 
     def create_stock(self,scheme: Stock_Entity):
-        new_stock = Stock(sector_name=scheme.sector,
+        new_stock = Stock(sector_name=scheme.sector_name,
                           part_number=scheme.part_number,
                           batch=scheme.batch,
                           machining_batch=scheme.machining_batch,

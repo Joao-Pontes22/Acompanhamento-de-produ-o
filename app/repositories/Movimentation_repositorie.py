@@ -13,7 +13,7 @@ class MovimentationRepository:
                                           origin=movimentation_data.origin,
                                           reason=movimentation_data.reason,
                                           movimentation_type=movimentation_data.movimentation_type,
-                                          employer_id=movimentation_data.employer_id,
+                                          employer=movimentation_data.employer,
                                           batch=movimentation_data.batch,
                                           qnty=movimentation_data.qnty,
                                           date=movimentation_data.date,

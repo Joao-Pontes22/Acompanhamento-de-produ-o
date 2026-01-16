@@ -13,7 +13,7 @@ class Stock_Scheme(BaseModel):
 
 
 class Stock_Scheme_models(BaseModel):
-    sector_name: int
+    sector_name: str
     part_number: str
     qnty: int
     cost: float
@@ -23,8 +23,8 @@ class Stock_Scheme_models(BaseModel):
     assembly_batch: str | None = None
     assembly_date: date | None = None
     entry_date: date | None = None
-    supplier_ID: int | None = None
-    client_ID: int | None = None
+    supplier_name: str | None = None
+    client_name: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -40,8 +40,8 @@ class Update_Stock_Scheme(BaseModel):
 
 class Stock_Transfer_Scheme(BaseModel):
     part_number: str
-    origin_sector_id: int
-    destination_sector_id: int
+    origin_sector: str
+    destination_sector: str
     qnty: int
     batch: str | None = None
     machining_batch : str | None = None

@@ -5,7 +5,7 @@ class MovimentationScheme(BaseModel):
     origin: str
     reason: str
     movimentation_type: str
-    employer_id: int
+    employer: int
     batch: str = None
     qnty: int
     date: str

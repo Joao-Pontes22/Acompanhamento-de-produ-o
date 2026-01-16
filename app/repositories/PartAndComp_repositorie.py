@@ -1,5 +1,5 @@
 from app.models.ComponentsAndParts import ComponentsAndParts
-from pytest import Session
+from sqlalchemy.orm import Session
 
 
 class PartsAndComp_Repositorie:

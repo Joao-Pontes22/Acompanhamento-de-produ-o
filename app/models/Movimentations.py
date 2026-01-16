@@ -10,7 +10,7 @@ class movimentations (base):
     origin = Column("origin", String)
     reason = Column("reason", String)
     movimentation_type = Column("movimentation_type", String)
-    employer_id = Column("employer_id", Integer, ForeignKey("Employers.emp_id"))
+    employer = Column("employer", Integer, ForeignKey("Employers.emp_id"))
     batch = Column("batch", String, nullable=True)
     machining_batch = Column("machining_batch", String, nullable=True)
     assembly_batch = Column("assembly_batch", String, nullable=True)
@@ -20,12 +20,12 @@ class movimentations (base):
 
     def __init__(self, part_number,
                   batch, qnty, date,
-                  destination, origin, employer_id, reason, movimentation_type, machining_batch, assembly_batch):
+                  destination, origin, employer, reason, movimentation_type, machining_batch, assembly_batch):
         self.part_number = part_number
         self.batch = batch
         self.qnty = qnty
         self.date = date
-        self.employer_id = employer_id
+        self.employer = employer
         self.reason = reason
         self.movimentation_type = movimentation_type
         self.origin = origin
