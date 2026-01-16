@@ -74,8 +74,7 @@ class MovimentationRepository:
                                    batch: str = None, 
                                    start_date = None, 
                                    end_date = None,
-                                   date: str = None, 
-                                   employer_id: int = None,
+                                   emp_id: str = None,
                                      movimentation_type: str = None, 
                                      origin: str = None,
                                      destination: str = None,
@@ -90,8 +89,8 @@ class MovimentationRepository:
             query = query.filter(movimentations.date >= start_date)
         if end_date is not None:
             query = query.filter(movimentations.date <= end_date)
-        if employer_id is not None:
-            query = query.filter(movimentations.employer_id == employer_id)
+        if emp_id is not None:
+            query = query.filter(movimentations.employer == emp_id)
         if movimentation_type is not None:
             query = query.filter(movimentations.movimentation_type == movimentation_type)
         if origin is not None:
@@ -102,8 +101,8 @@ class MovimentationRepository:
             query = query.filter(movimentations.machining_batch == machining_batch)
         if assembly_batch is not None:
             query = query.filter(movimentations.assembly_batch == assembly_batch)
-        if date is not None:
-            query = query.order_by(desc(movimentations.date))
+        if movimentation_id:
+            query = query.order_by(desc(movimentations.ID))
         return query.first()
     
 

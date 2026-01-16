@@ -1,4 +1,4 @@
-from app.domain.Entitys.Stock_entitys import Stock_Entity
+from app.domain.Entitys.Stock_entitys import Stock_Entity, Stock_Entity_Machined, Stock_Entity_Part, Stock_Entity_Raw
 from app.models.Stock import Stock
 from app.Schemes.Stock_Schemes import Stock_Scheme_models
 class Stock_repositorie:
@@ -18,10 +18,10 @@ class Stock_repositorie:
                           assembly_date=scheme.assembly_date,
                           qnty=scheme.qnty,
                           entry_date=scheme.entry_date, 
-                          supplier_ID=scheme.supplier_ID, 
+                          supplier_name=scheme.supplier_name, 
                           status=scheme.status, 
                           cost=scheme.cost,
-                          client_ID=scheme.client_ID
+                          client_name=scheme.client_name
                           )
         self.session.add(new_stock)
         self.session.commit()

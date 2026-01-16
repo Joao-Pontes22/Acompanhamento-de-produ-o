@@ -19,6 +19,8 @@ from app.repositories.Employers_repositories import employersRepo
 from app.domain.Entitys.Transfer_entitys import Transfer_entitys
 from app.domain.Entitys.Movimentation_entity import Movimentation_entity
 from app.domain.Entitys.Stock_entitys import Stock_Entity, Stock_Entity_Part, Stock_Entity_Machined, Stock_Entity_Raw
+
+
 class Stock_Services:
     def __init__(self, repo:Stock_repositorie, sectors_repo: Sectors_repositorie = None,
                  movimentation_repo: MovimentationRepository = None, 
@@ -224,19 +226,19 @@ class Stock_Services:
     
     def create_batch(self, item):
         if item.category == "PART":
-            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, movimentation_id=True)
             if last_batch:
                 return int(last_batch.assembly_batch) + 1
             else:
                 return int(1) 
         elif item.category == "COMPONENT" and item.component_type == "MACHINED":
-            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, movimentation_id=True)
             if last_batch:
                 return int(last_batch.machining_batch) + 1
             else:
                 return int(1)   
         elif item.category == "COMPONENT" and item.component_type == "RAW":
-            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, date=True)
+            last_batch = self.movimentation_repo.get_movimentation_filtered_first(part_number=item.part_number, movimentation_id=True)
             if last_batch:
                 return int(last_batch.batch) + 1
             else:
@@ -270,8 +272,9 @@ class Stock_Services:
                                                 destination=entity.sector,
                                                 machining_batch=None,
                                                 assembly_batch=str(batch))
-            new_stock = self.repo.create_stock(scheme=entity)
             movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity)
+            new_stock = self.repo.create_stock(scheme=entity)
+            
             return new_stock
     
     def create_stock_machined(self, scheme: Stock_Entity, PartOrComp, batch, employer):
@@ -300,8 +303,9 @@ class Stock_Services:
                                                 destination=entity.sector,
                                                 machining_batch=None,
                                                 assembly_batch=str(batch))
-            new_stock = self.repo.create_stock(scheme=entity)
             movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity)
+            new_stock = self.repo.create_stock(scheme=entity)
+            
             return new_stock
     
     def create_stock_raw(self, scheme: Stock_Entity, PartOrComp, batch, employer):
@@ -311,16 +315,17 @@ class Stock_Services:
                                     supplier=PartOrComp.supplier_name)
         
         movi_entity = Movimentation_entity(part_number=entity.part_number,
-                                                origin=entity.sector,
+                                                origin=entity.sector_name,
                                                 reason=entity.reason,
                                                 movimentation_type="CREATE",
-                                                employer=employer,
+                                                employer=employer.emp_id,
                                                 batch=entity.batch,
                                                 qnty=entity.qnty,
                                                 date=datetime.today(),
-                                                destination=entity.sector,
+                                                destination=entity.sector_name,
                                                 machining_batch=entity.machining_batch,
                                                 assembly_batch=entity.assembly_batch)
-        new_stock = self.repo.create_stock(scheme=entity)
         movi_repo = self.movimentation_repo.create(movimentation_data=movi_entity,)
+        new_stock = self.repo.create_stock(scheme=entity)
+        
         return new_stock

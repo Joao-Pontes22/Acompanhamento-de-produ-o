@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES= int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/Login_Form")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/Login/Login_Form")
 
 class Settings(BaseSettings):
     SECRET_KEY: str = SECRET_KEY

@@ -20,7 +20,7 @@ class Stock_Entity_Part:
                  assembly_batch:str = None,
                  assembly_date:str = None):
         
-        self.sector = scheme.sector.upper()
+        self.sector_name = scheme.sector.upper()
         self.part_number = scheme.part_number.upper()
         self.qnty = scheme.qnty
         self.reason = scheme.reason.upper()
@@ -45,7 +45,7 @@ class Stock_Entity_Machined:
                  machining_batch: str,
                  machining_date):
         
-        self.sector = scheme.sector.upper()
+        self.sector_name = scheme.sector.upper()
         self.part_number = scheme.part_number.upper()
         self.qnty = scheme.qnty
         self.reason = scheme.reason.upper()
@@ -70,7 +70,7 @@ class Stock_Entity_Raw:
                  batch: str,
                  entry_date):
         
-        self.sector = scheme.sector.upper()
+        self.sector_name = scheme.sector.upper()
         self.part_number = scheme.part_number.upper()
         self.qnty = scheme.qnty
         self.reason = scheme.reason.upper()
