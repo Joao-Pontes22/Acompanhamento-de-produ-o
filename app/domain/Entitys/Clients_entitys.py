@@ -1,4 +1,6 @@
 from app.domain.Exceptions import InvalidNameException
+
+# Entity for creating a new client
 class clients_entitys:
     def __init__(self, name, contact, email, phone): 
 
@@ -12,6 +14,7 @@ class clients_entitys:
         self.email= email.lower()
         self.phone = phone
 
+# Entity for updating client information
 class update_clients_infos_entitys:
     def __init__(self, name=None, contact=None, email=None, phone=None):
         

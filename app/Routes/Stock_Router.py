@@ -18,7 +18,7 @@ Stock_Router = APIRouter(prefix="/stock", tags=["Stock Operation"])
 
 
 @Stock_Router.post("/Create_Stock")
-async def create_stock_part(scheme:Stock_Scheme,session:Session = Depends(Init_Session), employer_id: int = Depends(Verify_Token)):
+async def create_stock(scheme:Stock_Scheme,session:Session = Depends(Init_Session), employer_id: int = Depends(Verify_Token)):
     stock_repo = Stock_repositorie(session=session)
     sectors_repo = Sectors_repositorie(session=session)
     partsandcomp_repo = PartsAndComp_Repositorie(session=session)
@@ -38,7 +38,9 @@ async def create_stock_part(scheme:Stock_Scheme,session:Session = Depends(Init_S
         session.rollback()
         raise HTTPException(detail=str(e), status_code=404)
 
-@Stock_Router.get("/Get_all_stock", response_model=list[Response_Stock_Scheme])
+@Stock_Router.get("/Get_all_stock",
+                   response_model=list[Response_Stock_Scheme],
+                   response_model_exclude_none=True)
 async def get_all_stock(session:Session = Depends(Init_Session)):
     stock_repo = Stock_repositorie(session=session)
     service = Stock_Services(repo=stock_repo)

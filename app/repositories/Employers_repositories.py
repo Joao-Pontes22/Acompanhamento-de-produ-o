@@ -9,7 +9,7 @@ class employersRepo:
         employers = self.session.query(Employers).all()
         return employers
     
-    def repo_find_by_id(self,id:int):
+    def repo_find_by_id(self, id:int):
         self.id = id
         return self.session.query(Employers).filter(Employers.ID == id).first()
     

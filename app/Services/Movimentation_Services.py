@@ -5,6 +5,8 @@ from app.repositories.Parts_repositorie import Parts_Repositorie
 from app.repositories.Sectors_repositorie import Sectors_repositorie
 from app.repositories.Components_repositorie import Components_Repositorie
 from app.domain.Entitys.Movimentation_entity import Movimentation_entity, MovimentationEntityFiltered
+from app.repositories.Employers_repositories import employersRepo
+
 class MovimentationService:
     def __init__(self, repo: MovimentationRepository):
         self.repo = repo
@@ -22,7 +24,7 @@ class MovimentationService:
                                            batch: str = None, 
                                            start_date = None, 
                                            end_date = None, 
-                                           employer_id: int = None,
+                                           emp_id: int = None,
                                            movimentation_type: str = None, 
                                            origin: str = None,
                                            destination: str = None,
@@ -35,8 +37,8 @@ class MovimentationService:
              raise NotFoundException("Movimentation")
 
         if part_number is not None:
-            part = parts_repo.repo_get_Parts_by_part_number(part_number=part_number)
-            component = components_repo.repo_get_machined_components(part_number=part_number)
+            part = parts_repo.repo_get_part_filtered_first(part_number=part_number)
+            component = components_repo.repo_get_Component_by_part_number(part_number=part_number)
             if not part and not component:
                 raise NotFoundException("Part_number")
 
@@ -54,7 +56,7 @@ class MovimentationService:
                                              batch=batch,
                                              start_date=start_date,
                                              end_date=end_date,
-                                             employer_id=employer_id,
+                                             emp_id=emp_id,
                                              movimentation_type=movimentation_type,
                                              destination=destination,
                                              machining_batch=machining_batch,
@@ -65,7 +67,7 @@ class MovimentationService:
                                                               batch=entity.batch,
                                                                 start_date=entity.start_date,
                                                                 end_date=entity.end_date,
-                                                                employer_id=entity.employer_id,
+                                                                emp_id=entity.emp_id,
                                                                 movimentation_type=entity.movimentation_type,
                                                                 origin=entity.origin,
                                                                 destination=entity.destination,

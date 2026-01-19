@@ -1,3 +1,4 @@
+# Entity for creating a new machine
 class Machine_Entity:
     def __init__(self, machine:str = None, sector:str = None, description_Machine:str = None):
         if machine is not None:

@@ -1,4 +1,4 @@
-
+# Entity for creating a new employer
 class employers_entity:
     def __init__(self,name, sector, password, emp_id):
         if len(name) < 3:

@@ -18,8 +18,7 @@ class Machining_Production(base):
     output_part_number = Column("output_part_number", String)
 
     machining_batch = Column("machining_batch", String)
-    assembly_batch = Column("assembly_batch", String)
-    warehouse_batch = Column("warehouse_batch", String)
+    batch = Column("batch", String)
 
     emp_id_employer = Column("emp_id_employer", Integer, ForeignKey("Employers.emp_id"))
     status = Column("status", String)

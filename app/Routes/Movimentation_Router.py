@@ -6,14 +6,15 @@ from app.repositories.Movimentation_repositorie import MovimentationRepository
 from app.repositories.Parts_repositorie import Parts_Repositorie
 from app.repositories.Sectors_repositorie import Sectors_repositorie
 from app.repositories.Components_repositorie import Components_Repositorie
-
+from app.repositories.Employers_repositories import employersRepo
 from app.Services.Movimentation_Services import MovimentationService
 
 
 Movimentaion_Router = APIRouter(prefix="/movimentation", tags=["Movimentation Operation"])
 
 
-@Movimentaion_Router.get("/Get_all_movimentations")
+@Movimentaion_Router.get("/Get_all_movimentations",
+                         response_model_exclude_none=True)
 async def get_all_movimentations(session:Session = Depends(Init_Session)):
     repo = MovimentationRepository(session=session)
     service = MovimentationService(repo=repo)
@@ -30,7 +31,7 @@ async def get_filtered_movimentations(movimentation_id: int = None,
                                      batch: str = None, 
                                      start_date = None, 
                                      end_date = None, 
-                                     employer_id: int = None,
+                                     emp_id: int = None,
                                      movimentation_type: str = None, 
                                      origin: str = None,
                                      destination: str = None,
@@ -42,13 +43,14 @@ async def get_filtered_movimentations(movimentation_id: int = None,
     parts_repo = Parts_Repositorie(session=session)
     components_repo = Components_Repositorie(session=session)
     sector_repo = Sectors_repositorie(session=session)
+    emp_repo = employersRepo(session=session)
     try:
         movimentations = service.service_get_filtered_movimentations(movimentation_id=movimentation_id,
                                                                     part_number=part_number,
                                                                     batch=batch,
                                                                     start_date=start_date,
                                                                     end_date=end_date,
-                                                                    employer_id=employer_id,
+                                                                    emp_id=emp_id,
                                                                     movimentation_type=movimentation_type,
                                                                     origin=origin,
                                                                     destination=destination,
@@ -56,7 +58,8 @@ async def get_filtered_movimentations(movimentation_id: int = None,
                                                                     assembly_batch=assembly_batch,
                                                                     components_repo=components_repo,
                                                                     parts_repo=parts_repo,
-                                                                    sector_repo=sector_repo)
+                                                                    sector_repo=sector_repo
+                                                                    )
         return movimentations
     except NotFoundException as e:
         raise HTTPException(detail=str(e), status_code=404)

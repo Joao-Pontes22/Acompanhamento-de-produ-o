@@ -1,11 +1,12 @@
 from sqlalchemy .orm import Session
 from app.models.ComponentsAndParts import ComponentsAndParts
 from app.domain.Entitys.Components_entitys import Components_entity
+# Repository for managing component data
 class Components_Repositorie:
     def __init__(self, session:Session):
         self.session = session
 
-
+# Methods for CRUD operations on components
     def repo_create_Components(self, scheme:Components_entity):
         component = ComponentsAndParts(part_number=scheme.part_number,
                                    description=scheme.description_material,
@@ -26,15 +27,7 @@ class Components_Repositorie:
     
     def repo_get_Component_by_part_number(self, part_number:str):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.part_number == part_number ).first()
-    
-    
-    def repo_get_raw_components(self, part_number:str):
-        return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.description.like("%bruto%"), ComponentsAndParts.part_number == part_number).first()
 
-
-    def repo_get_machined_components(self, part_number:str):
-        return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.description.like("%usinado%"), ComponentsAndParts.part_number == part_number).first()
-    
     
     def repo_update_component_info(self, component):
         self.session.commit()

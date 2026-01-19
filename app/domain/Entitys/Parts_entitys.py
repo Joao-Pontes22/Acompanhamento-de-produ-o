@@ -1,5 +1,5 @@
 from app.Schemes.Parts_Schemes import Parts_Scheme
-
+# Entity for creating or updating a part
 class Parts_entity: 
     def __init__(self,scheme:Parts_Scheme):
         if scheme.part_number is not None:

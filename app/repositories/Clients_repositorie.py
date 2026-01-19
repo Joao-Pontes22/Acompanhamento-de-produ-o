@@ -1,11 +1,11 @@
 from app.models.Clients import Clients
 from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
-
+# Repository for managing client data
 class Clients_repositorie:
     def __init__(self, session):
         self.session = session
 
-    
+# Methods for CRUD operations on clients    
     def repo_find_all_clients(self):
         clients = self.session.query(Clients).all()
         return clients

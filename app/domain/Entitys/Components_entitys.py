@@ -1,5 +1,6 @@
 from app.Schemes.Components_Schemes import Components_Scheme
 
+# Entity for creating or updating a component
 class Components_entity: 
     def __init__(self,scheme:Components_Scheme):
         if scheme.part_number is not None:

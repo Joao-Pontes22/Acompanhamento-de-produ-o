@@ -1,3 +1,4 @@
+# Entity for creating or updating a supplier
 class  Suplliers_entity:
     def __init__(self, name:str, contact:str, phone:str, email:str ):
         if name is not None:

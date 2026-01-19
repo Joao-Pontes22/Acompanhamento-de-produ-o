@@ -18,15 +18,9 @@ from app.Routes.Parts_Router import Part_Router
 from app.Routes.Stock_Router import Stock_Router
 from app.Routes.Movimentation_Router import Movimentaion_Router
 from app.Routes.Relation_Router import PartsxComponents_Router
-from app.domain.Exceptions import AlreadyExist
+from app.Routes.Machining_Production_Router import Machining_Production_Router
 from fastapi.responses import JSONResponse
 
-@app.exception_handler(AlreadyExist)
-async def already_exist_handler(request: Request, exc: AlreadyExist):
-    return JSONResponse(
-        status_code=409,
-        content={"detail": str(exc)}
-    )
 
 app.include_router(Sector_Router)
 app.include_router(Employer_Router)
@@ -39,6 +33,7 @@ app.include_router(Stock_Router)
 app.include_router(Movimentaion_Router)
 app.include_router(Machine_Router)
 app.include_router(PartsxComponents_Router)
+app.include_router(Machining_Production_Router)
 
 if __name__ == "__main__":
     import uvicorn

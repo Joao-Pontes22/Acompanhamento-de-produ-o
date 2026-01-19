@@ -1,4 +1,4 @@
-
+# Entity for creating or updating parts and components
 class PartsAndComp_entity:
     def __init__(self, part_number, description, category, cost):
         self.part_number = part_number
@@ -7,7 +7,7 @@ class PartsAndComp_entity:
         self.cost = cost
         pass
 
-
+# Entity for filtering parts and components
 class PartsAndComp_entity_filter:
     def __init__(self, part_number=None, description=None, supplier=None, client=None, component_type=None):
         self.part_number = part_number.upper() if part_number else None

@@ -1,5 +1,5 @@
 from app.Schemes.Stock_Schemes import Stock_Scheme
-
+# Entity for creating a new stock record
 class Stock_Entity:
     def __init__(self, scheme: Stock_Scheme, 
                  cost:float):
@@ -14,7 +14,7 @@ class Stock_Entity:
     def _validate_business_rules(self):
         if self.qnty <= 0:
             raise ValueError("Stock quantity must be greater than zero")
-
+# Entity for creating stock records based on part type
 class Stock_Entity_Part:
     def __init__(self, scheme: Stock_Entity,  client:str,  
                  assembly_batch:str = None,
@@ -38,7 +38,7 @@ class Stock_Entity_Part:
     def _validate_business_rules(self):
         if self.qnty <= 0:
             raise ValueError("Stock quantity must be greater than zero")
-
+# Entity for creating stock records for machined parts
 class Stock_Entity_Machined:
     def __init__(self, scheme: Stock_Entity,
                 supplier:str,  
@@ -63,7 +63,7 @@ class Stock_Entity_Machined:
     def _validate_business_rules(self):
         if self.qnty <= 0:
             raise ValueError("Stock quantity must be greater than zero")
-
+# Entity for creating stock records for raw materials
 class Stock_Entity_Raw:
     def __init__(self, scheme: Stock_Entity, 
                   supplier:str,  

@@ -1,3 +1,4 @@
+# Entity for transferring items between sectors
 class Transfer_entitys:
     def __init__(self, 
                  part_number: str,
