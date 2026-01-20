@@ -2,18 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 from app.Schemes.Stock_Schemes import Stock_Scheme, Stock_Transfer_Scheme, Update_Stock_Scheme
-from app.repositories.Relation_repositorie import Relation_repositorie
-from app.repositories.Stock_repositorie import Stock_repositorie
-from app.repositories.Components_repositorie import Components_Repositorie
-from app.repositories.Parts_repositorie import Parts_Repositorie
-from app.repositories.Sectors_repositorie import Sectors_repositorie
+from app.repositories.Relation_repository import Relation_repositorie
+from app.repositories.Stock_repository import Stock_repositorie
+from app.repositories.Components_repository import Components_Repositorie
+from app.repositories.Parts_repository import Parts_Repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
 from app.Services.Stock_Services import Stock_Services
 from app.domain.Exceptions import NotFoundException
 from app.core.Dependecies import Verify_Token
-from app.repositories.Movimentation_repositorie import MovimentationRepository
-from app.repositories.PartAndComp_repositorie import PartsAndComp_Repositorie
+from app.repositories.Movimentation_repository import MovimentationRepository
+from app.repositories.PartAndComp_repository import PartsAndComp_Repositorie
 from app.Schemes.Responses.Response_Stock import Response_Stock_Scheme
-from app.repositories.Employers_repositories import employersRepo
+from app.repositories.Employers_repository import employersRepo
 Stock_Router = APIRouter(prefix="/stock", tags=["Stock Operation"])
 
 

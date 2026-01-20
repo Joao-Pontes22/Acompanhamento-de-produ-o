@@ -1,32 +1,33 @@
-from app.domain.Exceptions import InvalidNameException
 
 # Entity for creating a new client
-class clients_entitys:
-    def __init__(self, name, contact, email, phone): 
+class ClientsEntity:
+    def __init__(self,
+                 name: str,
+                 contact: str,
+                 email: str,
+                 phone: str): 
 
-        if len(name) <=3:
-            raise InvalidNameException("Name must be grather than 3 caracteres")
-
-        if len(contact) <3:
-            raise InvalidNameException("Contact must be grather than 3 caracteres")
-        self.name = name.upper()
-        self.contact = contact.upper()
-        self.email= email.lower()
+        self.name = name
+        self.contact = contact
+        self.email= email
         self.phone = phone
 
 # Entity for updating client information
-class update_clients_infos_entitys:
-    def __init__(self, name=None, contact=None, email=None, phone=None):
+class UpdateClientsInfosEntity:
+    def __init__(self,
+                 name: str,
+                 contact: str,
+                 email: str,
+                 phone: str):
         
-        if name is not None:
-            if len(name) <=3:
-                raise InvalidNameException("Name must be grather than 3 caracteres")
-            self.name = name.upper()
-        if contact is  not None:
-            if len(contact) <3:
-                raise InvalidNameException("Contact must be grather than 3 caracteres")
-            self.contact = contact.upper()   
-        if email is not None:
-            self.email= email.lower()
-        if phone is not None:
+        if name:
+            self.name = name
+
+        if contact:
+            self.contact = contact 
+
+        if email:
+            self.email= email
+
+        if phone:
             self.phone = phone

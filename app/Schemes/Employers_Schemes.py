@@ -1,13 +1,42 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
-class Employers_Scheme(BaseModel):
+
+
+class EmployersScheme(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     name: str
     emp_id: str
     password: str
-    sector: str
-    model_config = ConfigDict(from_attributes=True)
+    sector_name: str
 
-class Employers_Scheme_Update(BaseModel):
-    name: Optional[str] = None
-    sector: Optional[str] = None
+    @field_validator("name",
+                     "emp_id", 
+                     "sector_name", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value
+    
+
+    
+class UpdateEmployersInfoScheme(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    name: Optional[str] 
+    sector_name: Optional[str]
+    password: Optional[str]
+    emp_id: Optional[str]
+
+    @field_validator("name",
+                     "emp_id", 
+                     "sector_name", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value
+    

@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 from app.domain.Exceptions import NotFoundException
-from app.repositories.Movimentation_repositorie import MovimentationRepository
-from app.repositories.Parts_repositorie import Parts_Repositorie
-from app.repositories.Sectors_repositorie import Sectors_repositorie
-from app.repositories.Components_repositorie import Components_Repositorie
-from app.repositories.Employers_repositories import employersRepo
+from app.repositories.Movimentation_repository import MovimentationRepository
+from app.repositories.Parts_repository import Parts_Repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
+from app.repositories.Components_repository import Components_Repositorie
+from app.repositories.Employers_repository import employersRepo
 from app.Services.Movimentation_Services import MovimentationService
 
 

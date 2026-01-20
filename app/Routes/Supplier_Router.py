@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session, Verify_Token
 from sqlalchemy.orm import Session
 from app.Schemes.Supplier_Schemes import Suppliers_Scheme, Suppliers_Scheme_Update
-from app.repositories.Suppliers_repositorie import Suppliers_Repositorie
+from app.repositories.Suppliers_repository import Suppliers_Repositorie
 from app.Services.Supplier_Services import Supplier_Services
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 

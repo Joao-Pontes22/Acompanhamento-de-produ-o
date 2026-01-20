@@ -13,7 +13,7 @@ class Sectors (base):
     employers = relationship("Employers", back_populates="employer_sector")
     stock = relationship("Stock", back_populates="sector")
     machines = relationship("Machines", back_populates="sector")
-    machining_production = relationship("Machining_Production", back_populates="sector")
+    machining_production = relationship("MachiningProduction", back_populates="sector")
 
     
     def __init__(self, sector, tag):

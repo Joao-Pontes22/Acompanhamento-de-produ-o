@@ -1,13 +1,38 @@
-from pydantic import BaseModel, ConfigDict
-class Relation_Scheme(BaseModel):
+from pydantic import BaseModel, ConfigDict, field_validator
+from typing import Optional
+
+
+class RelationScheme(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     create_item_part_number: str
     consume_item_part_number: str
     qnty: int
-    model_config = ConfigDict(from_attributes=True)
 
 
-class Relation_Scheme_Update(BaseModel):
-    create_item_part_number: str | None = None
-    consume_item_part_number: str | None = None
-    qnty: int | None = None
+    @field_validator("create_item_part_number",
+                     "consume_item_part_number", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value
+
+
+class UpdateRelationInfoScheme(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    create_item_part_number: Optional[str] 
+    consume_item_part_number: Optional[str] 
+    qnty: Optional[int] 
+
+
+    @field_validator("create_item_part_number",
+                     "consume_item_part_number", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value

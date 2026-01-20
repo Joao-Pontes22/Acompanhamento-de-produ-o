@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.Schemes.Sector_Schemes import Sector_Scheme, Sector_Scheme_Update
 from app.Schemes.Responses.Responde_Sector import Response_Sector
 from app.Services.Sector_Service import Sectors_Services
-from app.repositories.Sectors_repositorie import Sectors_repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
 from app.core.Dependecies import Init_Session
 from app.domain.Exceptions import AlreadyExist, NotFoundException
 

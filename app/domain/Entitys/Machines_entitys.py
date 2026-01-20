@@ -1,9 +1,28 @@
-# Entity for creating a new machine
-class Machine_Entity:
-    def __init__(self, machine:str = None, sector:str = None, description_Machine:str = None):
-        if machine is not None:
-            self.Machine = machine.upper()
-        if sector is not None:
-            self.Sector = sector.upper()
-        if description_Machine is not None:
-            self.Description_Machine = description_Machine.lower()
+from app.Schemes.Machine_Schemes import MachineScheme
+
+class MachineEntity:
+    def __init__(self, 
+                 machine_name: str,
+                 sector_name: str,
+                 description_machine: str 
+                 ):
+            self.machine_name = machine_name
+            self.sector_name = sector_name
+            self.description_machine = description_machine
+
+
+class UpdateMachinesInfoEntity:
+    def __init__(self,
+                 machine_name: str,
+                 sector_name: str,
+                 description_machine: str 
+                 ):
+            
+            if machine_name:
+                self.machine_name = machine_name
+
+            if sector_name:
+                self.Sector_name = sector_name
+
+            if description_machine:
+                self.description_Machine = description_machine

@@ -1,18 +1,39 @@
 # Entity for creating or updating parts and components
-class PartsAndComp_entity:
-    def __init__(self, part_number, description, category, cost):
+class PartsAndCompsEntity:
+    def __init__(self, 
+                 part_number: str, 
+                 description: str, 
+                 category: str, 
+                 cost: float
+                 ):
+        
         self.part_number = part_number
         self.description = description
-        self.category = category.upper()
+        self.category = category
         self.cost = cost
-        pass
 
 # Entity for filtering parts and components
-class PartsAndComp_entity_filter:
-    def __init__(self, part_number=None, description=None, supplier=None, client=None, component_type=None):
-        self.part_number = part_number.upper() if part_number else None
-        self.description = description.upper() if description else None
-        self.supplier = supplier.upper() if supplier else None
-        self.client = client.upper() if client else None
-        self.component_type = component_type.upper() if component_type else None
-        pass
+class PartsAndCompsEntityFilter:
+    def __init__(self, 
+                 part_number: str, 
+                 description: str, 
+                 supplier: str, 
+                 client: str, 
+                 component_type: str
+                 ):
+        
+        if part_number:
+            self.part_number = part_number
+
+        if description:
+            self.description = description 
+
+        if supplier:
+            self.supplier = supplier
+
+        if client:
+            self.client = client
+
+        if component_type:
+            self.component_type = component_type
+      

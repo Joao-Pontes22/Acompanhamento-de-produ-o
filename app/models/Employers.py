@@ -17,8 +17,8 @@ class Employers (base):
 #Relationship
     sector = relationship("Sectors", back_populates="employers")
     employer_sector = relationship("Sectors", back_populates="employers")
-    machining_production =  relationship("Machining_Production", back_populates="machining_employer")
-    assembly_production = relationship("Assembly_Production", back_populates="assembly_employer")
+    machining_production =  relationship("MachiningProduction", back_populates="machining_employer")
+    assembly_production = relationship("AssemblyProduction", back_populates="assembly_employer")
 # -------------------------------------------------------------------#
     
     def __init__(self, name, password, sector_name, emp_id):

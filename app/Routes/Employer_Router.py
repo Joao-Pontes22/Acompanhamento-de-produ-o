@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from app.Schemes.Responses.Response_Auth import Response_Auth
 from app.Schemes.Employers_Schemes import Employers_Scheme, Employers_Scheme_Update
 from app.core.Dependecies import Init_Session
-from app.repositories.Employers_repositories import employersRepo
+from app.repositories.Employers_repository import employersRepo
 from app.Services.Employers_Services import Emp_services
 from app.domain.Exceptions import AlreadyExist, NotFoundException
-from app.repositories.Sectors_repositorie import Sectors_repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
 Employer_Router = APIRouter(prefix="/Employers", tags=["Employers Operation"])
 
 @Employer_Router.post("/Create_Employer")

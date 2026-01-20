@@ -1,16 +1,39 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
+from typing import Optional
 
-class Parts_Scheme(BaseModel):
+
+class PartsScheme(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     part_number: str
     description: str
     client: str
     cost: float
-    model_config = ConfigDict(from_attributes=True)
+    
+    @field_validator("part_number",
+                     "description", 
+                     "client", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value
 
-class parts_Update_Scheme(BaseModel):
-    part_number: str | None = None
-    description: str | None = None
-    client: str | None = None
-    cost: float | None = None
+class UpdatePartsInfoScheme(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    part_number: Optional[str] 
+    description: Optional[str] 
+    client: Optional[str] 
+    cost: Optional[float] 
 
+    @field_validator("part_number",
+                     "description", 
+                     "client", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value

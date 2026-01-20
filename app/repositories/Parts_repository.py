@@ -1,36 +1,50 @@
 from sqlalchemy .orm import Session
 from app.models.ComponentsAndParts import ComponentsAndParts
-from app.domain.Entitys.Parts_entitys import Parts_entity
-class Parts_Repositorie:
+
+
+class PartsRepository:
     def __init__(self, session:Session):
         self.session = session
 
 
-    def repo_create_Part(self,scheme: Parts_entity):
-        part = ComponentsAndParts(part_number=scheme.part_number,
-                                          description=scheme.description_parts,
+    def create_part(self,
+                         part_number: str,
+                         description_parts: str,
+                         cost: float,
+                         client_name: str
+                         ):
+        
+        part = ComponentsAndParts(part_number=part_number,
+                                          description=description_parts,
                                           category="PART",
-                                          cost=scheme.cost,
-                                          client_name=scheme.client,
-                                          supplier_name=None)
+                                          cost=cost,
+                                          client_name=client_name,
+                                          supplier_name=None
+                                          )
         self.session.add(part)
         self.session.commit()
         return part
     
-    def repo_get_all_Parts(self):
+    def get_all_parts(self):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART").all()
     
-    def repo_update_Part_info(self, part):
+    def update_part_info(self, part):
         self.session.commit()
         self.session.refresh(part)
         return part
     
-    def repo_delete_part(self, part):
+    def delete_part(self, part):
         self.session.delete(part)
         self.session.commit()
         return(part)
     
-    def repo_get_part_filteres(self, id:int = None, part_number:str = None, description:str = None, client:str = None):
+    def get_parts_filtered(self, 
+                              id:int, 
+                              part_number:str, 
+                              description:str, 
+                              client:str
+                              ):
+        
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART")
         if id:
             query = query.filter(ComponentsAndParts.id ==id)
@@ -42,7 +56,13 @@ class Parts_Repositorie:
             query = query.filter(ComponentsAndParts.client_name == client)
         return query.all()
     
-    def repo_get_part_filtered_first(self, id:int = None, part_number:str = None, description:str = None, client:str = None):
+    def get_part_filtered_first(self, 
+                                id:int, 
+                                part_number:str, 
+                                description:str, 
+                                client:str
+                                ):
+        
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART")
         if id:
             query = query.filter(ComponentsAndParts.id ==id)

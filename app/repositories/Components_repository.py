@@ -1,47 +1,60 @@
 from sqlalchemy .orm import Session
 from app.models.ComponentsAndParts import ComponentsAndParts
-from app.domain.Entitys.Components_entitys import Components_entity
 # Repository for managing component data
-class Components_Repositorie:
+class ComponentsRepository:
     def __init__(self, session:Session):
         self.session = session
 
 # Methods for CRUD operations on components
-    def repo_create_Components(self, scheme:Components_entity):
-        component = ComponentsAndParts(part_number=scheme.part_number,
-                                   description=scheme.description_material,
-                                   supplier_name=scheme.supplier,
-                                   cost=scheme.cost,
+    def create_component(self, 
+                               part_number: str,
+                               description_material: str,
+                               supplier_name: str,
+                               cost: float,
+                               component_type: str
+                               ):
+        component = ComponentsAndParts(part_number=part_number,
+                                   description=description_material,
+                                   supplier_name=supplier_name,
+                                   cost=cost,
                                    category="COMPONENT",
                                    client_name=None,
-                                   component_type=scheme.component_type)
+                                   component_type=component_type)
         self.session.add(component)
         self.session.commit()
         return component
     
-    def repo_get_all_Component(self):
+    def get_all_components(self):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT").all()
     
-    def repo_get_Component_by_id(self, id:int):
+    def get_component_by_id(self, id:int):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.id == id ).first()
     
-    def repo_get_Component_by_part_number(self, part_number:str):
+    def get_component_by_part_number(self, part_number:str):
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.part_number == part_number ).first()
 
     
-    def repo_update_component_info(self, component):
+    def update_component_info(self, component):
         self.session.commit()
         self.session.refresh(component)
         return component
     
-    def repo_delete_component(self, component):
+    def delete_component(self, component):
         self.session.delete(component)
         self.session.commit()
         return(component)
     
 
-    def repo_get_component_filteres(self, id:int, part_number:str = None, description:str = None, supplier:str = None, component_type:str = None):
+    def get_component_filtered(self, 
+                                    id:int, 
+                                    part_number:str, 
+                                    description:str, 
+                                    supplier:str, 
+                                    component_type:str
+                                    ):
+        
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT")
+        
         if id:
             query = query.filter(ComponentsAndParts.id ==id)
         if part_number:

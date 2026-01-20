@@ -3,26 +3,22 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 
-class Machining_Production(base):
-    __tablename__ = "Machining_Production"
+class MachiningProduction(base):
+    __tablename__ = "MachiningProduction"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     serial_ID = Column("serial_ID", Integer)
     sector_name = Column("sector_name", String, ForeignKey("Sectors.sector"))
     machine_name = Column("machine_name", String, ForeignKey("Machines.machine"))
-
     date = Column("date", DateTime)
     duration_process = Column("duration_process", DateTime)
-
     input_part_number = Column("input_part_number", String)
     output_part_number = Column("output_part_number", String)
-
     machining_batch = Column("machining_batch", String)
     batch = Column("batch", String)
-
     emp_id_employer = Column("emp_id_employer", Integer, ForeignKey("Employers.emp_id"))
     status = Column("status", String)
-
+    
     machining_employer = relationship("Employers", back_populates="machining_production")
     machine = relationship("Machines", back_populates="machining_production")
     sector = relationship("Sectors", back_populates="machining_production")

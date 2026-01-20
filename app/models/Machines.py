@@ -12,8 +12,8 @@ class Machines (base):
     sector_name = Column("sector_name", String, ForeignKey("Sectors.sector"))
 
     sector = relationship("Sectors", back_populates="machines")
-    machining_production = relationship("Machining_Production", back_populates="machine")
-    assembly_production = relationship("Assembly_Production", back_populates="machine")
+    machining_production = relationship("MachiningProduction", back_populates="machine")
+    assembly_production = relationship("AssemblyProduction", back_populates="machine")
     def __init__(self, machine, sector_name, description_machine):
         self.machine = machine
         self.sector_name = sector_name

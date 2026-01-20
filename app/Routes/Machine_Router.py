@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from app.Schemes.Machine_Schemes import Machine_Scheme, Update_Machine_Scheme
-from app.repositories.Machines_repositorie import Machine_Repositorie
-from app.repositories.Sectors_repositorie import Sectors_repositorie
+from app.repositories.Machines_repository import Machine_Repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
 from app.Services.Machine_services import Service_Machines
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 from app.Schemes.Responses.Response_Machines import Response_Machines

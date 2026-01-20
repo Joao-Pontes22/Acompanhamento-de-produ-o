@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 
 class ComponentsAndParts(base):
-    __tablename__ = "components_and_parts"
+    __tablename__ = "ComponentsAndParts"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     part_number = Column(String, unique=True, nullable=False)

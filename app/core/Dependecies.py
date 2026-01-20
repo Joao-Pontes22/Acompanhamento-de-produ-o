@@ -6,7 +6,8 @@ from app.models.Models import engine
 from app.models.Employers import Employers
 from fastapi import Depends, HTTPException
 from app.core.Settings.Settings import oauth2_scheme, SECRET_KEY, ALGORITHM
-from app.domain.Exceptions import NotFoundException
+
+
 def Init_Session():
     Session = None
     try:
@@ -19,6 +20,7 @@ def Init_Session():
     finally:
      session.close()
      print("Session closed.")
+
 
 def Verify_Token (token = Depends(oauth2_scheme), session:Session = Depends(Init_Session) ):
     try:

@@ -1,32 +1,31 @@
 
-from app.domain.Value_objects.Sector import value_Sector
 from datetime import datetime
-from app.domain.Value_objects.Part_number import value_Part_number
 
 #Exceptions
 from app.domain.Exceptions import NotFoundException, StockInssuficientException
 
 #Scheme
-from app.Schemes.Stock_Schemes import Stock_Scheme,Stock_Transfer_Scheme,Stock_Scheme_models, Update_Stock_Scheme
+from app.Schemes.Stock_Schemes import StockScheme,StockTransferScheme,StockSchemeModels, UpdateStockInfoScheme
 # Repositórios
-from app.repositories.Relation_repositorie import Relation_repositorie
-from app.repositories.Stock_repositorie import Stock_repositorie
-from app.repositories.Movimentation_repositorie import MovimentationRepository
-from app.repositories.Sectors_repositorie import  Sectors_repositorie
-from app.repositories.PartAndComp_repositorie import PartsAndComp_Repositorie
-from app.repositories.Employers_repositories import employersRepo
+from app.repositories.Relation_repository import RelationRepository
+from app.repositories.Stock_repository import StockRepository
+from app.repositories.Movimentation_repository import MovimentationRepository
+from app.repositories.Sectors_repository import  SectorsRepository
+from app.repositories.PartAndComp_repository import PartsAndCompRepository
+from app.repositories.Employers_repository import EmployersRepository
 # Entitys
-from app.domain.Entitys.Transfer_entitys import Transfer_entitys
-from app.domain.Entitys.Movimentation_entity import Movimentation_entity
-from app.domain.Entitys.Stock_entitys import Stock_Entity, Stock_Entity_Part, Stock_Entity_Machined, Stock_Entity_Raw
+from app.domain.Entitys.Transfer_entitys import TransferEntity
+from app.domain.Entitys.Movimentation_entity import MovimentationEntity
+from app.domain.Entitys.Stock_entitys import StockEntity, StockEntityRaw, StockEntity, StockEntityMachined, StockEntityPart
 
 
 class Stock_Services:
-    def __init__(self, repo:Stock_repositorie, sectors_repo: Sectors_repositorie = None,
+    def __init__(self, repo:StockRepository, sectors_repo: SectorsRepository = None,
                  movimentation_repo: MovimentationRepository = None, 
-                 partsAndComp_repo: PartsAndComp_Repositorie = None,
-                 relation_repo: Relation_repositorie = None,
-                 employers_repo: employersRepo = None ):
+                 partsAndComp_repo: PartsAndCompRepository = None,
+                 relation_repo: RelationRepository = None,
+                 employers_repo: EmployersRepository = None 
+                 ):
         self.repo = repo
         self.sectors_repo = sectors_repo
         self.partsAndComp_repo = partsAndComp_repo
@@ -34,105 +33,129 @@ class Stock_Services:
         self.movimentation_repo = movimentation_repo
         self.employers_repo = employers_repo
 
-    def Service_Create_Stock(self, scheme:Stock_Scheme,
+    def create_stock(self, schema:StockScheme,
                             employer_id:int 
                             ):
-        value_partnumber = value_Part_number(part_number=scheme.part_number)
-        value_sector = value_Sector(sector=scheme.sector)
-        employer = self.employers_repo.repo_find_by_id(id=employer_id)
+
+        employer = self.employers_repo.get_by_id(id=employer_id)
         try:
-            PartOrComp = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=value_partnumber.part_number)
+
+            PartOrComp = self.partsAndComp_repo.get_Parts_and_Components_by_part_number(part_number=schema.part_number)
             if not PartOrComp:
                 raise NotFoundException("Item")
-            sector = self.sectors_repo.repo_get_sector_by_name(name=value_sector.sector)
+            
+            sector = self.sectors_repo.get_sector_by_name(name=schema.sector_name)
             if not sector:
                 raise NotFoundException("Sector")
+            
             batch = self.create_batch(item=PartOrComp)
-            cost = scheme.qnty * PartOrComp.cost
-            entity = Stock_Entity(scheme=scheme, cost=cost)
-            if PartOrComp.category == "PART":
-                self.create_stock_part(scheme=entity, PartOrComp=PartOrComp, batch=batch, employer=employer)
+            cost = schema.qnty * PartOrComp.cost
 
+            entity = StockEntity(sector_name=schema.sector_name,
+                                 part_number=schema.part_number,
+                                 qnty=schema.qnty,
+                                 reason=schema.reason, 
+                                 cost=cost
+                                 )
+            
+            if PartOrComp.category == "PART":
+                new_stock = self.create_stock_part(scheme=entity, 
+                                                   PartOrComp=PartOrComp, 
+                                                   batch=batch, 
+                                                   employer=employer
+                                                   )
+                return new_stock
+            
             elif PartOrComp.category == "COMPONENT":
                 if PartOrComp.component_type == "MACHINED":
-                    self.create_stock_machined(scheme=entity, PartOrComp=PartOrComp, batch=batch, employer=employer)
+                    new_stock = self.create_stock_machined(scheme=entity, 
+                                                           PartOrComp=PartOrComp, 
+                                                           batch=batch, 
+                                                           employer=employer
+                                                           )
+                    return new_stock
+                
                 elif PartOrComp.component_type == "RAW":
-                    self.create_stock_raw(scheme=entity, PartOrComp= PartOrComp, batch=batch, employer=employer)
+                    new_stock = self.create_stock_raw(scheme=entity, 
+                                                      PartOrComp= PartOrComp, 
+                                                      batch=batch, 
+                                                      employer=employer
+                                                      )
+                    return new_stock
+                
         except Exception as e:
             self.repo.session.rollback()
             
     
-    def service_get_all_stock(self):
+    def get_all_stock(self):
         stock = self.repo.get_all_stock()
         if not stock:
             raise NotFoundException("Stock")
         return stock
     
-    def service_get_filtered_stock(self, part_number: str = None,
+    def get_filtered_stock(self, part_number: str = None,
                                          status:str = None,
                                          sector_name: str = None):
-        value_sector = value_Sector(sector=sector_name) if sector_name else None
-        stock = self.repo.get_specify_stock(sector_name=value_sector.sector if value_sector else None, status=status, part_number=part_number)
+        stock = self.repo.get_specify_stock(sector_name=sector_name, status=status, part_number=part_number)
         if not stock:
             raise NotFoundException("Stock")
         return stock
 
-    def Service_update_stock(self, stock_id:int,
-                             scheme: Update_Stock_Scheme):
+    def update_stock(self, 
+                     stock_id:int,
+                     schema: UpdateStockInfoScheme):
         stock = self.repo.get_stock_by_id(stock_id=stock_id)
         if not stock:
             raise NotFoundException("Stock")
-        if scheme.qnty is not None:
-            stock.qnty = scheme.qnty
-        if scheme.reason is not None:
-            stock.reason = scheme.reason
+        if schema.qnty:
+            stock.qnty = schema.qnty
+        if schema.reason:
+            stock.reason = schema.reason
         updated_stock = self.repo.update_Stock(stock=stock)
         return updated_stock
 
-    def Service_delete_stock(self, stock_id:int):
+    def delete_stock(self, stock_id:int):
         stock = self.repo.get_stock_by_id(stock_id=stock_id)
         if not stock:
             raise NotFoundException("Stock")
         delete = self.repo.delete_stock(stock=stock)
         return delete
 
-    def Service_Transfer_Stock(
+    def transfer_sector_stock(
         self,
-        scheme: Stock_Transfer_Scheme,
+        schema: StockTransferScheme,
         employer_id: int
         ):
         try:
-            value_origin_sector = value_Sector(sector=scheme.origin_sector)
-            value_destination_sector = value_Sector(sector=scheme.destination_sector)
-            employer = self.employers_repo.repo_find_by_id( id=employer_id)
-            origin = self.sectors_repo.repo_get_sector_by_name(name=value_origin_sector.sector)
-            destination = self.sectors_repo.repo_get_sector_by_name(name=value_destination_sector.sector)
+            employer = self.employers_repo.get_by_id( id=employer_id)
+            origin = self.sectors_repo.get_sector_by_name(name=schema.origin_sector)
+            destination = self.sectors_repo.get_sector_by_name(name=schema.destination_sector)
 
             if not origin:
                 raise NotFoundException("Origin sector")
             if not destination:
                 raise NotFoundException("Destination sector")
 
-            transfer_entity = Transfer_entitys(part_number=scheme.part_number,
-                                            origin_sector=scheme.origin_sector,
-                                            destination_sector=scheme.destination_sector,
-                                            qnty=scheme.qnty,
-                                            batch=scheme.batch,
-                                            machining_batch=scheme.machining_batch,
-                                            assembly_batch=scheme.assembly_batch,
-                                            reason=scheme.reason)
+            transfer_entity = TransferEntity(part_number=schema.part_number,
+                                            origin_sector=schema.origin_sector,
+                                            destination_sector=schema.destination_sector,
+                                            qnty=schema.qnty,
+                                            batch=schema.batch,
+                                            machining_batch=schema.machining_batch,
+                                            assembly_batch=schema.assembly_batch,
+                                            reason=schema.reason)
             stocks = self.repo.get_specify_stock(
-                part_number=scheme.part_number,
-                sector_name=value_origin_sector.sector
+                part_number=schema.part_number,
+                sector_name=schema.origin_sector
             )
             if not stocks:
                 raise NotFoundException("Stock in origin sector")
             
-            if sum([s.qnty for s in stocks]) < scheme.qnty:
+            if sum([s.qnty for s in stocks]) < schema.qnty:
                 raise NotFoundException("Insufficient stock quantity in origin sector")
             self.transfer_stock(
                         stocks=stocks,
-                        scheme=transfer_entity,
+                        schema=transfer_entity,
                         employer=employer)
         
 
@@ -141,16 +164,16 @@ class Stock_Services:
             self.repo.session.rollback()
     
     def consume_stock(self, relation,
-                            scheme:Stock_Entity,
+                            schema:StockEntity,
                             employer:str):
         try:
             for items in relation:
-                component = self.partsAndComp_repo.repo_get_Parts_and_Components_by_part_number(part_number=items.consume_item_Part_number)
-                stock = self.repo.get_specify_stock(part_number=component.part_number, sector_name=scheme.sector_name)
+                component = self.partsAndComp_repo.get_Parts_and_Components_by_part_number(part_number=items.consume_item_part_number)
+                stock = self.repo.get_specify_stock(part_number=component.part_number, sector_name=schema.sector_name)
                 total_qnty = sum([s.qnty for s in stock])
-                if total_qnty < scheme.qnty:
-                    raise StockInssuficientException(part_number=component.part_number, required=scheme.qnty, available=total_qnty)
-                remaining_qnty = scheme.qnty
+                if total_qnty < schema.qnty:
+                    raise StockInssuficientException(part_number=component.part_number, required=schema.qnty, available=total_qnty)
+                remaining_qnty = schema.qnty
                 for s in stock:
                     if remaining_qnty <= 0:
                         break
@@ -158,76 +181,79 @@ class Stock_Services:
                     s.qnty -= consume
                     remaining_qnty -= consume
                     self.repo.update_Stock(stock=s)
-                    movi_entity_consumption = Movimentation_entity(part_number=component.part_number,
-                                                                origin=scheme.sector_name,
-                                                                reason=f"Consumption for part {scheme.part_number}, batch {s.batch}",
+                    movi_entity_consumption = MovimentationEntity(part_number=component.part_number,
+                                                                origin=schema.sector_name,
+                                                                reason=f"Consumption for part {schema.part_number}, batch {s.batch}",
                                                                 movimentation_type="CONSUME",
                                                                 employer=employer.emp_id,
-                                                                batch=s.batch if s.batch else None,
+                                                                batch=s.batch,
                                                                 qnty=consume,
                                                                 date=datetime.today(),
-                                                                destination=scheme.sector_name,
-                                                                machining_batch=s.machining_batch if s.machining_batch else None,
-                                                                assembly_batch=s.assembly_batch if s.assembly_batch else None)
+                                                                destination=schema.sector_name,
+                                                                machining_batch=s.machining_batch,
+                                                                assembly_batch=s.assembly_batch)
                     self.movimentation_repo.create(movimentation_data=movi_entity_consumption)
                     self.repo.delete_stock(stock=s) if s.qnty == 0 else None
         except Exception as e:
             self.repo.session.rollback()
 
     def transfer_stock(self, stocks,
-                            scheme:Stock_Transfer_Scheme,
+                            schema:StockTransferScheme,
                             employer:str):
         try:
-            remaining_qnty = scheme.qnty
+            remaining_qnty = schema.qnty
+
             for stock in stocks:
-                
                 if remaining_qnty <= 0:
                     break
                 transfer_qnty = min(stock.qnty, remaining_qnty)
                 stock.qnty -= transfer_qnty
                 remaining_qnty -= transfer_qnty
                 self.repo.update_Stock(stock=stock)
-                movi_entity_consumption = Movimentation_entity(part_number=stock.part_number,
-                                                            origin=scheme.origin_sector,
-                                                            reason=scheme.reason,
+
+                movi_entity_consumption = MovimentationEntity(part_number=stock.part_number,
+                                                            origin=schema.origin_sector,
+                                                            reason=schema.reason,
                                                             movimentation_type="TRANSFER_OUT",
                                                             employer=employer.emp_id,
                                                             batch=stock.batch,
                                                             qnty=transfer_qnty,
                                                             date=datetime.today(),
-                                                            destination=scheme.destination_sector,
+                                                            destination=schema.destination_sector,
                                                             machining_batch=stock.machining_batch,
                                                             assembly_batch=stock.assembly_batch)
-                self.repo.create_stock(scheme=Stock_Scheme_models(
-                    sector_name=scheme.destination_sector,
-                    part_number=stock.part_number,
-                    batch=stock.batch,
-                    machining_batch=stock.machining_batch,
-                    machining_date=stock.machining_date,
-                    assembly_batch=stock.assembly_batch,
-                    assembly_date=stock.assembly_date,
-                    qnty=transfer_qnty,
-                    entry_date=stock.entry_date,
-                    supplier_name=stock.supplier,
-                    client_name=stock.client,
-                    status=stock.status,
-                    cost=stock.cost
-                ))
+                
+                self.repo.create_stock(scheme=StockSchemeModels(sector_name=schema.destination_sector,
+                                                                part_number=stock.part_number,
+                                                                batch=stock.batch,
+                                                                machining_batch=stock.machining_batch,
+                                                                machining_date=stock.machining_date,
+                                                                assembly_batch=stock.assembly_batch,
+                                                                assembly_date=stock.assembly_date,
+                                                                qnty=transfer_qnty,
+                                                                entry_date=stock.entry_date,
+                                                                supplier_name=stock.supplier,
+                                                                client_name=stock.client,
+                                                                status=stock.status,
+                                                                cost=stock.cost
+                                                            ))
                 if stock.qnty == 0:
                     self.repo.delete_stock(stock=stock)
                 self.movimentation_repo.create(movimentation_data=movi_entity_consumption)
                 
-                movi_entity_transfer = Movimentation_entity(part_number=stock.part_number,
-                                                    origin=scheme.origin_sector,
-                                                    reason=scheme.reason,
+                movi_entity_transfer = MovimentationEntity(part_number=stock.part_number,
+                                                    origin=schema.origin_sector,
+                                                    reason=schema.reason,
                                                     movimentation_type="TRANSFER_IN",
                                                     employer=employer.emp_id,
                                                     batch=stock.batch,
                                                     qnty=transfer_qnty,
                                                     date=datetime.today(),
-                                                    destination=scheme.destination_sector,
+                                                    destination=schema.destination_sector,
                                                     machining_batch=stock.machining_batch,
-                                                    assembly_batch=stock.assembly_batch)
+                                                    assembly_batch=stock.assembly_batch
+                                                    )
+                
                 self.movimentation_repo.create(movimentation_data=movi_entity_transfer)
         except Exception as e:
             self.repo.session.rollback()
@@ -252,9 +278,9 @@ class Stock_Services:
             else:
                 return int(1) 
         
-    def create_stock_part(self, scheme: Stock_Entity, PartOrComp, batch, employer):
+    def create_stock_part(self, schema: StockEntity, PartOrComp, batch, employer):
         try:
-                entity = Stock_Entity_Part(scheme=scheme, 
+                entity = StockEntityPart(scheme=schema, 
                                         client=PartOrComp.client_name,
                                         assembly_batch=str(batch),
                                         assembly_date=datetime.today(),
@@ -262,9 +288,9 @@ class Stock_Services:
                 relation = self.relation_repo.get_relations_filtred(create_item_part_number=PartOrComp.part_number)
                 if not relation:
                     raise NotFoundException("Relation")
-                movi_entity = Movimentation_entity(part_number=scheme.part_number,
-                                                    origin=scheme.sector,
-                                                    reason=scheme.reason,
+                movi_entity = MovimentationEntity(part_number=schema.part_number,
+                                                    origin=schema.sector,
+                                                    reason=schema.reason,
                                                     movimentation_type="CREATE",
                                                     employer=employer.emp_id,
                                                     batch=None,
@@ -283,12 +309,13 @@ class Stock_Services:
         except Exception as e:
            self.repo.session.rollback()
     
-    def create_stock_machined(self, scheme: Stock_Entity, PartOrComp, batch, employer):
+    def create_stock_machined(self, schema: StockEntity, PartOrComp, batch, employer):
        try:
-            entity = Stock_Entity_Machined(scheme=scheme, supplier= PartOrComp.supplier_name,
-                                       machining_batch=batch,
-                                       machining_date=datetime.today(),
-                                       )
+            entity = StockEntityMachined(scheme=schema, 
+                                         supplier= PartOrComp.supplier_name,
+                                         machining_batch=batch,
+                                         machining_date=datetime.today(),
+                                        )
             relation = self.relation_repo.get_relations_filtred(create_item_part_number=PartOrComp.part_number)
             if not relation:
                 raise NotFoundException("Relation")
@@ -297,9 +324,9 @@ class Stock_Services:
                                                         employer=employer)
                 
                 
-            movi_entity = Movimentation_entity(part_number=scheme.part_number,
-                                                origin=scheme.sector,
-                                                reason=scheme.reason,
+            movi_entity = MovimentationEntity(part_number=schema.part_number,
+                                                origin=schema.sector,
+                                                reason=schema.reason,
                                                 movimentation_type="CREATE",
                                                 employer=employer.emp_id,
                                                 batch=None,
@@ -317,14 +344,14 @@ class Stock_Services:
            self.repo.session.rollback()
            raise Exception("Error 500")
     
-    def create_stock_raw(self, scheme: Stock_Entity, PartOrComp, batch, employer):
+    def create_stock_raw(self, schema: StockEntity, PartOrComp, batch, employer):
         try:
-                entity = Stock_Entity_Raw(scheme=scheme, 
+                entity = StockEntityRaw(scheme=schema, 
                                             batch=str(batch),
                                             entry_date=datetime.today(),
                                             supplier=PartOrComp.supplier_name)
                 
-                movi_entity = Movimentation_entity(part_number=entity.part_number,
+                movi_entity = MovimentationEntity(part_number=entity.part_number,
                                                         origin=entity.sector_name,
                                                         reason=entity.reason,
                                                         movimentation_type="CREATE",

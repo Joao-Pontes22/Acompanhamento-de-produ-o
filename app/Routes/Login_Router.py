@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.Services.Login_Service import login_service
-from app.repositories.Employers_repositories import employersRepo
+from app.repositories.Employers_repository import employersRepo
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from app.core.Dependecies import Init_Session, Verify_Token

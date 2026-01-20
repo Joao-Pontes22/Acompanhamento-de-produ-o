@@ -2,17 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 from app.Schemes.Machining_Production_Schemes import Machining_Production_Scheme
-from app.repositories.Movimentation_repositorie import MovimentationRepository
-from app.repositories.Relation_repositorie import Relation_repositorie
-from app.repositories.Employers_repositories import employersRepo
-from app.repositories.Machines_repositorie import Machine_Repositorie
-from app.repositories.Sectors_repositorie import Sectors_repositorie
-from app.repositories.Stock_repositorie import Stock_repositorie
+from app.repositories.Movimentation_repository import MovimentationRepository
+from app.repositories.Relation_repository import Relation_repositorie
+from app.repositories.Employers_repository import employersRepo
+from app.repositories.Machines_repository import Machine_Repositorie
+from app.repositories.Sectors_repository import Sectors_repositorie
+from app.repositories.Stock_repository import Stock_repositorie
 from app.Services.Stock_Services import Stock_Services
-from app.repositories.Machining_Production_repositorie import Machining_ProductionRepositorie
+from app.repositories.Machining_Production_repository import Machining_ProductionRepositorie
 from app.Services.Machining_Production_Services import MachiningProductionServices
 from app.domain.Exceptions import NotFoundException
-from app.repositories.PartAndComp_repositorie import PartsAndComp_Repositorie
+from app.repositories.PartAndComp_repository import PartsAndComp_Repositorie
 
 Machining_Production_Router = APIRouter(prefix="/machining_production", tags=["Machining Production Operation"])
 

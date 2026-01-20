@@ -1,14 +1,35 @@
-from app.Schemes.Parts_Schemes import Parts_Scheme
+
 # Entity for creating or updating a part
-class Parts_entity: 
-    def __init__(self,scheme:Parts_Scheme):
-        if scheme.part_number is not None:
-            self.part_number = scheme.part_number.upper()
-        if scheme.description is not None:
-            self.description_parts = scheme.description.upper()
-        if scheme.cost is not None:
-            if scheme.cost <=0:
+class PartsEntity: 
+    def __init__(self,
+                 part_number: str,
+                 description: str,
+                 cost: float,
+                 client_name: str
+                 ):
+            
+            self.part_number = part_number
+            self.description_parts = description
+            self.cost = cost
+            self.client = client_name
+    
+    def validate_rules(self):
+        if self.cost <=0:
              raise ValueError("Cost must be greater than zero")
-            self.cost = scheme.cost
-        if scheme.client is not None:
-            self.client = scheme.client.upper()
+        
+class UpdatePartsInfoEntity: 
+    def __init__(self,
+                 part_number: str,
+                 description: str,
+                 cost: float,
+                 client_name: str
+                 ):
+        
+        if part_number:
+            self.part_number = part_number
+        if description:
+            self.description_parts = description
+        if cost:
+            self.cost = cost
+        if client_name:
+            self.client = client_name

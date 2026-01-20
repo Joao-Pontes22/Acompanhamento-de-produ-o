@@ -3,8 +3,8 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 
-class Assembly_Production (base):
-    __tablename__="Assembly_Production"
+class AssemblyProduction (base):
+    __tablename__="AssemblyProduction"
 
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     serial_ID = Column("serial_ID", Integer)

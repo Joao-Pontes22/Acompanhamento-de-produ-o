@@ -1,7 +1,7 @@
 from app.Schemes.Supplier_Schemes import Suppliers_Scheme, Suppliers_Scheme_Update
 from app.domain.Entitys.Suppliers_entity import Suplliers_entity 
 from app.domain.Value_objects import Supplier
-from app.repositories.Suppliers_repositorie import Suppliers_Repositorie
+from app.repositories.Suppliers_repository import Suppliers_Repositorie
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 from app.domain.Value_objects.Supplier import value_Supplier
 class Supplier_Services:

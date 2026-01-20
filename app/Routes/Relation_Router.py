@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.Services.Relation_Services import RelationPartsxComponents_Services
-from app.repositories.Components_repositorie import Components_Repositorie
-from app.repositories.Relation_repositorie import Relation_repositorie
+from app.repositories.Components_repository import Components_Repositorie
+from app.repositories.Relation_repository import Relation_repositorie
 from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 from app.domain.Exceptions import NotFoundException, AlreadyExist

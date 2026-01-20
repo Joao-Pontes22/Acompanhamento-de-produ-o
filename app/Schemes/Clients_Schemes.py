@@ -1,18 +1,40 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
+from typing import Optional
 
-class Clients_Scheme(BaseModel):
+class ClientsScheme(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     name: str
     contact: str
     email: str
     phone: str
 
-    model_config = ConfigDict(from_attributes=True)
-
-
-class Clients_Update_Scheme(BaseModel):
-    name: str |  None = None
-    contact: str | None = None
-    email: str | None = None
-    phone: str | None = None
+    @field_validator("name",
+                     "contact", 
+                     mode="before"
+                     )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value
     
+
+    
+
+
+class UpdateClientsInfoScheme(BaseModel):
     model_config = ConfigDict(from_attributes=True)
+    name: Optional[str]
+    contact: Optional[str]
+    email: Optional[str] 
+    phone: Optional[str] 
+
+    @field_validator("name",
+                     "contact",
+                      mode="before"
+                      )
+    @classmethod
+    def to_upper(cls, value):
+        if isinstance(value, str):
+            return value.upper()
+        return value

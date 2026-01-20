@@ -1,11 +1,26 @@
 # Entity for creating or updating a supplier
-class  Suplliers_entity:
-    def __init__(self, name:str, contact:str, phone:str, email:str ):
-        if name is not None:
-            self.name = name.upper()
-        if contact is not None:
-            self.contact = contact.upper()
-        if phone is not None:
+class  SuplliersEntity:
+    def __init__(self, 
+                 supplier_name:str, 
+                 contact:str, 
+                 phone:str, 
+                 email:str ):
+        self.supplier_name = supplier_name
+        self.contact = contact
+        self.phone = phone
+        self.email = email
+
+class  UpdateSuplliersInfoEntity:
+    def __init__(self,
+                 supplier_name:str, 
+                 contact:str, 
+                 phone:str, 
+                 email:str ):
+        if supplier_name:
+            self.name = supplier_name
+        if contact:
+            self.contact = contact
+        if phone:
             self.phone = phone
-        if email is not None:
-            self.email = email.lower()
+        if email:
+            self.email = email

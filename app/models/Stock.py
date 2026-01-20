@@ -7,7 +7,7 @@ class Stock (base):
     __tablename__="Stock"
     ID = Column("ID", Integer, primary_key=True, autoincrement=True)
     sector_name = Column("sector_name", String, ForeignKey("Sectors.sector"))
-    part_number = Column("part_number", String, ForeignKey("components_and_parts.part_number"))
+    part_number = Column("part_number", String, ForeignKey("ComponentsAndParts.part_number"))
     batch = Column("batch", String, nullable=True)
     machining_batch = Column("machining_batch", String, nullable=True)
     machining_date = Column("machining_date", Date, nullable=True)

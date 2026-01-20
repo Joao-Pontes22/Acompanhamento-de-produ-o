@@ -3,8 +3,8 @@ from app.core.Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from app.Schemes.Parts_Schemes import Parts_Scheme, parts_Update_Scheme
 from  app.Schemes.Responses.Responde_Parts import Responde_Parts
-from app.repositories.Parts_repositorie import Parts_Repositorie
-from app.repositories.Clients_repositorie import Clients_repositorie
+from app.repositories.Parts_repository import Parts_Repositorie
+from app.repositories.Clients_repository import Clients_repositorie
 from app.Services.Parts_Services import Parts_Services
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 

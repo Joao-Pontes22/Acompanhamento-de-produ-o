@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session
 from sqlalchemy.orm import Session
 from app.Schemes.Components_Schemes import Components_Scheme, Components_Scheme_Update
-from app.repositories.Components_repositorie import Components_Repositorie
+from app.repositories.Components_repository import Components_Repositorie
 from app.Services.Components_Services import Components_Services
 from app.Schemes.Responses.Response_Components import Responde_Components
-from app.repositories.Suppliers_repositorie import Suppliers_Repositorie
+from app.repositories.Suppliers_repository import Suppliers_Repositorie
 from app.domain.Exceptions import AlreadyExist, NotFoundException
 Components_Router = APIRouter(prefix="/Components", tags=["Components Operations"])
 

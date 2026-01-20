@@ -18,3 +18,4 @@ class Settings(BaseSettings):
     SECRET_KEY: str = SECRET_KEY
     ALGORITHM: str = ALGORITHM
     ACCESS_TOKEN_EXPIRE_MINUTES: int = ACCESS_TOKEN_EXPIRE_MINUTES
+    

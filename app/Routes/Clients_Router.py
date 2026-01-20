@@ -1,18 +1,28 @@
+
+# FastAPI
 from fastapi import APIRouter, Depends, HTTPException
+#Dependecies
 from app.core.Dependecies import Init_Session
+#Session
 from sqlalchemy.orm import Session
-from app.Schemes.Clients_Schemes import Clients_Scheme, Clients_Update_Scheme
-from app.repositories.Clients_repositorie import Clients_repositorie
-from app.Services.Client_Services import Clients_Services
-from app.repositories.Sectors_repositorie import Sectors_repositorie
-from app.domain.Exceptions import AlreadyExist, InvalidNameException, NotFoundException
+#Schemes and Responses
+from app.Schemes.Clients_Schemes import ClientsScheme, UpdateClientsInfoScheme
 from app.Schemes.Responses.Response_Clients import Response_clients_scheme
+#Repositories
+from app.repositories.Clients_repository import ClientsRepository
+from app.repositories.Sectors_repository import SectorsRepository
+#Services
+from app.Services.Client_Service import Clients_Services
+#Exceptions
+from app.domain.Exceptions import AlreadyExist, InvalidNameException, NotFoundException
+
+
 
 Client_Router = APIRouter(prefix="/Clients", tags=["Clients Operations"])
 
 @Client_Router.post("/add_client")
-async def add_client(scheme: Clients_Scheme, session: Session = Depends(Init_Session)):
-    repo = Clients_repositorie(session=session)
+async def add_client(scheme: ClientsScheme, session: Session = Depends(Init_Session)):
+    repo = ClientsRepository(session=session)
     service = Clients_Services(repo=repo)
     try:
         new_client = service.service_create_clients(scheme=scheme)
