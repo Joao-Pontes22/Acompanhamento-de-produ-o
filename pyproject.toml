@@ -1,38 +1,44 @@
-[tool.poetry]
-name = "acompanhamento-de-producao"
-version = "0.1.0"
-description = "API de acompanhamento de produção e controle de estoque"
-authors = ["João Pontes <you@example.com>"]
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.11,<3.12"
-
-fastapi = "^0.110.0"
-uvicorn = { extras = ["standard"], version = "^0.27.0" }
-
-sqlalchemy = "^2.0.0"
-alembic = "^1.13.0"
-
-pydantic = "^2.6.0"
-pydantic-settings = "^2.2.0"
-
-python-dotenv = "^1.0.0"
-
-python-jose = "^3.3.0"
-passlib = { extras = ["bcrypt"], version = "^1.7.4" }
-python-multipart = ">=0.0.21,<0.0.22"
-httpx = ">=0.28.1,<0.29.0"
-bcrypt = "4.3.0"
-requests = "^2.32.5"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.0.0"
-
 [build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
+[project]
+name = "acompanhamento-producao"
+version = "0.1.0"
+description = "Sistema de acompanhamento de produção"
+requires-python = ">=3.11"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "alembic",
+    "pydantic",
+    "pydantic-settings",
+    "python-dotenv",
+    "psycopg2-binary",
+    "passlib[bcrypt]",
+    "python-jose",
+    "python-multipart",
+    "email-validator",
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "flake8",
+    "isort",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]

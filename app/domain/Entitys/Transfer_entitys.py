@@ -6,9 +6,9 @@ class TransferEntity:
                  destination_sector: str,
                  qnty: int,
                  reason: str,
-                 batch: str,
-                 machining_batch: str,
-                 assembly_batch: str
+                 batch: str = None,
+                 machining_batch: str = None,
+                 assembly_batch: str = None
                  ):
         
         self.part_number = part_number

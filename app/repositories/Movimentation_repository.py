@@ -41,18 +41,18 @@ class MovimentationRepository:
     def get_by_id(self, movimentation_id: int):
         return self.session.query(movimentations).filter(movimentations.ID == movimentation_id).first()
     
-    def get_movimentation_filtered(self, 
-                                   movimentation_id: int, 
-                                   part_number: str, 
-                                   batch: str, 
-                                   start_date, 
-                                   end_date,
-                                   emp_id: int,
-                                   movimentation_type: str, 
-                                   origin: str,
-                                   destination: str,
-                                   machining_batch: str,
-                                   assembly_batch: str
+    def get_movimentation_filtred(self, 
+                                   movimentation_id: int = None, 
+                                   part_number: str = None, 
+                                   batch: str = None, 
+                                   start_date = None, 
+                                   end_date = None,
+                                   emp_id: int = None,
+                                   movimentation_type: str = None, 
+                                   origin: str = None,
+                                   destination: str = None,
+                                   machining_batch: str = None,
+                                   assembly_batch: str = None
                                    ):
         query = self.session.query(movimentations)
         if part_number:
@@ -79,18 +79,18 @@ class MovimentationRepository:
             query = query.order_by(desc(movimentations.ID))
         return query.all()
     
-    def get_movimentation_filtered_first(self, 
-                                         movimentation_id: int, 
-                                         part_number: str, 
-                                         batch: str, 
-                                         start_date, 
-                                         end_date,
-                                         emp_id: str,
-                                         movimentation_type: str, 
-                                         origin: str,
-                                         destination: str,
-                                         machining_batch: str,
-                                         assembly_batch: str
+    def get_movimentation_create_stock_filtred_first(self, 
+                                         movimentation_id: int = None, 
+                                         part_number: str = None, 
+                                         batch: str = None, 
+                                         start_date = None, 
+                                         end_date = None,
+                                         emp_id: str = None,
+                                         movimentation_type: str = None, 
+                                         origin: str = None,
+                                         destination: str = None,
+                                         machining_batch: str = None,
+                                         assembly_batch: str = None
                                          ):
         query = self.session.query(movimentations).filter(movimentations.movimentation_type == "CREATE")
         if part_number:

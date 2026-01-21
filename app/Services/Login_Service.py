@@ -1,16 +1,25 @@
+#Date Time
 from datetime import datetime, timedelta, timezone
-from app.Schemes.Login_Scheme import LoginScheme
+#Schemas
+from app.Schemas.Login_Schema import LoginSchema
+#Value Objects
+from app.domain.Value_objects.Emp_id import ValueEmpID
+#Settings
 from app.core.Settings.Settings import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY, bcrypt_context
+#JWT
 from jose import jwt
+#FastAPI
 from fastapi.security import OAuth2PasswordRequestForm
+#Repository
 from app.repositories.Employers_repository import EmployersRepository
+#Exceptions
 from app.domain.Exceptions import NotFoundException, IncorrectPasswordException
 
-class loginService:
+class LoginService:
     def __init__(self, repo:EmployersRepository):
         self.repo = repo
 
-    def service_login_in(self, scheme:LoginScheme):
+    def login_in(self, scheme:LoginSchema):
 
         employer = self.repo.get_by_emp_id(emp_id=scheme.emp_id)
         if not employer:
@@ -28,9 +37,10 @@ class loginService:
                 "refresh_token": refresh_token,
                 "token_type": "bearer"}
     
-    def service_login_form_in(self, scheme:OAuth2PasswordRequestForm):
+    def login_form_in(self, scheme:OAuth2PasswordRequestForm):
 
-        employer = self.repo.get_by_emp_id(emp_id=scheme.username)
+        value_emp_id = ValueEmpID(emp_id=scheme.username)
+        employer = self.repo.get_by_emp_id(emp_id=value_emp_id.emp_id)
         if not employer:
             raise NotFoundException("Employer")
         
@@ -43,7 +53,7 @@ class loginService:
         return {"access_token": access_token,
                 "token_type": "bearer"}
     
-    def service_refresh_token(self, employer_id:int):
+    def refresh_token(self, employer_id:int):
         class_acces_token = create_token(employerID=employer_id)
         access_token = class_acces_token.create_access_token()
         return {"access_token": access_token,

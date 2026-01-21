@@ -1,5 +1,4 @@
 from app.models.Clients import Clients
-
 # Repository for managing client data
 class ClientsRepository:
     def __init__(self, session):
@@ -7,11 +6,11 @@ class ClientsRepository:
 
 
     def create_client(self,
-                           name: str,
-                           contact: str,
-                           phone: str,
-                           email: str
-                           ):
+                      name: str,
+                      contact: str,
+                      phone: str,
+                      email: str
+                    ):
         
         new_client = Clients(name=name,
                              contact=contact,

@@ -1,7 +1,13 @@
-from app.Schemes.Clients_Schemes import ClientsScheme, UpdateClientsInfoScheme
+#Schemas
+from app.Schemas.Clients_Schemas import ClientsSchema, UpdateClientsInfoSchema
+#Entity
 from app.domain.Entitys.Clients_entitys import ClientsEntity
+#Repository
 from app.repositories.Clients_repository import ClientsRepository
+#Exceptions
 from app.domain.Exceptions import AlreadyExist, NotFoundException
+#Value_Object
+from app.domain.Value_objects.Clients import value_Client
 
 
 class ClientsService:
@@ -9,7 +15,7 @@ class ClientsService:
         self.repo  = repo
 
 
-    def create_client(self, schema:ClientsScheme):
+    def create_client(self, schema:ClientsSchema):
 
         entity = ClientsEntity(name=schema.name,
                                          contact=schema.contact,
@@ -33,14 +39,16 @@ class ClientsService:
     
 
     def get_by_name(self, name:str):
-        client = self.repo.get_client_by_name(name=name)
+        value_client = value_Client(client=name)
+        client = self.repo.get_client_by_name(name=value_client.name)
         if not client:
             raise NotFoundException(entity="Client")
         return client
     
 
-    def update_client_info(self, name:str, schema:UpdateClientsInfoScheme):
-        client = self.repo.get_client_by_name(name=name)
+    def update_client_info(self, name:str, schema:UpdateClientsInfoSchema):
+        value_client = value_Client(client=name)
+        client = self.repo.get_client_by_name(name=value_client.name)
         if not client:
             raise NotFoundException("Client")
         for field, value in schema.model_dump(exclude_unset=True).items():
@@ -51,7 +59,8 @@ class ClientsService:
   
 
     def delete_client(self,name:str):
-        client = self.repo.get_client_by_name(name=name)
+        value_client = value_Client(client=name)
+        client = self.repo.get_client_by_name(name=value_client.name)
         if not client:
             raise NotFoundException(entity="Client")
         delete = self.repo.delete_client(client=client)

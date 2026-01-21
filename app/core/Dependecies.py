@@ -22,7 +22,9 @@ def Init_Session():
      print("Session closed.")
 
 
-def Verify_Token (token = Depends(oauth2_scheme), session:Session = Depends(Init_Session) ):
+def Verify_Token (token = Depends(oauth2_scheme),
+                  session:Session = Depends(Init_Session) 
+                  ):
     try:
         array_info = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         employer_id = array_info.get("sub")

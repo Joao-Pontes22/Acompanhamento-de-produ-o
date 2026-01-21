@@ -1,3 +1,3 @@
-class value_Sector:
-    def __init__(self, sector):
-        self.sector = sector.upper()
+class valueSector:
+    def __init__(self, sector_name: str):
+        self.sector_name = sector_name.upper()

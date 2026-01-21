@@ -23,9 +23,9 @@ class RelationRepository:
         return new_relation
     
     def get_relations_filtred(self, 
-                              id: int, 
-                              create_item_part_number: str, 
-                              consume_item_part_number: str
+                              id: int = None, 
+                              create_item_part_number: str = None, 
+                              consume_item_part_number: str = None
                               ) -> List[Relation]:
         
         query = self.session.query(Relation)
@@ -38,10 +38,10 @@ class RelationRepository:
         return query.all()
     
     def get_relations_filtred_first(self, 
-                                    id: int, 
-                                    create_item_part_number: str, 
-                                    consume_item_part_number: str
-                                    ) -> List[Relation]:
+                                    id: int = None, 
+                                    create_item_part_number: str = None, 
+                                    consume_item_part_number: str = None
+                                    ) -> Relation:
         
         query = self.session.query(Relation)
         if id:

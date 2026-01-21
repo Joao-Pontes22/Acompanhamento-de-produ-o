@@ -1,6 +1,4 @@
-from app.Schemes.Stock_Schemes import Stock_Scheme
 # Entity for creating a new stock record
-
 class StockEntity:
     def __init__(self,
                  sector_name: str,

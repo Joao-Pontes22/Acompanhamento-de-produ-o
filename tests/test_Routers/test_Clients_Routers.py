@@ -40,14 +40,14 @@ def test_get_all_clients_success(client: TestClient, mock_session):
     mock_query = mock_session.query.return_value
     mock_query.all.return_value = [payload]
 
-    response = client.get("/Clients/Get_all_clients")
+    response = client.get("/Clients/get_all_clients")
 
     assert response.status_code == 200
     body = response.json()
     assert body[0]["name"] == "TESTE"
     assert body[0]["contact"] == "TESTE@GMAIL.COM"
 
-def test_get_client_by_id_success(client: TestClient, mock_session):
+def test_get_client_by_name_success(client: TestClient, mock_session):
     payload = {
         "ID": 1,
         "name": "TESTE",
@@ -59,7 +59,7 @@ def test_get_client_by_id_success(client: TestClient, mock_session):
     mock_query = mock_session.query.return_value
     mock_query.filter.return_value.first.return_value = payload
 
-    response = client.get("/Clients/Get_by_ID/1")
+    response = client.get("/Clients/get_by_name/TESTE")
 
     assert response.status_code == 200
     body = response.json()
@@ -83,7 +83,7 @@ def test_patch_client_success(client: TestClient, mock_session):
     mock_query.filter.return_value.first.return_value = client_db
 
     response = client.patch(
-        "/Clients/update_client_by_id/1",
+        "/Clients/update_client_by_name/OLD NAME",
         json=updated_payload
     )
 

@@ -1,4 +1,3 @@
-from app.Schemes.Machining_Production_Schemes import MachiningProductionScheme, MachiningProductionfilteredScheme
 
 # Entity for creating a new machining production record
 class MachiningProductionsEntity:
@@ -38,28 +37,35 @@ class MachiningProductionsEntityFiltred:
                  ):
 
         if sector_name:
-            self.sector_name = sector_name
+            self.sector_name = sector_name.upper()
 
         if machine_name: 
-            self.machine_name = machine_name
+            self.machine_name = machine_name.upper()
+
 
         if date:     
             self.date = date
 
         if input_part_number:     
-            self.input_part_number = input_part_number
+            self.input_part_number = input_part_number.upper()
+
 
         if output_part_number:     
-            self.output_part_number = output_part_number
+            self.output_part_number = output_part_number.upper()
+
 
         if  machining_batch: 
-            self.machining_batch = machining_batch 
+            self.machining_batch = machining_batch.upper()
+
 
         if batch: 
-            self.batch = batch 
+            self.batch = batch.upper()
+
 
         if emp_id: 
-            self.emp_id_employer = emp_id 
+            self.emp_id_employer = emp_id.upper()
+ 
 
         if status:
-            self.status = status 
+            self.status = status.upper()
+

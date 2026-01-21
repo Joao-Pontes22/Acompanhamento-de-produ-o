@@ -1,0 +1,12 @@
+{
+    "editor.formatOnSave": true,
+    "python.defaultInterpreterPath": "C:\\Users\\poj1srb\\AppData\\Local\\Programs\\Python\\Python311\\python.exe",
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python-envs.pythonProjects": []
+}

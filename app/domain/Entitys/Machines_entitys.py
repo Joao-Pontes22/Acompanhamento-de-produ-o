@@ -1,4 +1,4 @@
-from app.Schemes.Machine_Schemes import MachineScheme
+
 
 class MachineEntity:
     def __init__(self, 

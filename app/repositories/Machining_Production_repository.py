@@ -37,14 +37,14 @@ class Machining_ProductionRepository:
         machining_production = self.session.query(MachiningProduction).all()
         return machining_production
     
-    def get_machining_productions_filtered(self, sector_name: str, 
-                                              machine_name: str,
-                                              batch: str,
-                                              input_part_number: str,
-                                              output_part_number: str,
-                                              machining_batch: str,
-                                              emp_id_employer: str,
-                                              status: str
+    def get_machining_productions_filtred(self, sector_name: str = None, 
+                                              machine_name: str = None,
+                                              batch: str = None,
+                                              input_part_number: str = None,
+                                              output_part_number: str = None,
+                                              machining_batch: str = None,
+                                              emp_id_employer: str = None,
+                                              status: str = None
                                               ):
         query = self.session.query(MachiningProduction)
         

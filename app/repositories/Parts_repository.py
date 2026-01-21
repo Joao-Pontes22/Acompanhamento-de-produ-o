@@ -12,7 +12,7 @@ class PartsRepository:
                          description_parts: str,
                          cost: float,
                          client_name: str
-                         ):
+                         )-> ComponentsAndParts :
         
         part = ComponentsAndParts(part_number=part_number,
                                           description=description_parts,
@@ -25,25 +25,25 @@ class PartsRepository:
         self.session.commit()
         return part
     
-    def get_all_parts(self):
+    def get_all_parts(self)-> list[ComponentsAndParts]:
         return self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART").all()
     
-    def update_part_info(self, part):
+    def update_part_info(self, part) -> ComponentsAndParts:
         self.session.commit()
         self.session.refresh(part)
         return part
     
-    def delete_part(self, part):
+    def delete_part(self, part)-> ComponentsAndParts:
         self.session.delete(part)
         self.session.commit()
         return(part)
     
-    def get_parts_filtered(self, 
-                              id:int, 
-                              part_number:str, 
-                              description:str, 
-                              client:str
-                              ):
+    def get_parts_filtred(self, 
+                              id:int = None, 
+                              part_number:str = None, 
+                              description:str = None, 
+                              client:str = None
+                              )-> list[ComponentsAndParts]:
         
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART")
         if id:
@@ -56,12 +56,12 @@ class PartsRepository:
             query = query.filter(ComponentsAndParts.client_name == client)
         return query.all()
     
-    def get_part_filtered_first(self, 
-                                id:int, 
-                                part_number:str, 
-                                description:str, 
-                                client:str
-                                ):
+    def get_part_filtred_first(self, 
+                                id:int = None, 
+                                part_number:str = None, 
+                                description:str = None, 
+                                client:str = None
+                                ) -> ComponentsAndParts:
         
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "PART")
         if id:

@@ -45,12 +45,12 @@ class ComponentsRepository:
         return(component)
     
 
-    def get_component_filtered(self, 
-                                    id:int, 
-                                    part_number:str, 
-                                    description:str, 
-                                    supplier:str, 
-                                    component_type:str
+    def get_component_filtred(self, 
+                                    id:int = None, 
+                                    part_number:str = None, 
+                                    description:str = None, 
+                                    supplier:str = None, 
+                                    component_type:str = None
                                     ):
         
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT")

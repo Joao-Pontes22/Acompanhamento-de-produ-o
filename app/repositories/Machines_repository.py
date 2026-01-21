@@ -26,8 +26,8 @@ class MachineRepository:
     
     
     def get_machine_filtred(self, 
-                            id: int, 
-                            machine: str) -> List[Machines]:
+                            id: int = None, 
+                            machine: str = None) -> List[Machines]:
         
         query = self.session.query(Machines)
         if id:
@@ -37,8 +37,8 @@ class MachineRepository:
         return query.all()
     
     def get_machine_filtred_first(self, 
-                                  id: int, 
-                                  machine: str) -> List[Machines]:
+                                  id: int = None, 
+                                  machine: str = None) -> Machines:
         
         query = self.session.query(Machines)
         if id:

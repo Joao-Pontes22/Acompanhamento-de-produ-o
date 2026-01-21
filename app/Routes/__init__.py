@@ -2,10 +2,10 @@
 from app.models.Models import base
 
 from app.models.Employers import Employers
-from app.models.Machining_production import Machining_Production
+from app.models.Machining_production import MachiningProduction
 from app.models.Machines import Machines
 from app.models.Sectors import Sectors
-from app.models.Assembly_production import Assembly_Production
+from app.models.Assembly_production import AssemblyProduction
 from app.models.Stock import Stock
 from app.models.Clients import Clients
 from app.models.Suppliers import Suppliers

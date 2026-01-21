@@ -41,17 +41,17 @@ class StockRepository:
         return new_stock
     
    
-    def get_all_stock(self):
+    def get_all_stock(self) -> list[Stock]:
         stock = self.session.query(Stock).all()
         return stock
     
-    def get_specify_stock(self, sector_name: str,
-                          part_number: str,
-                          status: str,
-                          batch: str,
-                          machining_batch: str,
-                            assembly_batch: str 
-                          ):
+    def get_filtred_stock(self, sector_name: str = None,
+                          part_number: str = None,
+                          status: str = None,
+                          batch: str = None,
+                          machining_batch: str = None,
+                          assembly_batch: str = None 
+                         ) -> list[Stock]:
         
         query = self.session.query(Stock)
         if sector_name:

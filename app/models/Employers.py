@@ -15,7 +15,6 @@ class Employers (base):
 # -------------------------------------------------------------------#
 #Relacionamento
 #Relationship
-    sector = relationship("Sectors", back_populates="employers")
     employer_sector = relationship("Sectors", back_populates="employers")
     machining_production =  relationship("MachiningProduction", back_populates="machining_employer")
     assembly_production = relationship("AssemblyProduction", back_populates="assembly_employer")
