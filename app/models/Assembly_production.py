@@ -35,3 +35,4 @@ class AssemblyProduction (base):
         self.duration_process = duration_process
         self.emp_id_employer = emp_id_employer
         self.status = status
+        
