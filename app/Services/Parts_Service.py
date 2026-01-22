@@ -42,7 +42,7 @@ class Parts_Services:
             raise NotFoundException(entity="Part")
         return parts 
     
-    def get_filtered_parts(self, 
+    def get_filtred_parts(self, 
                            id:int = None, 
                            part_number:str = None, 
                            description:str = None, 
@@ -52,7 +52,7 @@ class Parts_Services:
                                            description=description, 
                                            client=client
                                             )
-        parts = self.repo.get_parts_filtered(id=id, 
+        parts = self.repo.get_parts_filtred(id=id, 
                                             part_number=entity.part_number, 
                                             description=entity.description, 
                                             client=entity.client

@@ -24,11 +24,11 @@ class ComponentsSchema(BaseModel):
 
 class UpdateComponentsInfoSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    part_number : Optional[str] 
-    description : Optional[str] 
-    supplier_name : Optional[str]
-    cost : Optional[float]
-    component_type: Optional[str]
+    part_number : Optional[str] = None
+    description : Optional[str] = None
+    supplier_name : Optional[str] = None
+    cost : Optional[float] = None
+    component_type: Optional[str] = None
 
     @field_validator("part_number",
                      "description", 

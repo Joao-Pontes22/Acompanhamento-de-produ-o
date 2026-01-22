@@ -18,7 +18,7 @@ Components_Router = APIRouter(prefix="/Components", tags=["Components Operations
 
 
 @Components_Router.post("/add_component")
-async def add_component(scheme: ComponentsSchema,
+async def add_component(schema: ComponentsSchema,
                         session: Session = Depends(Init_Session)
                         ):
     
@@ -27,7 +27,7 @@ async def add_component(scheme: ComponentsSchema,
     service = ComponentsService(components_repo=repo)
 
     try:
-        new_component = service.create_components(scheme=scheme, 
+        new_component = service.create_components(schema=schema, 
                                                   supplier_repo=supllier_repo
                                                   )
         
@@ -42,7 +42,7 @@ async def add_component(scheme: ComponentsSchema,
         raise HTTPException(status_code=400, detail=str(e))
     
 
-@Components_Router.get("/Get_all_Components", 
+@Components_Router.get("/get_all_components", 
                        response_model=list[ResponseComponents]
                        )
 async def get_components(session:Session=Depends(Init_Session)):
@@ -82,7 +82,7 @@ async def get_components_filtered(id:int = None,
                          response_model=ResponseComponents
                          )
 async def update_component(part_number:str, 
-                           scheme:UpdateComponentsInfoSchema, 
+                           schema:UpdateComponentsInfoSchema, 
                            session:Session=Depends(Init_Session)):
    
     repo = ComponentsRepository(session=session)
@@ -91,9 +91,9 @@ async def update_component(part_number:str,
     
     try:
         updated_component = service.update_component_info(part_number=part_number.upper(), 
-                                                          scheme=scheme, 
+                                                          schema=schema, 
                                                           supplier_repo=supllier_repo)
-        return updated_component
+        return {"message": "Component updated successfuly"}
     except NotFoundException as e:
         raise HTTPException(status_code=400, detail=str(e))
     except ValueError as e:

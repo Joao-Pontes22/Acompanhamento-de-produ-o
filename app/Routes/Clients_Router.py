@@ -21,8 +21,8 @@ from app.domain.Exceptions import AlreadyExist, InvalidNameException, NotFoundEx
 Client_Router = APIRouter(prefix="/Clients", tags=["Clients Operations"])
 
 
-@Client_Router.post("/add_client")
-async def add_client(scheme: ClientsSchema, session: Session = Depends(Init_Session)):
+@Client_Router.post("/create_client")
+async def create_client(scheme: ClientsSchema, session: Session = Depends(Init_Session)):
     
     repo = ClientsRepository(session=session)
     service = ClientsService(repo=repo)
@@ -31,12 +31,11 @@ async def add_client(scheme: ClientsSchema, session: Session = Depends(Init_Sess
         new_client = service.create_client(schema=scheme)
 
         return{"message": "Client created successfuly",
-            "Client": new_client.name}
+                "Client": new_client.name}
     
     except AlreadyExist as e:
         raise HTTPException(status_code=409, detail=str(e))
-    except InvalidNameException as e:
-        raise HTTPException(status_code=400, detail=str(e))
+
 
 
 @Client_Router.get("/get_all_clients", response_model=list[ResponseClients])
@@ -78,8 +77,10 @@ async def update_by_name(client:str,
 
     try:
 
-        new_client = service.update_client_info(name=client, scheme=scheme)
+        new_client = service.update_client_info(name=client, schema=scheme)
+
         return new_client
+    
     except InvalidNameException as e:
         raise HTTPException(status_code=400, detail=str(e))
     except NotFoundException as e:
@@ -96,8 +97,7 @@ async def delete_client(client:str, session:Session=Depends(Init_Session)):
 
         client = service.delete_client(name=client)
 
-        return {"message": "Client deleted successfuly",
-                "Client":client}
+        return {"message": "Client deleted successfuly"}
     
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))

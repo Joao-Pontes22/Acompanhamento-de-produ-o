@@ -83,7 +83,7 @@ async def get_filtered_parts(id:int = None,
     repo = PartsRepository(session=session)
     service = Parts_Services(parts_repo=repo)
     try:
-        filtered_parts = service.get_filtered_parts(id=id, 
+        filtered_parts = service.get_filtred_parts(id=id, 
                                                     part_number=part_number, 
                                                     description=description, 
                                                     client=client

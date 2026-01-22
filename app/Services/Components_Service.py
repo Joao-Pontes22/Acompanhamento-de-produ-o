@@ -17,15 +17,15 @@ class ComponentsService:
 
     
     def create_components(self, 
-                          scheme:ComponentsSchema, 
+                          schema:ComponentsSchema, 
                           supplier_repo:SuppliersRepository
                         ):
 
-        entity = ComponentsEntity(part_number=scheme.part_number,
-                                     description_material=scheme.description,
-                                     supplier_name=scheme.supplier_name,
-                                     cost=scheme.cost,
-                                     component_type=scheme.component_type
+        entity = ComponentsEntity(part_number=schema.part_number,
+                                     description_material=schema.description,
+                                     supplier_name=schema.supplier_name,
+                                     cost=schema.cost,
+                                     component_type=schema.component_type
                                      )
         component = self.repo.get_component_by_part_number(part_number=entity.part_number)
         if component:
@@ -36,8 +36,10 @@ class ComponentsService:
             raise NotFoundException(entity="Supplier")
         
         new_component = self.repo.create_component(part_number=entity.part_number,
-                                                         description_material=entity.description_material,
-                                                         supplier_name=entity.supplier_name)
+                                                    description_material=entity.description_material,
+                                                    supplier_name=entity.supplier_name,
+                                                    cost=entity.cost,
+                                                    component_type=entity.component_type)
         return new_component
     
 
@@ -51,11 +53,11 @@ class ComponentsService:
         return component
 
     def get_component_filtred(self, 
-                                id:int, 
-                                part_number:str, 
-                                description:str, 
-                                supplier:str, 
-                                component_type:str
+                                id:int = None, 
+                                part_number:str = None, 
+                                description:str = None, 
+                                supplier:str = None, 
+                                component_type:str = None
                                 ):
         component_entity = PartsAndCompsEntityFilter(part_number=part_number, 
                                                      description=description, 

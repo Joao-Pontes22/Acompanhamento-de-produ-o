@@ -1,3 +1,5 @@
+from typing import Optional
+
 # Entity for creating or updating parts and components
 class PartsAndCompsEntity:
     def __init__(self, 
@@ -19,25 +21,25 @@ class UpdatePartsEntity:
 # Entity for filtering parts and components
 class PartsAndCompsEntityFilter:
     def __init__(self, 
-                 part_number: str = None, 
-                 description: str = None, 
-                 supplier: str = None, 
-                 client: str = None, 
-                 component_type: str = None
+                 part_number: Optional[str] = None, 
+                 description: Optional[str] = None, 
+                 supplier: Optional[str] = None, 
+                 client: Optional[str] = None, 
+                 component_type: Optional[str] = None
                  ):
         
-        if part_number:
-            self.part_number = part_number.upper()
+        
+        self.part_number = part_number.upper() if part_number else None
 
-        if description:
-            self.description = description.upper() 
+        
+        self.description = description.upper() if description else None
 
-        if supplier:
-            self.supplier = supplier.upper()
+        
+        self.supplier = supplier.upper() if supplier else None
 
-        if client:
-            self.client = client.upper()
+        
+        self.client = client.upper() if client else None
 
-        if component_type:
-            self.component_type = component_type.upper()
+        
+        self.component_type = component_type.upper() if component_type else None
       

@@ -24,10 +24,10 @@ class ClientsSchema(BaseModel):
 
 class UpdateClientsInfoSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    name: Optional[str]
-    contact: Optional[str]
-    email: Optional[str] 
-    phone: Optional[str] 
+    name: Optional[str] = None
+    contact: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
 
     @field_validator("name",
                      "contact",
