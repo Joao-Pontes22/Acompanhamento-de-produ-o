@@ -5,9 +5,10 @@ from sqlalchemy.orm import Session
 #Dependecies
 from app.core.Dependecies import Init_Session
 from app.core.Dependecies import Verify_Token
-#Schemas e Responses
+#Schemas
 from app.Schemas.Stock_Schemas import StockSchema, StockTransferSchema, UpdateStockInfoSchema
 from app.Schemas.Responses.Response_Stock import ResponseStock
+from app.Schemas.Queries.stock_query_params import StockParameters
 #Repository
 from app.repositories.Relation_repository import RelationRepository
 from app.repositories.Stock_repository import StockRepository
@@ -28,7 +29,7 @@ Stock_Router = APIRouter(prefix="/stock", tags=["Stock Operation"])
 
 
 @Stock_Router.post("/Create_Stock")
-async def create_stock(scheme:StockSchema,
+async def create_stock(body:StockSchema,
                        session:Session = Depends(Init_Session), 
                        employer_id: int = Depends(Verify_Token)
                        ):
@@ -47,7 +48,7 @@ async def create_stock(scheme:StockSchema,
                             employers_repo=employers_repo)
     try:
 
-        new_stock = service.create_stock(scheme=scheme, 
+        new_stock = service.create_stock(scheme=body, 
                                          employer_id=employer_id)
 
         return {"message": "Stock created successfully"}
@@ -74,22 +75,14 @@ async def get_all_stock(session:Session = Depends(Init_Session)):
         raise HTTPException(detail=str(e), status_code=404)
 
 @Stock_Router.get("/Get_filtered_stock")
-async def get_filtered_stock(part_number:str = None,
-                             status:str = None,
-                             sector_name: str = None,
-                             batch: str = None,
-                             machining_batch: str = None,
-                             assembly_batch: str = None,
+async def get_filtered_stock(query_params: StockParameters = Depends(),
                              session:Session = Depends(Init_Session)):
     
     stock_repo = StockRepository(session=session)
     service = StockService(repo=stock_repo)
 
     try:
-        stock = service.get_filtred_stock(part_number=part_number, 
-                                          status=status, 
-                                          sector_name=sector_name
-                                          )
+        stock = service.get_filtred_stock(query_params=query_params)
         
         return stock
     
@@ -142,7 +135,7 @@ async def transfer_stock(scheme:StockTransferSchema,
     
 @Stock_Router.patch("/Update_stock/{stock_id}")
 async def update_stock(stock_id:int, 
-                       scheme:UpdateStockInfoSchema, 
+                       body:UpdateStockInfoSchema, 
                        session:Session = Depends(Init_Session)
                        ):
     
@@ -152,7 +145,7 @@ async def update_stock(stock_id:int,
     try:
 
         updated_stock = service.update_stock(stock_id=stock_id, 
-                                             scheme=scheme)
+                                             scheme=body)
 
         return {"message": "Stock updated successfully"}
     

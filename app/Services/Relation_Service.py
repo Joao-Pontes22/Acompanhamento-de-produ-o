@@ -1,12 +1,13 @@
 #Schema
 from app.Schemas.Relation_Schemas import RelationSchema
+from app.Schemas.Queries.relation_query_params import RelationParameters
 #Repository
 from app.repositories.Relation_repository import RelationRepository
 from app.repositories.Components_repository import ComponentsRepository
 #Excpetions
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 #Entity
-from app.domain.Entitys.Relation_entitys import RelationsEntity, RelationsEntityFiltred
+from app.domain.Entitys.Relation_entitys import RelationsEntity
 
 
 class RelationServices:
@@ -38,19 +39,12 @@ class RelationServices:
     
 
     def get_relations_filtred(self, 
-                              id:int = None, 
-                              create_item_part_number: str = None, 
-                              consume_item_part_number: str = None
-                             ):
+                              query_params: RelationParameters):
         
-        relation_entity = RelationsEntityFiltred(id=id,
-                                                 create_item_part_number=create_item_part_number,
-                                                 consume_item_part_number=consume_item_part_number
-                                                )
         
-        relations = self.relation_repo.get_relations_filtred(id=relation_entity.id, 
-                                                             create_item_part_number=relation_entity.create_item_part_number, 
-                                                             consume_item_part_number=relation_entity.consume_item_part_number
+        relations = self.relation_repo.get_relations_filtred(id=query_params.id, 
+                                                             create_item_part_number=query_params.create_item_part_number, 
+                                                             consume_item_part_number=query_params.consume_item_part_number
                                                              )
         if not relations:
             raise NotFoundException("Relations")

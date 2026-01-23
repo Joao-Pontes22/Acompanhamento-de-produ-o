@@ -28,7 +28,7 @@ class EmployersServices:
                                     password=scheme.password
                                     )
           
-          employer = self.repo.get_by_emp_id(emp_id=entity.emp_id)
+          employer = self.repo.get_employer_filtred(emp_id=entity.emp_id)
           if employer:
                raise AlreadyExist(entity="Employer")
           
@@ -45,9 +45,8 @@ class EmployersServices:
           return new_employer
      
 
-     def get_employer_by_emp_id(self, emp_id: str):
-          value_emp_id = ValueEmpID(emp_id=emp_id)
-          employer = self.repo.get_by_emp_id(emp_id= value_emp_id.emp_id)
+     def get_employer_filtred(self, query_params: str):
+          employer = self.repo.get_employer_filtred(emp_id= query_params.emp_id)
 
           if not employer:
                raise NotFoundException(entity="Employer")
@@ -66,7 +65,7 @@ class EmployersServices:
 
      def delete_employer(self, emp_id:str):
           value_emp_id = ValueEmpID(emp_id=emp_id)
-          employer = self.repo.get_by_emp_id(emp_id=value_emp_id.emp_id)
+          employer = self.repo.get_employer_filtred(emp_id=value_emp_id.emp_id)
 
           if not employer:
                raise NotFoundException(entity="Employer")

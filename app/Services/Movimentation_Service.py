@@ -1,5 +1,6 @@
 #Schema
 from app.Schemas.Movimentation_Schemas import MovimentationSchema
+from app.Schemas.Queries.movimentation_query_params import MovimentationParameters
 #Repository
 from app.repositories.Employers_repository import EmployersRepository
 from app.repositories.Movimentation_repository import MovimentationRepository
@@ -77,64 +78,44 @@ class MovimentationService:
         return movimentations
     
     def get_filtred_movimentations(self, 
-                                    movimentation_id: int,      
-                                    part_number: str = None, 
-                                    batch: str = None, 
-                                    start_date = None, 
-                                    end_date = None, 
-                                    emp_id: int = None,
-                                    movimentation_type: str = None, 
-                                    sector_origin: str = None,
-                                    destination: str = None,
-                                    machining_batch: str = None,
-                                    assembly_batch: str = None
+                                    query_params: MovimentationParameters
                                     ):
         
-        entity = MovimentationsEntityFiltred(part_number=part_number,
-                                             origin=sector_origin,
-                                             batch=batch,
-                                             start_date=start_date,
-                                             end_date=end_date,
-                                             emp_id=emp_id,
-                                             movimentation_type=movimentation_type,
-                                             destination=destination,
-                                             machining_batch=machining_batch,
-                                             assembly_batch=assembly_batch
-                                             )
         
-        if movimentation_id:
-            movimentation = self.repo.get_by_id(movimentation_id=movimentation_id)
+        if query_params.movimentation_id:
+            movimentation = self.repo.get_by_id(movimentation_id=query_params.movimentation_id)
             if not movimentation:
              raise NotFoundException("Movimentation")
+            return movimentation
 
-        if part_number:
-            part_or_comp = self.PartOrComp_Repo.get_Parts_and_Components_by_part_number(entity.part_number)
+        if query_params.part_number:
+            part_or_comp = self.PartOrComp_Repo.get_Parts_and_Components_by_part_number(query_params.part_number)
             if not part_or_comp:
                 raise NotFoundException("Part_number")
 
-        if sector_origin:
-            sector_origin_ORM = self.sector_repo.get_sector_by_name(name=sector_origin)
+        if query_params.sector_origin:
+            sector_origin_ORM = self.sector_repo.get_sector_by_name(name=query_params.sector_origin)
             if not sector_origin_ORM:
                 raise NotFoundException("Origin sector")
 
-        if destination:
-            destination_ORM = self.sector_repo.get_sector_by_name(name=destination)
+        if query_params.sector_destination:
+            destination_ORM = self.sector_repo.get_sector_by_name(name=query_params.sector_destination)
             if not destination_ORM:
                 raise NotFoundException("Destination sector")
             
         
 
-        movimentations = self.repo.get_movimentation_filtred(movimentation_id=movimentation_id,
-                                                              part_number=entity.part_number,
-                                                              batch=entity.batch,
-                                                              start_date=entity.start_date,
-                                                              end_date=entity.end_date,
-                                                              emp_id=entity.emp_id,
-                                                              movimentation_type=entity.movimentation_type,
-                                                              origin=entity.origin,
-                                                              destination=entity.sector_destination,
-                                                              machining_batch=entity.machining_batch,
-                                                              assembly_batch=entity.assembly_batch)
+        movimentations = self.repo.get_movimentation_filtred(
+                                                              part_number=query_params.part_number,
+                                                              batch=query_params.batch,
+                                                              start_date=query_params.start_date,
+                                                              end_date=query_params.end_date,
+                                                              emp_id=query_params.emp_id,
+                                                              movimentation_type=query_params.movimentation_type,
+                                                              origin=query_params.sector_origin,
+                                                              destination=query_params.sector_destination,
+                                                              machining_batch=query_params.machining_batch,
+                                                              assembly_batch=query_params.assembly_batch)
         return movimentations
     
 

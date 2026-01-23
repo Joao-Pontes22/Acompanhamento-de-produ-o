@@ -1,5 +1,6 @@
 from sqlalchemy .orm import Session
 from app.models.ComponentsAndParts import ComponentsAndParts
+from typing import Optional
 # Repository for managing component data
 class ComponentsRepository:
     def __init__(self, session:Session):
@@ -46,11 +47,11 @@ class ComponentsRepository:
     
 
     def get_component_filtred(self, 
-                                    id:int = None, 
-                                    part_number:str = None, 
-                                    description:str = None, 
-                                    supplier:str = None, 
-                                    component_type:str = None
+                                    id: Optional[int] = None, 
+                                    part_number: Optional[str] = None, 
+                                    description: Optional[str] = None, 
+                                    supplier: Optional[str] = None, 
+                                    component_type: Optional[str] = None
                                     ):
         
         query = self.session.query(ComponentsAndParts).filter(ComponentsAndParts.category == "COMPONENT")

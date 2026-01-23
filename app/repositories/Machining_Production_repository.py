@@ -1,3 +1,4 @@
+from typing import Optional
 from app.models.Machining_production import MachiningProduction
 
 
@@ -37,14 +38,14 @@ class Machining_ProductionRepository:
         machining_production = self.session.query(MachiningProduction).all()
         return machining_production
     
-    def get_machining_productions_filtred(self, sector_name: str = None, 
-                                              machine_name: str = None,
-                                              batch: str = None,
-                                              input_part_number: str = None,
-                                              output_part_number: str = None,
-                                              machining_batch: str = None,
-                                              emp_id_employer: str = None,
-                                              status: str = None
+    def get_machining_productions_filtred(self, sector_name: Optional[str] = None, 
+                                              machine_name: Optional[str] = None,
+                                              batch: Optional[str] = None,
+                                              input_part_number: Optional[str] = None,
+                                              output_part_number: Optional[str] = None,
+                                              machining_batch: Optional[str] = None,
+                                              emp_id_employer: Optional[str] = None,
+                                              status: Optional[str] = None
                                               ):
         query = self.session.query(MachiningProduction)
         

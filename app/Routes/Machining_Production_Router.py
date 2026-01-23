@@ -25,7 +25,7 @@ from app.domain.Exceptions import NotFoundException
 Machining_Production_Router = APIRouter(prefix="/machining_production", tags=["Machining Production Operation"])
 
 @Machining_Production_Router.post("/Create_Machining_Production")
-async def create_machining_production(scheme:MachiningProductionSchema, 
+async def create_machining_production(body:MachiningProductionSchema, 
                                       session:Session = Depends(Init_Session)
                                       ):
     
@@ -44,7 +44,7 @@ async def create_machining_production(scheme:MachiningProductionSchema,
                                  sectors_repo=sector_repo,
                                  partsAndComp_repo=partsandcomp_repo)
     try:
-        machining_production = service.create_machining_production( Scheme=scheme,
+        machining_production = service.create_machining_production( Scheme=body,
                                                                     relation_repo=relation_repo,
                                                                     sector_repo=sector_repo,
                                                                     machine_repo=machine_repo,

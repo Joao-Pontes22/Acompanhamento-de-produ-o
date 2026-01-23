@@ -4,6 +4,7 @@ from datetime import datetime
 from app.domain.Exceptions import NotFoundException, StockInssuficientException
 #Scheme
 from app.Schemas.Stock_Schemas import StockSchema,StockTransferSchema, UpdateStockInfoSchema
+from app.Schemas.Queries.stock_query_params import StockParameters
 # Repositórios
 from app.repositories.Relation_repository import RelationRepository
 from app.repositories.Stock_repository import StockRepository
@@ -99,16 +100,14 @@ class StockService:
         return stock
     
     def get_filtred_stock(self, 
-                           part_number: str = None,
-                           status:str = None,
-                           sector_name: str = None
+                           query_params: StockParameters,
                             ) -> list:
-        value_part_number = value_Part_number(part_number=part_number)
-        value_sector = valueSector(sector_name=sector_name)
-        value_status = valueStatus(status=status)
-        stock = self.repo.get_filtred_stock(sector_name=value_sector.sector_name, 
-                                            status=value_status.status, 
-                                            part_number=value_part_number.part_number
+        stock = self.repo.get_filtred_stock(sector_name=query_params.sector_name, 
+                                            status=query_params.status, 
+                                            part_number=query_params.part_number,
+                                            batch=query_params.batch,
+                                            assembly_batch=query_params.assembly_batch,
+                                            machining_batch=query_params.machining_batch
                                             )
         if not stock:
             raise NotFoundException("Stock")

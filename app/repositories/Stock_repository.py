@@ -1,3 +1,4 @@
+from typing import Optional
 from app.models.Stock import Stock
 
 
@@ -45,12 +46,12 @@ class StockRepository:
         stock = self.session.query(Stock).all()
         return stock
     
-    def get_filtred_stock(self, sector_name: str = None,
-                          part_number: str = None,
-                          status: str = None,
-                          batch: str = None,
-                          machining_batch: str = None,
-                          assembly_batch: str = None 
+    def get_filtred_stock(self, sector_name: Optional[str] = None,
+                          part_number: Optional[str] = None,
+                          status: Optional[str] = None,
+                          batch: Optional[str] = None,
+                          machining_batch: Optional[str] = None,
+                          assembly_batch: Optional[str] = None 
                          ) -> list[Stock]:
         
         query = self.session.query(Stock)

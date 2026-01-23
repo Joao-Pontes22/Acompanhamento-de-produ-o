@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from app.models.Relation import Relation
 
 
@@ -38,9 +38,9 @@ class RelationRepository:
         return query.all()
     
     def get_relations_filtred_first(self, 
-                                    id: int = None, 
-                                    create_item_part_number: str = None, 
-                                    consume_item_part_number: str = None
+                                    id: Optional[int] = None, 
+                                    create_item_part_number: Optional[str] = None, 
+                                    consume_item_part_number: Optional[str] = None
                                     ) -> Relation:
         
         query = self.session.query(Relation)

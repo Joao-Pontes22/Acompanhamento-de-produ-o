@@ -1,7 +1,8 @@
+from typing import Optional
 from sqlalchemy import desc
 from app.models.Movimentations import movimentations
 from sqlalchemy.orm import session
-
+from datetime import date
 class MovimentationRepository:
     def __init__(self, session: session):
         self.session = session
@@ -42,17 +43,17 @@ class MovimentationRepository:
         return self.session.query(movimentations).filter(movimentations.ID == movimentation_id).first()
     
     def get_movimentation_filtred(self, 
-                                   movimentation_id: int = None, 
-                                   part_number: str = None, 
-                                   batch: str = None, 
-                                   start_date = None, 
-                                   end_date = None,
-                                   emp_id: int = None,
-                                   movimentation_type: str = None, 
-                                   origin: str = None,
-                                   destination: str = None,
-                                   machining_batch: str = None,
-                                   assembly_batch: str = None
+                                   movimentation_id: Optional[int] = None, 
+                                   part_number: Optional[str] = None, 
+                                   batch: Optional[str] = None, 
+                                   start_date: Optional[date] = None, 
+                                   end_date: Optional[date] = None,
+                                   emp_id: Optional[int] = None,
+                                   movimentation_type: Optional[str] = None, 
+                                   origin: Optional[str] = None,
+                                   destination: Optional[str] = None,
+                                   machining_batch: Optional[str] = None,
+                                   assembly_batch: Optional[str] = None
                                    ):
         query = self.session.query(movimentations)
         if part_number:

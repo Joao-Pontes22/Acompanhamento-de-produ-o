@@ -1,5 +1,6 @@
 #Schemas
 from app.Schemas.Machine_Schemas import MachineSchema, UpdateMachineInfoSchema
+from app.Schemas.Queries.machine_query_params import MachineParameters
 #Entity
 from app.domain.Entitys.Machines_entitys import MachineEntity
 #Repository
@@ -47,12 +48,9 @@ class MachineService:
         
         return machines
     
-    def get_machine_filtred(self, 
-                            id:int = None, 
-                            machine:str = None):
-        if machine:
-            value_machine = ValueMachine(machine=machine)
-        machine = self.machine_repo.get_machine_filtred(id=id, machine=value_machine.machine)
+    def get_machine_filtred(self, query_params: MachineParameters):
+    
+        machine = self.machine_repo.get_machine_filtred(id=query_params.id, machine=query_params.machine)
 
         if not machine:
             raise NotFoundException(entity="Machine")

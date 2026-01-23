@@ -1,5 +1,5 @@
 from app.models.Employers import Employers
-
+from typing import Optional
 
 class EmployersRepository:
     def __init__(self,session):
@@ -18,14 +18,19 @@ class EmployersRepository:
         employers = self.session.query(Employers).all()
         return employers
     
-    def get_by_id(self, id:int):
-        self.id = id
-        return self.session.query(Employers).filter(Employers.ID == id).first()
-    
-    def get_by_emp_id(self, emp_id):
-        employer = self.session.query(Employers).filter(Employers.emp_id == emp_id).first()
-        return employer
-    
+    def get_employer_filtred(self, 
+                             id: Optional[int] = None,
+                             name: Optional[str] = None,
+                             emp_id: Optional[str] = None):
+        
+        query = self.session.query(Employers)
+        if id:
+            query = query.filter(Employers.ID == id)
+        if name:
+            query = query.filter(Employers.name == name)
+        if emp_id:
+            query = query.filter(Employers.emp_id == emp_id)
+        return query.all()
     
     
     def delete_employer(self, employer):

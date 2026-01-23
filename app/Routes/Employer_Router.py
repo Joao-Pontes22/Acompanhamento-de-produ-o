@@ -2,20 +2,25 @@
 from fastapi import APIRouter, Depends, HTTPException
 #SQLAlchemy
 from sqlalchemy.orm import Session
-#Schemas and Response
+#Schemas
 from app.Schemas.Responses.Response_Auth import ResponseAuth
 from app.Schemas.Employers_Schemas import EmployersSchema, UpdateEmployersInfoSchema
+from app.Schemas.Queries.employer_query_params import EmployersParameters
+#Dependecies
 from app.core.Dependecies import Init_Session
+#Repository
 from app.repositories.Employers_repository import EmployersRepository
-from app.Services.Employers_Service import EmployersServices
-from app.domain.Exceptions import AlreadyExist, NotFoundException
 from app.repositories.Sectors_repository import SectorsRepository
+#Service
+from app.Services.Employers_Service import EmployersServices
+#Exceptions
+from app.domain.Exceptions import AlreadyExist, NotFoundException
 
 
 Employer_Router = APIRouter(prefix="/Employers", tags=["Employers Operation"])
 
-@Employer_Router.post("/create_Employer")
-async def Create_Employer(scheme: EmployersSchema,
+@Employer_Router.post("/create_employer")
+async def Create_Employer(body: EmployersSchema,
                           session:Session = Depends(Init_Session)
                           ):
     
@@ -24,9 +29,10 @@ async def Create_Employer(scheme: EmployersSchema,
     service = EmployersServices(repo=repo)
 
     try:
-        employer = service.post_employer(scheme=scheme, sectors_repo=sectors_repo)
+        employer = service.post_employer(scheme=body, 
+                                         sectors_repo=sectors_repo)
 
-        return {"message": "Employer created successful"}
+        return {"message": "Employer created successfuly"}
     
     except AlreadyExist as e:
         raise HTTPException(status_code=409, detail=str(e))
@@ -51,10 +57,10 @@ async def get_employers(session: Session = Depends(Init_Session)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@Employer_Router.get("/get_employer_by_emp_id/{emp_id}", 
-                     response_model=ResponseAuth
+@Employer_Router.get("/get_employer_filtred", 
+                     response_model=list[ResponseAuth]
                      )
-async def get_emploer_by_emp_id(emp_id:str, 
+async def get_employers_filtred(query_params: EmployersParameters = Depends(), 
                                 session:Session = Depends(Init_Session)
                                 ):
 
@@ -63,7 +69,7 @@ async def get_emploer_by_emp_id(emp_id:str,
 
     try:
 
-        employer = service.get_employer_by_emp_id(emp_id=emp_id)
+        employer = service.get_employer_filtred(query_params=query_params)
 
         return employer
     
@@ -72,7 +78,7 @@ async def get_emploer_by_emp_id(emp_id:str,
 
 
 
-@Employer_Router.delete("/Delete_employer/{emp_id}")
+@Employer_Router.delete("/delete_employer/{emp_id}")
 async def delete_employer (emp_id:str, 
                            session:Session=Depends(Init_Session)
                            ):

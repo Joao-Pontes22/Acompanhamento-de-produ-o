@@ -1,4 +1,4 @@
-
+from typing import Optional
 # Entity for creating or updating a part
 class PartsEntity: 
     def __init__(self,
@@ -19,10 +19,10 @@ class PartsEntity:
         
 class UpdatePartsInfoEntity: 
     def __init__(self,
-                 part_number: str,
-                 description: str,
-                 cost: float,
-                 client_name: str
+                 part_number: Optional[str] = None,
+                 description: Optional[str] = None,
+                 cost: Optional[float] = None,
+                 client_name: Optional[str] = None
                  ):
         
         if part_number:

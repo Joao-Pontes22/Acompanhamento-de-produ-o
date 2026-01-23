@@ -3,9 +3,10 @@ from app.repositories.Parts_repository import PartsRepository
 from app.repositories.Clients_repository import ClientsRepository
 #Schema
 from app.Schemas.Parts_Schemas import PartsSchema, UpdatePartsInfoSchema
+from app.Schemas.Queries.parts_query_params import PartsParameters
 #Entity
 from app.domain.Entitys.Parts_entitys import PartsEntity, UpdatePartsInfoEntity
-from app.domain.Entitys.PartsAndComp_entitys import PartsAndCompsEntity, PartsAndCompsEntityFilter
+from app.domain.Entitys.PartsAndComp_entitys import PartsAndCompsEntity
 #Exceptions
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 #Value Object
@@ -43,19 +44,13 @@ class Parts_Services:
         return parts 
     
     def get_filtred_parts(self, 
-                           id:int = None, 
-                           part_number:str = None, 
-                           description:str = None, 
-                           client:str = None
+                           query_params: PartsParameters 
                             ):
-        entity = PartsAndCompsEntityFilter(part_number=part_number, 
-                                           description=description, 
-                                           client=client
-                                            )
-        parts = self.repo.get_parts_filtred(id=id, 
-                                            part_number=entity.part_number, 
-                                            description=entity.description, 
-                                            client=entity.client
+    
+        parts = self.repo.get_parts_filtred(id=query_params.id, 
+                                            part_number=query_params.part_number, 
+                                            description=query_params.description, 
+                                            client=query_params.client_name
                                             )
         if not parts:
             raise NotFoundException(entity="Part")
@@ -63,12 +58,12 @@ class Parts_Services:
         return parts
     
     def update_part_info(self, 
-                                 part_number: str, 
+                                 query_params: PartsParameters, 
                                  schema:UpdatePartsInfoSchema, 
                                  clients_repo:ClientsRepository
                                  ):
         
-        value_part_number = value_Part_number(part_number=part_number)
+        value_part_number = value_Part_number(part_number=query_params.part_number)
         part = self.repo.get_part_filtred_first(part_number=value_part_number.part_number)
         if not part:
             raise NotFoundException(entity="Part")

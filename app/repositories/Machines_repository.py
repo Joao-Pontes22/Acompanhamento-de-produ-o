@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from app.models.Machines import Machines
 from sqlalchemy.orm import Session
 
@@ -26,8 +26,8 @@ class MachineRepository:
     
     
     def get_machine_filtred(self, 
-                            id: int = None, 
-                            machine: str = None) -> List[Machines]:
+                            id: Optional[int] = None, 
+                            machine: Optional[str] = None) -> List[Machines]:
         
         query = self.session.query(Machines)
         if id:

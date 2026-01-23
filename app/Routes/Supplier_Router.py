@@ -19,7 +19,7 @@ Supplier_Router = APIRouter(prefix="/supplier", tags=["Supplier Operations"])
 
 
 @Supplier_Router.post("/add_supplier")
-async def add_supplier(scheme: SuppliersSchema,
+async def add_supplier(body: SuppliersSchema,
                        session: Session = Depends(Init_Session)):
     
     repo = SuppliersRepository(session=session)
@@ -27,7 +27,7 @@ async def add_supplier(scheme: SuppliersSchema,
 
     try:
 
-        new_supplier = service.create_supplier(scheme=scheme)
+        new_supplier = service.create_supplier(scheme=body)
 
         return {"message": "New supplier added successfuly"}
     
@@ -68,13 +68,13 @@ async def get_supplier(supplier: str,
 
 @Supplier_Router.patch("/updated_supplier_info/{supplier}")
 async def update_supplier(supplier:str, 
-                          scheme:UpdateSupplierInfosSchema, 
+                          body:UpdateSupplierInfosSchema, 
                           session: Session = Depends(Init_Session)):
     repo = SuppliersRepository(session=session)
     service = SupplierService(repo=repo)
 
     try:
-        supplier = service.update_supplier_info(supplier=supplier,scheme=scheme)
+        supplier = service.update_supplier_info(supplier=supplier,scheme=body)
 
         return {"message": "Supplie updated successfuly",
                 "Supplier": supplier}

@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session
 #SQLAlchemy
 from sqlalchemy.orm import Session
-#Schemas and responses
+#Schemas
 from app.Schemas.Machine_Schemas import MachineSchema, UpdateMachineInfoSchema
 from app.Schemas.Responses.Response_Machines import ResponseMachines
+from app.Schemas.Queries.machine_query_params import MachineParameters
 #Repository
 from app.repositories.Machines_repository import MachineRepository
 from app.repositories.Sectors_repository import SectorsRepository
@@ -21,7 +22,7 @@ Machine_Router = APIRouter(prefix="/Machine", tags=["Machines Operation"])
 
 
 @Machine_Router.post("/POST_machine")
-async def post_machine(scheme: MachineSchema, 
+async def post_machine(body: MachineSchema, 
                        session: Session = Depends(Init_Session)
                        ):
     
@@ -31,7 +32,8 @@ async def post_machine(scheme: MachineSchema,
 
     try:
 
-        new_machine = service.create_machine(scheme=scheme, sectors_repo=sectors_repo)
+        new_machine = service.create_machine(scheme=body, 
+                                             sectors_repo=sectors_repo)
 
         return {"message": "Machine created successfuly"}
     
@@ -54,17 +56,18 @@ async def get_machines(session:Session = Depends(Init_Session)):
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-@Machine_Router.get("/GET_machine_filtred", 
+@Machine_Router.get("/get_machine_filtred", 
                     response_model=list[ResponseMachines]
                     )
 
-async def get_machines(id:int = None, machine:str = None, session:Session = Depends(Init_Session)):
+async def get_machines(query_params: MachineParameters = Depends(), 
+                       session:Session = Depends(Init_Session)):
     
     repo = MachineRepository(session=session)
     service = MachineService(machine_repo=repo)
     try:
 
-        return service.get_machine_filtred(id=id, machine=machine)
+        return service.get_machine_filtred(query_params=query_params)
     
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -87,7 +90,7 @@ async def delete_machine(machine:str,
 
 @Machine_Router.patch("/Update_machine/{machine}")
 async def updatte_machine(machine:str, 
-                          scheme:UpdateMachineInfoSchema, 
+                          body:UpdateMachineInfoSchema, 
                           session:Session=Depends(Init_Session)
                           ):
     
@@ -97,7 +100,7 @@ async def updatte_machine(machine:str,
 
     try:
         new_machines_info = service.update_machine_info(machine=machine, 
-                                                        scheme=scheme, 
+                                                        scheme=body, 
                                                         sectors_repo=sectors_repo)
         
         return {"message": "Machine updated successfully"}

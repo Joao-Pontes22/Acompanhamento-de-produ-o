@@ -2,6 +2,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 #SQLAlchemy
 from sqlalchemy.orm import Session
+#Schemas
+from app.Schemas.Queries.movimentation_query_params import MovimentationParameters
 #Dependecies
 from app.core.Dependecies import Init_Session
 #Repository
@@ -35,17 +37,7 @@ async def get_all_movimentations(session:Session = Depends(Init_Session)):
     
 
 @Movimentaion_Router.get("/Get_filtered_movimentations")
-async def get_filtered_movimentations(movimentation_id: int = None,
-                                     part_number: str = None, 
-                                     batch: str = None, 
-                                     start_date = None, 
-                                     end_date = None, 
-                                     emp_id: int = None,
-                                     movimentation_type: str = None, 
-                                     origin: str = None,
-                                     destination: str = None,
-                                     machining_batch: str = None,
-                                     assembly_batch: str = None,
+async def get_filtered_movimentations(query_params: MovimentationParameters = Depends(),
                                      session:Session = Depends(Init_Session)
                                      ):
     
@@ -60,18 +52,7 @@ async def get_filtered_movimentations(movimentation_id: int = None,
                                    sector_repo=sector_repo,
                                    employer_repo=emp_repo)
     try:
-        movimentations = service.get_filtred_movimentations(movimentation_id=movimentation_id,
-                                                            part_number=part_number,
-                                                            batch=batch,
-                                                            start_date=start_date,
-                                                            end_date=end_date,
-                                                            emp_id=emp_id,
-                                                            movimentation_type=movimentation_type,
-                                                            origin=origin,
-                                                            destination=destination,
-                                                            machining_batch=machining_batch,
-                                                            assembly_batch=assembly_batch,
-                                                            )
+        movimentations = service.get_filtred_movimentations(query_params=query_params)
         
         return movimentations
     

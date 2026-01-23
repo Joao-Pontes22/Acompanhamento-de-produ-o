@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.core.Dependecies import Init_Session
 #SQLAlchemy
 from sqlalchemy.orm import Session
-#Schemas and response
+#Schema
 from app.Schemas.Parts_Schemas import PartsSchema, UpdatePartsInfoSchema
 from  app.Schemas.Responses.Response_Parts import ResponseParts
+from app.Schemas.Queries.parts_query_params import PartsParameters
 #Repository
 from app.repositories.Parts_repository import PartsRepository
 from app.repositories.Clients_repository import ClientsRepository
@@ -19,7 +20,7 @@ Part_Router = APIRouter(prefix="/Parts", tags=["Parts Operations"])
                 
 
 @Part_Router.post("/add_parts")
-async def add_part(schemes: PartsSchema, 
+async def add_part(body: PartsSchema, 
                    session: Session = Depends(Init_Session)
                    ):
 
@@ -28,7 +29,7 @@ async def add_part(schemes: PartsSchema,
     clients_repo = ClientsRepository(session=session)
 
     try:
-        new_part = service.create_part(scheme=schemes,clients_repo=clients_repo)
+        new_part = service.create_part(scheme=body,clients_repo=clients_repo)
 
         return {"message": "Part created successfuly"}
     
@@ -55,7 +56,7 @@ async def get_part(session: Session = Depends(Init_Session)):
     
 @Part_Router.patch("/update_part/{part_number}")
 async def update_part(part_number: str, 
-                      scheme: UpdatePartsInfoSchema, 
+                      body: UpdatePartsInfoSchema, 
                       session: Session = Depends(Init_Session)
                       ):
     repo = PartsRepository(session=session)
@@ -63,31 +64,24 @@ async def update_part(part_number: str,
     service = Parts_Services(parts_repo=repo)
 
     try:
-        Updated_part = service.update_part_info(part_number=part_number, scheme=scheme, clients_repo=clients_repo)
+        Updated_part = service.update_part_info(part_number=part_number, scheme=body, clients_repo=clients_repo)
         
         return {"message": "Parts updated successfuly"}
     
     except NotFoundException as e:
         raise HTTPException(status_code=404, detail=str(e))
     
-@Part_Router.get("/Get_parts_filtered", 
+@Part_Router.get("/get_parts_filtered", 
                  response_model=list[ResponseParts]
                  )
 
-async def get_filtered_parts(id:int = None, 
-                             part_number:str = None, 
-                             description:str = None, 
-                             client:str = None, 
+async def get_filtered_parts(query_params: PartsParameters = Depends(),
                              session:Session = Depends(Init_Session)
                              ):
     repo = PartsRepository(session=session)
     service = Parts_Services(parts_repo=repo)
     try:
-        filtered_parts = service.get_filtred_parts(id=id, 
-                                                    part_number=part_number, 
-                                                    description=description, 
-                                                    client=client
-                                                    )
+        filtered_parts = service.get_filtred_parts(query_params= query_params)
         return filtered_parts
     
     except NotFoundException as e:

@@ -22,13 +22,13 @@ Client_Router = APIRouter(prefix="/Clients", tags=["Clients Operations"])
 
 
 @Client_Router.post("/create_client")
-async def create_client(scheme: ClientsSchema, session: Session = Depends(Init_Session)):
+async def create_client(body: ClientsSchema, session: Session = Depends(Init_Session)):
     
     repo = ClientsRepository(session=session)
     service = ClientsService(repo=repo)
 
     try:
-        new_client = service.create_client(schema=scheme)
+        new_client = service.create_client(schema=body)
 
         return{"message": "Client created successfuly",
                 "Client": new_client.name}
@@ -69,7 +69,7 @@ async def get_by_name(client:str,
 
 @Client_Router.patch("/update_client_by_name/{client}", response_model=ResponseClients)
 async def update_by_name(client:str, 
-                         scheme:UpdateClientsInfoSchema, 
+                         body:UpdateClientsInfoSchema, 
                          session:Session = Depends(Init_Session)):
    
     repo = ClientsRepository(session=session)
@@ -77,7 +77,7 @@ async def update_by_name(client:str,
 
     try:
 
-        new_client = service.update_client_info(name=client, schema=scheme)
+        new_client = service.update_client_info(name=client, schema=body)
 
         return new_client
     

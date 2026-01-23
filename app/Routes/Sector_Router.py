@@ -18,7 +18,7 @@ from app.domain.Exceptions import AlreadyExist, NotFoundException
 Sector_Router = APIRouter(prefix="/sector", tags=["Sectors Operation"])
 
 @Sector_Router.post("/post_sector")
-async def post_sectors(scheme: SectorSchema, 
+async def post_sectors(body: SectorSchema, 
                        session: Session = Depends(Init_Session)
                        ):
     
@@ -26,7 +26,7 @@ async def post_sectors(scheme: SectorSchema,
     service = Sectors_Services(repo=repo)
 
     try:
-        new_sector = service.post_sector(scheme=scheme)
+        new_sector = service.post_sector(scheme=body)
 
         return {"message":"Sector created successfuly"}
     
@@ -68,7 +68,7 @@ async def get_sector_id(sector: str,
         raise HTTPException(status_code=404, detail=str(e))
     
 @Sector_Router.patch("/update_sector/{sector}")
-async def update_sector(sector:str, scheme:UpdateSectorInfoSchema, 
+async def update_sector(sector:str, body:UpdateSectorInfoSchema, 
                         session:Session = Depends(Init_Session)
                         ):
     
@@ -76,7 +76,7 @@ async def update_sector(sector:str, scheme:UpdateSectorInfoSchema,
     service = Sectors_Services(repo=repo)
 
     try:
-        sector =  service.update_sector_info(sector=sector, scheme=scheme)
+        sector =  service.update_sector_info(sector=sector, scheme=body)
 
         return sector
     

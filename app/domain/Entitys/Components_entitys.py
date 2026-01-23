@@ -1,4 +1,4 @@
-
+from typing import Optional
 
 # Entity for creating or updating a component
 class ComponentsEntity: 
@@ -23,11 +23,11 @@ class ComponentsEntity:
 
 class UpdateComponentsInfoEntity: 
     def __init__(self,
-                 part_number: str,
-                 description_material: str,
-                 cost: float,
-                 supplier_name: str,
-                 component_type: str
+                 part_number: Optional[str] = None,
+                 description_material: Optional[str] = None,
+                 cost: Optional[float] = None,
+                 supplier_name: Optional[str] = None,
+                 component_type: Optional[str] = None
                  ):
 
         if part_number:

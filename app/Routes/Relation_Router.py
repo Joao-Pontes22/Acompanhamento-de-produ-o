@@ -11,15 +11,15 @@ from sqlalchemy.orm import Session
 from app.core.Dependecies import Init_Session
 #Exceptions
 from app.domain.Exceptions import NotFoundException, AlreadyExist
-#Schema
+#Schemas
 from app.Schemas.Relation_Schemas import RelationSchema
+from app.Schemas.Queries.relation_query_params import RelationParameters
 
-
-PartsxComponents_Router = APIRouter(prefix="/relations", tags=["Parts to Components Relations"])
+PartsxComponents_Router = APIRouter(prefix="/Relations", tags=["Relations"])
 
 
 @PartsxComponents_Router.post("/create_relation")
-async def create_relation(scheme: RelationSchema, 
+async def create_relation(body: RelationSchema, 
                           session:Session = Depends(Init_Session)):
     repo = RelationRepository(session=session)
     component_repo = ComponentsRepository(session=session)
@@ -28,7 +28,7 @@ async def create_relation(scheme: RelationSchema,
                                  )
 
     try:
-        new_relation = service.create_relation(scheme=scheme)
+        new_relation = service.create_relation(scheme=body)
 
         return {"message": "Relation created successfuly"}
     
@@ -41,19 +41,13 @@ async def create_relation(scheme: RelationSchema,
 
 
 @PartsxComponents_Router.get("/relations_filtred")
-async def get_relations_by_part_id(create_item_part_number: str = None, 
-                                   consume_item_part_number: str = None, 
-                                   id: int = None, 
-                                   session:Session = Depends(Init_Session)
-                                   ):
+async def get_relations_by_part_id(session:Session = Depends(Init_Session),
+                                   query_params: RelationParameters = Depends(),):
     
     repo = RelationRepository(session=session)
     service = RelationServices(relation_repo=repo)
     try:
-        relations = service.get_relations_filtred(id=id, 
-                                                  create_item_part_number=create_item_part_number, 
-                                                  consume_item_part_number=consume_item_part_number
-                                                  )
+        relations = service.get_relations_filtred(query_params=query_params)
         
         return relations
     

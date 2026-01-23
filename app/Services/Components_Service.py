@@ -3,10 +3,10 @@ from app.repositories.Components_repository import ComponentsRepository
 from app.repositories.Suppliers_repository import SuppliersRepository
 #Schema
 from app.Schemas.Components_Schemas import ComponentsSchema, UpdateComponentsInfoSchema
+from app.Schemas.Queries.components_query_params import ComponentsParameters
 #Entity
 from app.domain.Entitys.Components_entitys import ComponentsEntity
-from app.domain.Entitys.PartsAndComp_entitys import PartsAndCompsEntityFilter
-#Exception
+
 from app.domain.Exceptions import AlreadyExist, NotFoundException
 #Value Object
 from app.domain.Value_objects.Part_number import value_Part_number
@@ -53,34 +53,24 @@ class ComponentsService:
         return component
 
     def get_component_filtred(self, 
-                                id:int = None, 
-                                part_number:str = None, 
-                                description:str = None, 
-                                supplier:str = None, 
-                                component_type:str = None
+                                query_params: ComponentsParameters
                                 ):
-        component_entity = PartsAndCompsEntityFilter(part_number=part_number, 
-                                                     description=description, 
-                                                     supplier=supplier, 
-                                                     component_type=component_type
-                                                     )
-        
-        components = self.repo.get_component_filtred(id=id, 
-                                                    part_number=component_entity.part_number, 
-                                                    description=component_entity.description, 
-                                                    supplier=component_entity.supplier, 
-                                                    component_type=component_entity.component_type)
+       
+        components = self.repo.get_component_filtred(id=query_params.id, 
+                                                    part_number=query_params.part_number, 
+                                                    description=query_params.description, 
+                                                    supplier=query_params.supplier_name, 
+                                                    component_type=query_params.component_type)
         return components
     
 
     def update_component_info(self, 
-                              part_number:str, 
-                              schema:UpdateComponentsInfoSchema, 
-                              supplier_repo:SuppliersRepository
+                              schema: UpdateComponentsInfoSchema,
+                              query_params: ComponentsParameters ,
+                              supplier_repo: SuppliersRepository
                             ):
         
-        value_part_number = value_Part_number(part_number=part_number)
-        component = self.repo.get_component_by_part_number(part_number=value_part_number.part_number)
+        component = self.repo.get_component_by_part_number(part_number=query_params.part_number)
         if not component:
             raise NotFoundException("Component")
         
