@@ -11,6 +11,7 @@ class MachiningProductionSchema(BaseModel):
     duration_process : int
     input_part_number : str
     output_part_number : str
+    setup : str
     batch : str
     emp_id : str
     status : str
@@ -20,6 +21,7 @@ class MachiningProductionSchema(BaseModel):
                      "input_part_number",
                      "output_part_number",
                      "batch",
+                     "setup",
                      "emp_id", 
                      mode="before"
                      )

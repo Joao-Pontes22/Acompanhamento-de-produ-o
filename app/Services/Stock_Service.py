@@ -12,6 +12,7 @@ from app.repositories.Movimentation_repository import MovimentationRepository
 from app.repositories.Sectors_repository import  SectorsRepository
 from app.repositories.PartAndComp_repository import PartsAndCompRepository
 from app.repositories.Employers_repository import EmployersRepository
+from app.repositories.Setup_repository import SetupRepository
 # Entitys
 from app.domain.Entitys.Transfer_entitys import TransferEntity
 from app.domain.Entitys.Movimentation_entity import MovimentationEntity
@@ -27,7 +28,8 @@ class StockService:
                  movimentation_repo: MovimentationRepository = None, 
                  partsAndComp_repo: PartsAndCompRepository = None,
                  relation_repo: RelationRepository = None,
-                 employers_repo: EmployersRepository = None 
+                 employers_repo: EmployersRepository = None,
+                 setup_repo: SetupRepository = None 
                  ):
         
         self.repo = repo
@@ -36,12 +38,13 @@ class StockService:
         self.relation_repo = relation_repo
         self.movimentation_repo = movimentation_repo
         self.employers_repo = employers_repo
+        self.setup_repo = setup_repo
 
     def create_stock(self, schema:StockSchema,
                             employer_id:int 
                             ):
 
-        employer = self.employers_repo.get_by_id(id=employer_id)
+        employer = self.employers_repo.get_employer_filtred(emp_id=employer_id)
         try:
 
             PartOrComp = self.partsAndComp_repo.get_Parts_and_Components_by_part_number(part_number=schema.part_number)
@@ -303,7 +306,7 @@ class StockService:
             else:
                 return int(1) 
         elif item.category == "COMPONENT" and item.component_type == "MACHINED":
-            last_batch = self.movimentation_repo.get_movimentation_create_stock_filtered_first(part_number=item.part_number, movimentation_id=True)
+            last_batch = self.setup_repo.get_setup_filtered(part_number=item.part_number, date=datetime.today(), status="DONE") 
             if last_batch:
                 return int(last_batch.machining_batch) + 1
             else:

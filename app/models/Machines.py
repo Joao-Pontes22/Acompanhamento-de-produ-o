@@ -14,6 +14,7 @@ class Machines (base):
     sector = relationship("Sectors", back_populates="machines")
     machining_production = relationship("MachiningProduction", back_populates="machine")
     assembly_production = relationship("AssemblyProduction", back_populates="machine")
+    setup = relationship("Setup", back_populates="machines")
     def __init__(self, machine, sector_name, description_machine):
         self.machine = machine
         self.sector_name = sector_name

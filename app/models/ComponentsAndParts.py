@@ -19,7 +19,7 @@ class ComponentsAndParts(base):
     clients = relationship("Clients", back_populates="items")
     supplier = relationship("Suppliers", back_populates="items")
     stock = relationship("Stock", back_populates="item")
-    
+    setup = relationship("Setup", back_populates="compandpart")
 
     def __init__(self, part_number, description, category, client_name, supplier_name,cost, component_type=None):
         self.part_number = part_number

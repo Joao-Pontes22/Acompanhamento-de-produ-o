@@ -38,7 +38,7 @@ class MachiningProductionServices:
                                            duration_process=Scheme.duration_process,
                                            input_part_number=Scheme.input_part_number,
                                            output_part_number=Scheme.output_part_number,
-                                           batch=Scheme.batch,
+                                           setup=Scheme.setup,
                                            emp_id=Scheme.emp_id,
                                            status=Scheme.status
                                            )
@@ -59,20 +59,19 @@ class MachiningProductionServices:
         if not machine:
             raise NotFoundException("Machine")
         
-        employer = employer_repo.get_by_emp_id(emp_id=entity.emp_id)
+        employer = employer_repo.get_employer_filtred(emp_id=entity.emp_id)
         if not employer:
             raise NotFoundException("Employer")
         
-        raw_stock = stock_repo.get_specify_stock(sector_name=entity.sector_name, 
+        raw_stock = stock_repo.get_filtred_stock(sector_name=entity.sector_name, 
                                                  part_number=entity.input_part_number, 
-                                                 batch=entity.batch)
+                                                 setup=entity.setup)
         if not raw_stock:
             raise NotFoundException("Stock raw component")
 
-        machined_last_movimentation = movimentation_repo.get_movimentation_filtered_first(
+        machined_last_movimentation = movimentation_repo.get_movimentation_create_stock_filtred_first(
             part_number=entity.output_part_number,
             origin=entity.sector_name,
-            movimentation_type="CREATE",
             movimentation_id=True
         )
         if not machined_last_movimentation:

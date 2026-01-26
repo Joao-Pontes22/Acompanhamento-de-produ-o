@@ -6,7 +6,6 @@ from app.Schemas.Parts_Schemas import PartsSchema, UpdatePartsInfoSchema
 from app.Schemas.Queries.parts_query_params import PartsParameters
 #Entity
 from app.domain.Entitys.Parts_entitys import PartsEntity, UpdatePartsInfoEntity
-from app.domain.Entitys.PartsAndComp_entitys import PartsAndCompsEntity
 #Exceptions
 from app.domain.Exceptions import NotFoundException, AlreadyExist
 #Value Object
