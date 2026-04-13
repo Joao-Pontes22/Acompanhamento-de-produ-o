@@ -1,0 +1,9 @@
+{
+	"inputs": [],
+	"servers": {
+		"production-control": {
+			"type": "http",
+			"url": "http://localhost:8000/mcp"
+		}
+	}
+}
